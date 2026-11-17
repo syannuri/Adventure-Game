@@ -91,34 +91,46 @@ function ridges<T extends THREE.BufferGeometry>(g: T, count = 22, depth = 0.02):
  * uneven wavy bottom edge.
  */
 function hairMantle() {
-  const rows = 22;
+  const rows = 24;
   const seg = 96;
   const top = 0.1;
-  const bottom = -0.38;
+  const bottom = -0.37;
+  const thick = 0.035;
+  const ring = (rows + 1) * (seg + 1);
   const pos: number[] = [];
   const idx: number[] = [];
-  for (let i = 0; i <= rows; i++) {
-    const t = i / rows;
-    const open = 0.98 - 0.42 * smoothstep(0.35, 1, t); // face opening narrows below the chin
-    for (let j = 0; j <= seg; j++) {
-      const u = j / seg;
-      const th = open + u * (Math.PI * 2 - 2 * open); // 0 = straight ahead (+z)
-      // mirror-symmetric angle measured from the back of the head
-      const a = Math.abs(th - Math.PI);
-      let r = 0.272 + 0.11 * Math.pow(t, 1.2) + 0.045 * smoothstep(0.65, 1, t);
-      r += (Math.cos(a * 6 + t * 6.5) * 0.03 + Math.cos(a * 11 - t * 4) * 0.012) * smoothstep(0.12, 0.6, t);
-      r *= 1 + Math.cos(a * 50) * 0.006 + Math.cos(a * 21 + 2) * 0.009;
-      let y = top + (bottom - top) * t;
-      if (i === rows) y += Math.cos(a * 8) * 0.035 + Math.cos(a * 4.5 + 1) * 0.02 + 0.02;
-      pos.push(Math.sin(th) * r, y, Math.cos(th) * r);
+  // two layers (outer surface + inner surface) so the hair has real body
+  for (const layer of [0, 1]) {
+    for (let i = 0; i <= rows; i++) {
+      const t = i / rows;
+      const open = 0.98 - 0.4 * smoothstep(0.35, 1, t); // face opening narrows below the chin
+      for (let j = 0; j <= seg; j++) {
+        const u = j / seg;
+        const th = open + u * (Math.PI * 2 - 2 * open); // 0 = straight ahead (+z)
+        const a = Math.abs(th - Math.PI); // mirror-symmetric angle from the back of the head
+        // neat, full silhouette: gentle widening, ends tucked slightly inward
+        let r = 0.274 + 0.075 * Math.pow(t, 1.3) - 0.022 * smoothstep(0.86, 1, t);
+        r += Math.cos(a * 4 + t * 4) * 0.012 * smoothstep(0.2, 0.7, t); // soft waves
+        r *= 1 + Math.cos(a * 44) * 0.0035; // fine strand texture
+        if (layer === 1) r -= thick * (0.4 + 0.6 * smoothstep(0, 0.3, t));
+        let y = top + (bottom - top) * t;
+        if (i === rows) y += Math.cos(a * 3) * 0.012 + 0.01 + (layer === 1 ? 0.012 : 0); // smooth, slightly rounded ends
+        const back = Math.cos(th) < 0 ? 1.07 : 1; // a little extra room for the backpack
+        pos.push(Math.sin(th) * r, y, Math.cos(th) * r * back);
+      }
     }
   }
+  const at = (layer: number, i: number, j: number) => layer * ring + i * (seg + 1) + j;
   for (let i = 0; i < rows; i++)
     for (let j = 0; j < seg; j++) {
-      const a = i * (seg + 1) + j;
-      const b = a + seg + 1;
-      idx.push(a, b, a + 1, a + 1, b, b + 1);
+      idx.push(at(0, i, j), at(0, i + 1, j), at(0, i, j + 1), at(0, i, j + 1), at(0, i + 1, j), at(0, i + 1, j + 1));
+      idx.push(at(1, i, j), at(1, i, j + 1), at(1, i + 1, j), at(1, i, j + 1), at(1, i + 1, j + 1), at(1, i + 1, j));
     }
+  // close the bottom edge
+  for (let j = 0; j < seg; j++) idx.push(at(0, rows, j), at(1, rows, j), at(0, rows, j + 1), at(0, rows, j + 1), at(1, rows, j), at(1, rows, j + 1));
+  // close both edges around the face
+  for (const j of [0, seg])
+    for (let i = 0; i < rows; i++) idx.push(at(0, i, j), at(1, i, j), at(0, i + 1, j), at(0, i + 1, j), at(1, i, j), at(1, i + 1, j));
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.setIndex(idx);
@@ -126,7 +138,7 @@ function hairMantle() {
   return g;
 }
 
-/** Full straight-cut bangs with a slightly uneven (wispy) lower edge. */
+/** Full straight-cut bangs with a neat, softly rounded lower edge. */
 function bangsGeometry() {
   const g = new THREE.SphereGeometry(0.284, 80, 18, Math.PI / 2 - 1.08, 2.16, 0.16, 1.1);
   const pos = g.attributes.position as THREE.BufferAttribute;
@@ -134,7 +146,7 @@ function bangsGeometry() {
     const y = pos.getY(i);
     if (y < 0.13) {
       const x = pos.getX(i);
-      pos.setY(i, y - (Math.sin(x * 140) * 0.5 + 0.5) * 0.014 - Math.abs(Math.sin(x * 37)) * 0.008);
+      pos.setY(i, y - Math.cos(x * 9) * 0.006); // neat, softly rounded straight cut
     }
   }
   g.computeVertexNormals();
@@ -254,19 +266,44 @@ const capsule = (r: number, l: number) => new THREE.CapsuleGeometry(r, l, 6, 18)
  */
 const HAIR_LOCKS = Array.from({ length: 16 }, (_, i) => ({
   phi: 1.0 + (i / 15) * (Math.PI * 2 - 2.0), // around the head, skipping the face
-  from: 0.1 + (i % 3) * 0.05, // polar angle (from the crown) where the lock starts
-  to: 1.72 + (i % 2) * 0.12,
+  from: 0.12 + (i % 3) * 0.05, // polar angle (from the crown) where the lock starts
+  to: 1.98 + (i % 2) * 0.06,
   w: 0.062 + (i % 3) * 0.01,
   lift: (i % 2) * 0.008,
 }));
 
+/** A hair lock: a flat ribbon following the scalp meridian, tapered at both ends (no visible cut edges). */
 function lockGeometry(from: number, to: number, w: number, lift: number) {
-  const R = 0.298 + lift;
-  const thin = 0.026;
-  const g = new THREE.TorusGeometry(R, thin, 6, 20, to - from);
-  g.scale(1, 1, w / thin); // wide ribbon sideways, thin radially
-  g.rotateZ(Math.PI / 2 - to); // arc spans polar angles [from, to]
-  g.rotateY(-Math.PI / 2); // into the front meridian plane (y/z)
+  const thin = 0.022;
+  const steps = 24;
+  const sides = 10;
+  const pos: number[] = [];
+  const idx: number[] = [];
+  for (let k = 0; k <= steps; k++) {
+    const s = k / steps;
+    const th = from + (to - from) * s;
+    const taper = Math.max(0.05, smoothstep(0, 0.3, s)) * (1 - 0.35 * smoothstep(0.75, 1, s));
+    // start sunk inside the hair cap, rise onto the surface, sink again under the hair mass
+    const R = 0.284 + (0.012 + lift) * smoothstep(0.05, 0.4, s) - 0.01 * smoothstep(0.8, 1, s);
+    const ny = Math.cos(th);
+    const nz = Math.sin(th);
+    for (let q = 0; q < sides; q++) {
+      const al = (q / sides) * Math.PI * 2;
+      const bx = Math.cos(al) * w * taper; // sideways (binormal = x)
+      const rr = R + Math.sin(al) * thin * taper; // radial thickness
+      pos.push(bx, ny * rr, nz * rr);
+    }
+  }
+  for (let k = 0; k < steps; k++)
+    for (let q = 0; q < sides; q++) {
+      const a0 = k * sides + q;
+      const a1 = k * sides + ((q + 1) % sides);
+      idx.push(a0, a0 + sides, a1, a1, a0 + sides, a1 + sides);
+    }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
   return g;
 }
 
@@ -464,9 +501,9 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
             ))}
 
             {/* big khaki hiking backpack */}
-            <group position={[0, 0.16, -0.245]}>
+            <group position={[0, 0.13, -0.235]}>
               <RoundedBox args={[0.3, 0.4, 0.16]} radius={0.06} smoothness={4} material={m.pack} />
-              <RoundedBox args={[0.31, 0.11, 0.18]} radius={0.05} smoothness={4} material={m.packDark} position={[0, 0.2, 0.005]} />
+              <RoundedBox args={[0.31, 0.11, 0.165]} radius={0.05} smoothness={4} material={m.packDark} position={[0, 0.2, 0.012]} />
               <RoundedBox args={[0.2, 0.17, 0.05]} radius={0.03} smoothness={3} material={m.packLight} position={[0, -0.07, -0.09]} />
               <mesh material={m.strapDark} position={[0, -0.0, -0.117]}>
                 <boxGeometry args={[0.16, 0.006, 0.004]} />
