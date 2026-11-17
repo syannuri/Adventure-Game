@@ -17,6 +17,7 @@
 import { forwardRef, useImperativeHandle, useLayoutEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { RoundedBox } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
 import { smoothstep } from '../../../utils/math';
 
 export const ANETT_PALETTE = {
@@ -307,6 +308,42 @@ function lockGeometry(from: number, to: number, w: number, lift: number) {
   return g;
 }
 
+/**
+ * Hair dynamics: the lower part of the hair mass bends toward an offset vector (head space) that a
+ * damped spring drives from the head's real motion, plus a light strand flutter while moving.
+ * Upper hair (crown, bangs, locks) stays attached to the head.
+ */
+function createMovingHairMaterial(base: THREE.MeshPhysicalMaterial) {
+  const mat = base.clone();
+  const uniforms = { uSwing: { value: new THREE.Vector3() }, uFlutter: { value: 0 }, uTime: { value: 0 } };
+  mat.onBeforeCompile = (shader) => {
+    Object.assign(shader.uniforms, uniforms);
+    shader.vertexShader =
+      'uniform vec3 uSwing;\nuniform float uFlutter;\nuniform float uTime;\n' +
+      shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        `#include <begin_vertex>
+        // 0 at chin level (-0.08) -> 1 at the hair ends (-0.37); quadratic so it bends like hair
+        float hw = clamp((-0.08 - position.y) / 0.29, 0.0, 1.0);
+        hw = hw * hw;
+        transformed += uSwing * hw;
+        float ang = atan(position.x, position.z);
+        vec2 radial = normalize(position.xz + vec2(1e-5));
+        transformed.xz += radial * sin(uTime * 9.0 + ang * 5.0) * uFlutter * hw;
+        transformed.y += cos(uTime * 7.0 + ang * 4.0) * uFlutter * 0.5 * hw;`,
+      );
+  };
+  mat.customProgramCacheKey = () => 'anett-moving-hair';
+  mat.userData.hairUniforms = uniforms; // inspectable in tests
+  return { mat, uniforms };
+}
+
+const _anchor = new THREE.Vector3();
+const _q = new THREE.Quaternion();
+const _s = new THREE.Vector3();
+const _off = new THREE.Vector3();
+const HAIR_REST = new THREE.Vector3(0, -0.28, -0.05); // head-space point near the hair ends
+
 export interface AnettModelProps {
   scale?: number;
   /** Optional object held in the right hand (e.g. the magic wand). */
@@ -340,6 +377,51 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
     const out = {} as Record<string, unknown>;
     for (const [k, v] of Object.entries(r)) out[k] = v.current;
     return out as unknown as AnettRig;
+  });
+
+  const movingHair = useMemo(() => createMovingHairMaterial(m.hair), [m.hair]);
+  const headRef = useRef<THREE.Group>(null!);
+  const hairSim = useRef({ init: false, tip: new THREE.Vector3(), vel: new THREE.Vector3(), prevAnchor: new THREE.Vector3(), speed: 0 });
+
+  useFrame((_, rawDt) => {
+    const dt = Math.min(rawDt, 1 / 30);
+    if (dt <= 0 || !headRef.current) return;
+    const h = hairSim.current;
+    const head = headRef.current;
+    head.updateWorldMatrix(true, false);
+    _anchor.copy(HAIR_REST).applyMatrix4(head.matrixWorld);
+    head.getWorldQuaternion(_q);
+    head.getWorldScale(_s);
+    if (!h.init || h.tip.distanceTo(_anchor) > 3) {
+      // first frame or teleport: start at rest
+      h.init = true;
+      h.tip.copy(_anchor);
+      h.vel.set(0, 0, 0);
+      h.prevAnchor.copy(_anchor);
+    }
+    // anchor speed drives the flutter amount
+    const sp = h.prevAnchor.distanceTo(_anchor) / dt;
+    h.prevAnchor.copy(_anchor);
+    h.speed += (Math.min(sp, 7) - h.speed) * Math.min(1, dt * 6);
+    // damped spring (slightly under-damped so the hair sways and settles)
+    const K = 70;
+    const D = 7.5;
+    _off.copy(_anchor).sub(h.tip).multiplyScalar(K).addScaledVector(h.vel, -D);
+    h.vel.addScaledVector(_off, dt);
+    h.tip.addScaledVector(h.vel, dt);
+    // leash: on slow frames the tip is pulled along instead of snapping back to rest
+    _off.copy(h.tip).sub(_anchor);
+    if (_off.length() > 0.35) h.tip.copy(_anchor).addScaledVector(_off.setLength(0.35), 1);
+    // offset in head space
+    _off.copy(h.tip).sub(_anchor).applyQuaternion(_q.invert()).divideScalar(_s.x || 1);
+    // soft limits (smooth saturation instead of hard stops)
+    const soft = (v: number, lo: number, hi: number) => (v >= 0 ? hi * Math.tanh(v / hi) : -lo * Math.tanh(-v / lo));
+    _off.x = soft(_off.x, 0.09, 0.09);
+    _off.y = soft(_off.y, 0.05, 0.07);
+    _off.z = soft(_off.z, 0.11, 0.03); // little forward travel so hair never enters the face/chest
+    movingHair.uniforms.uSwing.value.lerp(_off, Math.min(1, dt * 30));
+    movingHair.uniforms.uTime.value += dt;
+    movingHair.uniforms.uFlutter.value = 0.008 * smoothstep(0.6, 5.5, h.speed);
   });
 
   const geo = useMemo(() => {
@@ -558,7 +640,7 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
               <mesh material={m.skin} position={[0, 0.02, 0]}>
                 <cylinderGeometry args={[0.048, 0.054, 0.07, 14]} />
               </mesh>
-              <group position={[0, 0.06 + 0.22 * 1.1, 0]} scale={1.1}>
+              <group ref={headRef} position={[0, 0.06 + 0.22 * 1.1, 0]} scale={1.1}>
                 <mesh geometry={geo.head} material={m.skin} scale={[1.03, 0.97, 0.97]} />
                 <Eye side={1} eref={r.eyeL} />
                 <Eye side={-1} eref={r.eyeR} />
@@ -591,7 +673,7 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
                   <mesh key={i} geometry={g} material={m.hair} rotation={[0, HAIR_LOCKS[i].phi, 0]} position={[0, 0.012, 0]} scale={[1.04, 1.05, 1.03]} />
                 ))}
                 <group ref={r.hairBack}>
-                  <mesh geometry={geo.mantle} material={m.hair} />
+                  <mesh geometry={geo.mantle} material={movingHair.mat} />
                 </group>
               </group>
             </group>

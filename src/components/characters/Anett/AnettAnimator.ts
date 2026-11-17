@@ -131,7 +131,7 @@ function applyPose(rig: AnettRig, p: Pose, eyeScale: number) {
   }
   rig.body.position.y = p.bodyY;
   // secondary motion: hair lags behind head pitch slightly
-  rig.hairBack.rotation.x = -p.joints.neck[0] * 0.15 + p.joints.spine[0] * 0.08; // hair stays steady, tiny follow-through
+  rig.hairBack.rotation.x = 0; // hair motion is simulated in AnettModel (spring + shader)
   rig.eyeL.scale.y = eyeScale;
   rig.eyeR.scale.y = eyeScale;
   const open = p.mouth;
