@@ -38,7 +38,7 @@ export const en = {
       'Keyboard: WASD / arrows to move · Shift to run · Space to jump · E to talk · F wave · G dance · Esc pause · drag the mouse to look around',
     done: 'Done',
     reset: 'Reset progress',
-    resetConfirm: 'Start over? This clears your stars and achievements.',
+    resetConfirm: 'Tap again to clear stars and badges',
   },
   about: {
     hi: "Hi, I'm Anet!",

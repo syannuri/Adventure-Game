@@ -40,7 +40,7 @@ export const id: Dict = {
       'Keyboard: WASD / panah untuk berjalan · Shift untuk berlari · Spasi untuk melompat · E untuk bicara · F melambai · G menari · Esc jeda · geser mouse untuk melihat sekitar',
     done: 'Selesai',
     reset: 'Mulai dari awal',
-    resetConfirm: 'Mulai dari awal? Semua bintang dan pencapaianmu akan dihapus.',
+    resetConfirm: 'Tekan lagi untuk menghapus bintang & lencana'
   },
   about: {
     hi: 'Halo, aku Anet!',

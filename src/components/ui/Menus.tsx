@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useGame } from '../../systems/store';
 import { WORLDS } from '../../data/worlds';
 import { ACHIEVEMENTS } from '../../data/achievements';
@@ -140,6 +140,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
   const update = useGame((s) => s.updateSettings);
   const reset = useGame((s) => s.resetProgress);
   const t = useT();
+  const [confirmReset, setConfirmReset] = useState(false);
   return (
     <div className="modal-bg" onPointerDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal panel">
@@ -190,10 +191,13 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
             className="btn ghost"
             style={{ fontSize: 16 }}
             onClick={() => {
-              if (window.confirm(t.settings.resetConfirm)) reset();
+              // in-page two-step confirmation (browser confirm dialogs are blocked in embedded viewers)
+              if (!confirmReset) return setConfirmReset(true);
+              reset();
+              setConfirmReset(false);
             }}
           >
-            {t.settings.reset}
+            {confirmReset ? t.settings.resetConfirm : t.settings.reset}
           </button>
         </div>
       </div>
