@@ -3,7 +3,7 @@
  *
  * DESIGN REFERENCE: docs/anett-reference.jpg (the official look).
  *  - voluminous, wavy dark-brown/black hair falling past the shoulders, full straight-cut bangs
- *  - round chubby face, warm skin, big amber-brown eyes with long lashes, small nose, soft smile
+ *  - round face, warm skin, big amber-brown eyes with long lashes, small nose, soft smile
  *  - orange hooded zip-up jacket: ribbed darker-orange cuffs & hem, chest pockets with flaps,
  *    silver zipper, white hood drawstrings
  *  - big khaki hiking backpack with grey shoulder straps, sternum strap and dangling strap ends
@@ -204,7 +204,7 @@ function useMaterials() {
       packLight: mat(P.packLight, 0.8),
       strap: mat(P.strap, 0.75),
       strapDark: mat(P.strapDark, 0.5),
-      cheek: new THREE.MeshBasicMaterial({ color: P.cheek, transparent: true, opacity: 0.38, depthWrite: false }),
+      cheek: new THREE.MeshBasicMaterial({ color: P.cheek, transparent: true, opacity: 0.22, depthWrite: false }),
       lips: mat(P.lips, 0.45),
       mouthInner: mat('#7a2a30', 0.6),
     };
@@ -326,10 +326,6 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
           <boxGeometry args={[0.026, 0.006, 0.006]} />
         </mesh>
       ))}
-      {/* faint lower lash */}
-      <mesh material={m.brow} position={[0, -0.058, 0.018]} rotation={[-0.3, 0, Math.PI]} scale={[0.75, 0.5, 1]}>
-        <torusGeometry args={[0.05, 0.003, 4, 16, Math.PI * 0.7]} />
-      </mesh>
     </group>
   );
 
@@ -489,12 +485,6 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
               </mesh>
               <group position={[0, 0.06 + 0.22 * 1.1, 0]} scale={1.1}>
                 <mesh geometry={geo.head} material={m.skin} scale={[1.03, 0.97, 0.97]} />
-                {/* chubby cheeks */}
-                {[1, -1].map((s) => (
-                  <mesh key={s} material={m.skin} position={[0.112 * s, -0.125, 0.145]} scale={[1, 0.85, 0.8]}>
-                    <sphereGeometry args={[0.075, 20, 14]} />
-                  </mesh>
-                ))}
                 <Eye side={1} eref={r.eyeL} />
                 <Eye side={-1} eref={r.eyeR} />
                 {/* soft brows (mostly hidden by the bangs, like the reference) */}
@@ -514,8 +504,8 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
                 </mesh>
                 {/* blush */}
                 {[1, -1].map((s) => (
-                  <mesh key={s} material={m.cheek} position={[0.135 * s, -0.11, 0.2]} rotation={[0, 0.55 * s, 0]} scale={[1.3, 0.8, 0.2]}>
-                    <sphereGeometry args={[0.04, 16, 10]} />
+                  <mesh key={s} material={m.cheek} position={[0.128 * s, -0.095, 0.2]} rotation={[0, 0.6 * s, 0]} scale={[1.1, 0.65, 0.15]}>
+                    <sphereGeometry args={[0.036, 16, 10]} />
                   </mesh>
                 ))}
 
