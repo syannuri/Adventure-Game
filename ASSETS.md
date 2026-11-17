@@ -3,7 +3,7 @@
 Every asset in the game, where it comes from, and whether it is final or a placeholder.
 
 **Summary:** the game loads **no external 3D models, textures, images or audio files**. Everything visual or
-audible is generated in code at runtime. The only external resource it loads is the Google Font below. The
+audible is generated in code at runtime. The only external resources it loads are the Google Fonts below. The
 repository also contains one design reference image, which the game does not load.
 
 ## External assets
@@ -12,6 +12,8 @@ repository also contains one design reference image, which the game does not loa
 | --- | --- | --- | --- |
 | Anett character reference image (`docs/anett-reference.jpg`) | Provided by the project owner | Project owner's | Design reference only. Not loaded by the game. |
 | "Baloo 2" font | Google Fonts (loaded in `index.html`) | SIL Open Font License 1.1 | All UI text. Falls back to system fonts offline. |
+| "Luckiest Guy" font | Google Fonts | Apache License 2.0 | Title logo and big game headings |
+| "Fredoka" font | Google Fonts | SIL Open Font License 1.1 | Logo ribbon subtitle |
 
 ## Generated assets (code)
 

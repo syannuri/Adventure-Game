@@ -1,4 +1,4 @@
-# Anett: The Magical Adventure
+# Anet: The Magical Adventure
 
 A 3D adventure game for children aged 5–10, built with **React + TypeScript + Three.js (React Three Fiber)**.
 

@@ -185,9 +185,12 @@ export function MenuScene() {
       camera.lookAt(0, 0.95, 0);
       return;
     }
-    const d = portrait ? 6.2 : 4.9;
-    camera.position.set(Math.sin(t.current * 0.12) * 1.1, 1.55 + Math.sin(t.current * 0.2) * 0.1, d);
-    camera.lookAt(0, portrait ? -0.55 : 0.5, 0);
+    // wide screens show the island on the right (menu UI on the left), portrait keeps it centered
+    const wide = size.width / size.height > 1.25;
+    const d = portrait ? 6.6 : 4.9;
+    const sx = wide ? -1.9 : 0;
+    camera.position.set(sx + Math.sin(t.current * 0.12) * 0.8, 1.55 + Math.sin(t.current * 0.2) * 0.1, d);
+    camera.lookAt(sx, portrait ? -0.12 : wide ? 0.75 : 0.5, 0);
   });
   return (
     <>

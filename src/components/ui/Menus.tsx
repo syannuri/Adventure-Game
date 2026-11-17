@@ -4,6 +4,7 @@ import { WORLDS } from '../../data/worlds';
 import { ACHIEVEMENTS } from '../../data/achievements';
 import { audio } from '../audio/audioEngine';
 import { AnettPortrait } from './Portraits';
+import { GameLogo } from './GameLogo';
 
 const click = () => {
   audio.unlock();
@@ -17,14 +18,7 @@ export function MainMenu() {
   const startWorld = useGame((s) => s.startWorld);
   return (
     <div className="menu">
-      <div className="logo passthrough">
-        <div className="title">
-          {'ANETT'.split('').map((c, i) => (
-            <span key={i}>{c}</span>
-          ))}
-        </div>
-        <div className="subtitle">The Magical Adventure</div>
-      </div>
+      <GameLogo />
       <div className="menu-buttons">
         <button
           className="btn big yellow"

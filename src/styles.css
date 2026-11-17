@@ -55,14 +55,41 @@ canvas { display: block; touch-action: none; }
 
 /* ------------------------------------------------------------ main menu */
 .menu { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 5vh 16px 6vh; }
-.logo { text-align: center; filter: drop-shadow(0 8px 0 rgba(43, 35, 80, 0.25)); margin-top: 1vh; }
-.logo .title { font-size: clamp(64px, 14vw, 150px); font-weight: 800; line-height: 0.9; display: flex; justify-content: center; gap: 0.02em; }
-.logo .title span { display: inline-block; color: var(--yellow); -webkit-text-stroke: 6px #7a3fd0; paint-order: stroke fill; animation: bounce 2.4s ease-in-out infinite; text-shadow: 0 8px 0 #4b2399; }
-.logo .title span:nth-child(2) { color: #ff9cd0; animation-delay: 0.12s; }
-.logo .title span:nth-child(3) { color: #8ee8ff; animation-delay: 0.24s; }
-.logo .title span:nth-child(4) { color: #a9f08c; animation-delay: 0.36s; }
-.logo .title span:nth-child(5) { color: #ffb36b; animation-delay: 0.48s; }
-.logo .subtitle { font-size: clamp(20px, 3.6vw, 34px); font-weight: 800; color: white; -webkit-text-stroke: 3px #7a3fd0; paint-order: stroke fill; margin-top: 6px; letter-spacing: 1px; }
+/* ------------------------------------------------------------ title logo */
+.game-logo { display: flex; flex-direction: column; align-items: center; margin-top: 1vh; }
+.logo-word { position: relative; display: flex; gap: 0.03em; font-family: 'Luckiest Guy', 'Baloo 2', sans-serif; font-size: clamp(76px, min(15vw, 19vh), 150px); line-height: 1; padding: 0.08em 0.12em 0; }
+.logo-letter {
+  position: relative; display: inline-block; padding: 0 0.02em;
+  transform: rotate(var(--tilt));
+  animation: letterBob 2.6s ease-in-out infinite;
+}
+/* layer 1: thick purple outline + 3D extrusion */
+.logo-letter::before {
+  content: attr(data-l); position: absolute; left: 0; top: 0; padding: inherit; z-index: 0;
+  color: #3b1a78; -webkit-text-stroke: 0.15em #3b1a78;
+  text-shadow: 0 0.04em 0 #2a1060, 0 0.08em 0 #2a1060, 0 0.115em 0 #1e0a48, 0 0.18em 0.16em rgba(20, 8, 50, 0.45);
+}
+/* layer 2: white rim */
+.logo-letter::after {
+  content: attr(data-l); position: absolute; left: 0; top: 0; padding: inherit; z-index: 1;
+  color: #ffffff; -webkit-text-stroke: 0.055em #ffffff;
+}
+/* layer 3: glossy gold fill (two-tone with a bright top highlight) */
+.logo-fill {
+  position: relative; z-index: 2; display: inline-block;
+  color: transparent;
+  background: linear-gradient(180deg, #fffbe2 0%, #ffe680 24%, #ffc928 47%, #ff9a1f 53%, #ff7b00 80%, #e85d00 100%);
+  -webkit-background-clip: text; background-clip: text;
+}
+@keyframes letterBob { 0%, 100% { transform: translateY(0) rotate(var(--tilt)); } 50% { transform: translateY(-0.07em) rotate(calc(var(--tilt) * -0.5)); } }
+.logo-sparkle { position: absolute; filter: drop-shadow(0 0 8px rgba(255, 236, 140, 0.95)); animation: twinkle 1.8s ease-in-out infinite; }
+.logo-sparkle.s1 { top: 2%; right: -2%; }
+.logo-sparkle.s2 { top: 52%; left: -4%; animation-delay: 0.6s; }
+.logo-sparkle.s3 { top: -6%; left: 30%; animation-delay: 1.1s; }
+@keyframes twinkle { 0%, 100% { transform: scale(0.55) rotate(0deg); opacity: 0.6; } 50% { transform: scale(1.1) rotate(45deg); opacity: 1; } }
+.logo-ribbon { width: clamp(270px, min(44vw, 58vh), 460px); height: auto; margin-top: -0.6em; filter: drop-shadow(0 6px 0 rgba(30, 10, 72, 0.35)); }
+.logo-ribbon-text { font-family: 'Fredoka', 'Baloo 2', sans-serif; font-weight: 700; font-size: 34px; fill: #ffffff; letter-spacing: 1.5px; paint-order: stroke; stroke: #2f1a8a; stroke-width: 5px; stroke-linejoin: round; }
+.display-font { font-family: 'Luckiest Guy', 'Baloo 2', sans-serif; font-weight: 400; letter-spacing: 1px; }
 @keyframes bounce { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-14px) rotate(2deg); } }
 .menu-buttons { display: flex; flex-direction: column; align-items: center; gap: 16px; }
 .menu-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
@@ -96,7 +123,7 @@ canvas { display: block; touch-action: none; }
 
 /* ------------------------------------------------------------ world select */
 .worlds { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; padding: 3vh 16px; overflow-y: auto; }
-.worlds h1 { color: white; font-size: clamp(34px, 6vw, 56px); margin: 0 0 4px; -webkit-text-stroke: 4px #7a3fd0; paint-order: stroke fill; text-shadow: 0 6px 0 #4b2399; }
+.worlds h1 { font-family: 'Luckiest Guy', 'Baloo 2', sans-serif; font-weight: 400; letter-spacing: 1px; color: #ffe680; font-size: clamp(34px, 6vw, 56px); margin: 0 0 4px; -webkit-text-stroke: 4px #7a3fd0; paint-order: stroke fill; text-shadow: 0 6px 0 #4b2399; }
 .world-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px; width: min(1100px, 100%); margin: 18px 0; }
 .world-card { border-radius: 26px; padding: 18px; min-height: 230px; color: white; position: relative; overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; border: 4px solid rgba(255, 255, 255, 0.7); transition: transform 0.15s; }
 .world-card:hover { transform: translateY(-4px) rotate(-0.5deg); }
@@ -132,7 +159,7 @@ canvas { display: block; touch-action: none; }
 
 .world-banner { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); text-align: center; animation: banner 4.8s ease forwards; white-space: nowrap; }
 .world-banner small { display: block; font-size: 22px; font-weight: 800; color: white; letter-spacing: 3px; -webkit-text-stroke: 2px #2f7a4e; paint-order: stroke fill; }
-.world-banner div { font-size: clamp(44px, 9vw, 92px); font-weight: 800; color: #fff7c2; -webkit-text-stroke: 5px #2f7a4e; paint-order: stroke fill; text-shadow: 0 7px 0 #1f5a37; line-height: 1; }
+.world-banner div { font-family: 'Luckiest Guy', 'Baloo 2', sans-serif; font-weight: 400; letter-spacing: 1px; font-size: clamp(44px, 9vw, 92px); font-weight: 800; color: #fff7c2; -webkit-text-stroke: 5px #2f7a4e; paint-order: stroke fill; text-shadow: 0 7px 0 #1f5a37; line-height: 1; }
 @keyframes banner { 0% { opacity: 0; transform: translate(-50%, 20px) scale(0.8); } 12%, 80% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -10px) scale(1.05); } }
 
 .hint { position: absolute; left: 16px; bottom: 170px; background: #fffbe0; border: 3px solid var(--yellow); border-radius: 20px; padding: 10px 16px; font-weight: 700; font-size: 18px; max-width: 300px; box-shadow: var(--shadow); animation: pop 0.3s ease; }
@@ -164,7 +191,7 @@ canvas { display: block; touch-action: none; }
 /* ------------------------------------------------------------ level complete */
 .complete { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 8px; padding: 4vh 16px 3vh; overflow-y: auto; background: linear-gradient(180deg, rgba(27, 20, 60, 0) 30%, rgba(27, 20, 60, 0.55)); }
 .complete .head { text-align: center; }
-.complete h1 { margin: 0; font-size: clamp(38px, min(9vw, 11vh), 96px); color: var(--yellow); -webkit-text-stroke: 5px #7a3fd0; paint-order: stroke fill; text-shadow: 0 8px 0 #4b2399; line-height: 1; animation: pop 0.6s cubic-bezier(0.2, 1.4, 0.4, 1); }
+.complete h1 { font-family: 'Luckiest Guy', 'Baloo 2', sans-serif; font-weight: 400; letter-spacing: 1px; margin: 0; font-size: clamp(38px, min(9vw, 11vh), 96px); color: var(--yellow); -webkit-text-stroke: 5px #7a3fd0; paint-order: stroke fill; text-shadow: 0 8px 0 #4b2399; line-height: 1; animation: pop 0.6s cubic-bezier(0.2, 1.4, 0.4, 1); }
 .reward-stars { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
 .reward-stars span { font-size: clamp(40px, min(10vw, 12vh), 86px); color: rgba(255, 255, 255, 0.45); -webkit-text-stroke: 3px #7a3fd0; animation: starIn 0.6s cubic-bezier(0.2, 1.6, 0.4, 1) both; }
 .reward-stars span.on { color: var(--yellow); text-shadow: 0 0 24px rgba(255, 210, 63, 0.8); }
@@ -179,6 +206,13 @@ canvas { display: block; touch-action: none; }
 .loading { position: absolute; inset: 0; display: grid; place-items: center; color: white; font-size: 30px; font-weight: 800; background: radial-gradient(circle at 50% 40%, #4a3a9a, #1b2a4a); pointer-events: auto; }
 .loading-star { font-size: 90px; color: var(--yellow); animation: spin 1.6s ease-in-out infinite; text-shadow: 0 0 30px rgba(255, 210, 63, 0.7); }
 @keyframes spin { 0% { transform: rotate(0) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
+
+/* wide screens: pro-game layout – logo + buttons on the left, Anet's island on the right */
+@media (min-aspect-ratio: 5/4) {
+  .menu { align-items: flex-start; padding-left: max(5vw, 24px); }
+  .menu-buttons { align-items: flex-start; }
+  .menu-row { justify-content: flex-start; max-width: 520px; }
+}
 
 @media (max-height: 520px) {
   .complete .card { padding: 14px 18px; }
