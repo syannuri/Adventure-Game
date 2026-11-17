@@ -13,7 +13,8 @@ import * as THREE from 'three';
 import { Sparkles } from '@react-three/drei';
 import { useGame } from '../../../systems/store';
 import { registerInteractable } from '../interaction/interactions';
-import { FOREST_DIALOGUE as D } from '../../../data/forestDialogue';
+import { forestDialogue as D } from '../../../data/forestDialogue';
+import { tr } from '../../../i18n';
 import { FAIRY_POS, LOG, OWL_POS, RABBIT_POS, STARS, WAND_POS, terrainHeight } from '../../worlds/EnchantedForest/layout';
 import { audio } from '../../audio/audioEngine';
 import { spawnBurst } from '../../effects/Bursts';
@@ -61,17 +62,17 @@ function talkLumi() {
   const { stage, stars } = g.level;
   switch (stage) {
     case 'meetFairy':
-      if (stars.length >= STARS.length) g.openDialogue(D.lumiIntroAlreadyStars, revealWand);
-      else g.openDialogue(D.lumiIntro, () => g.setStage('collectStars'));
+      if (stars.length >= STARS.length) g.openDialogue(D().lumiIntroAlreadyStars, revealWand);
+      else g.openDialogue(D().lumiIntro, () => g.setStage('collectStars'));
       break;
     case 'collectStars':
-      g.openDialogue(D.lumiReminder(stars.length, STARS.length));
+      g.openDialogue(D().lumiReminder(stars.length, STARS.length));
       break;
     case 'findWand':
-      g.openDialogue(D.lumiFindWand);
+      g.openDialogue(D().lumiFindWand);
       break;
     case 'returnWand':
-      g.openDialogue(D.lumiReturn, finale);
+      g.openDialogue(D().lumiReturn, finale);
       break;
   }
 }
@@ -82,11 +83,11 @@ function talkPip() {
   if (stage === 'collectStars') {
     const next = STARS.find((s) => !stars.includes(s.id));
     g.openDialogue([
-      { speaker: 'pip', text: 'Looking for Wishing Stars? I know a secret!' },
-      { speaker: 'pip', text: next ? D.pipHints[next.id] : 'You found them all! Go and tell Lumi!' },
+      { speaker: 'pip', text: D().pipSecret },
+      { speaker: 'pip', text: next ? D().pipHints[next.id] : D().pipAllFound },
     ]);
   } else {
-    g.openDialogue(D.pip[stage === 'meetFairy' ? 'meetFairy' : stage === 'done' ? 'done' : stage]);
+    g.openDialogue(D().pip[stage === 'meetFairy' ? 'meetFairy' : stage === 'done' ? 'done' : stage]);
   }
 }
 
@@ -97,7 +98,7 @@ function pickUpWand() {
   audio.sfx('star');
   spawnBurst(WAND_POS.x, wandY() + 1, WAND_POS.z, '#fff3a0', 70, { speed: 4 });
   g.playEmote('surprise', 1.2);
-  window.setTimeout(() => useGame.getState().openDialogue(D.foundWand, () => useGame.getState().playEmote('celebrate', 2.2)), 900);
+  window.setTimeout(() => useGame.getState().openDialogue(D().foundWand, () => useGame.getState().playEmote('celebrate', 2.2)), 900);
 }
 
 export function ForestQuest() {
@@ -112,7 +113,7 @@ export function ForestQuest() {
         z: FAIRY_POS.z,
         radius: 4.2,
         approach: 2.0,
-        label: () => (st() === 'returnWand' ? 'Give the wand to Lumi' : 'Talk to Lumi'),
+        label: () => (st() === 'returnWand' ? tr().prompts.giveWand : tr().prompts.talkLumi),
         enabled: () => st() !== 'done',
         onInteract: talkLumi,
       }),
@@ -122,7 +123,7 @@ export function ForestQuest() {
         z: RABBIT_POS.z,
         radius: 3.2,
         approach: 1.4,
-        label: () => 'Talk to Pip',
+        label: () => tr().prompts.talkPip,
         enabled: () => true,
         onInteract: talkPip,
       }),
@@ -132,9 +133,9 @@ export function ForestQuest() {
         z: OWL_POS.z,
         radius: 3.4,
         approach: 1.6,
-        label: () => 'Talk to Olli',
+        label: () => tr().prompts.talkOlli,
         enabled: () => true,
-        onInteract: () => useGame.getState().openDialogue(st() === 'done' ? D.olliDone : D.olli),
+        onInteract: () => useGame.getState().openDialogue(st() === 'done' ? D().olliDone : D().olli),
       }),
       registerInteractable({
         id: 'wand',
@@ -142,7 +143,7 @@ export function ForestQuest() {
         z: WAND_POS.z,
         radius: 3,
         approach: 1.2,
-        label: () => 'Pick up the magic wand',
+        label: () => tr().prompts.pickWand,
         enabled: () => st() === 'findWand',
         onInteract: pickUpWand,
       }),
@@ -155,7 +156,7 @@ export function ForestQuest() {
     if (g.paused || g.dialogue || g.cinematic) return;
     if (!triggered.current && g.level.stage === 'collectStars' && g.level.stars.length >= STARS.length) {
       triggered.current = true;
-      g.openDialogue(D.allStars, revealWand);
+      g.openDialogue(D().allStars, revealWand);
     }
   });
 

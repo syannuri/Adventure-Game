@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { input, setTouchMove } from '../../systems/input';
 import { useGame } from '../../systems/store';
+import { useT } from '../../i18n/useT';
 
 export function useIsTouch() {
   const [touch, setTouch] = useState(() => typeof window !== 'undefined' && (window.matchMedia?.('(pointer: coarse)').matches || 'ontouchstart' in window));
@@ -18,6 +19,7 @@ export function TouchControls() {
   const knob = useRef<HTMLDivElement>(null);
   const active = useRef<number | null>(null);
   const prompt = useGame((s) => s.prompt);
+  const t = useT();
 
   const update = (cx: number, cy: number) => {
     const r = base.current!.getBoundingClientRect();
@@ -66,19 +68,19 @@ export function TouchControls() {
       </div>
       <div className="touch-buttons">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-          <button className="tbtn small" aria-label="Wave" onPointerDown={press(() => (input.emote = 'wave'))}>
+          <button className="tbtn small" aria-label={t.touch.wave} onPointerDown={press(() => (input.emote = 'wave'))}>
             👋
           </button>
-          <button className="tbtn small" aria-label="Dance" onPointerDown={press(() => (input.emote = 'dance'))}>
+          <button className="tbtn small" aria-label={t.touch.dance} onPointerDown={press(() => (input.emote = 'dance'))}>
             ♪
           </button>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center' }}>
           <button className={'tbtn act' + (prompt ? ' ready' : '')} onPointerDown={press(() => (input.interactPressed = true))}>
-            {prompt ? 'Talk' : 'Action'}
+            {prompt ? t.touch.talk : t.touch.action}
           </button>
           <button className="tbtn jump" onPointerDown={press(() => (input.jumpPressed = true))}>
-            Jump
+            {t.touch.jump}
           </button>
         </div>
       </div>

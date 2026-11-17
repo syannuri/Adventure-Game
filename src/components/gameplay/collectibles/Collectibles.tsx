@@ -15,6 +15,7 @@ import { starShapeGeometry } from './Wand';
 import { registerInteractable } from '../interaction/interactions';
 import { ACHIEVEMENTS } from '../../../data/achievements';
 import { glowTexture } from '../../effects/textures';
+import { tr } from '../../../i18n';
 
 const spotY = (s: Spot) => (s.abs ? s.y : terrainHeight(s.x, s.z) + s.y);
 
@@ -59,7 +60,7 @@ function WishingStar({ spot, total }: { spot: Spot; total: number }) {
       spawnBurst(spot.x, ref.current.position.y, spot.z, '#ffe27a', 60, { speed: 4 });
       spawnBurst(spot.x, ref.current.position.y, spot.z, '#ffffff', 20, { speed: 2 });
       g.playEmote('collect');
-      useGame.setState((s) => ({ toasts: [...s.toasts, { id: Date.now(), title: 'Wishing Star!', text: `${n} of ${total} found`, icon: '★' }] }));
+      useGame.setState((s) => ({ toasts: [...s.toasts, { id: Date.now(), title: tr().toasts.star, text: tr().toasts.starCount(n, total), icon: '★' }] }));
       const id = useGame.getState().toasts.at(-1)!.id;
       setTimeout(() => useGame.getState().dismissToast(id), 2600);
       if (n === 1) g.unlockAchievement('first_star', ACHIEVEMENTS.first_star.title, ACHIEVEMENTS.first_star.icon);
@@ -141,7 +142,7 @@ function Chest({ spot, total }: { spot: Spot; total: number }) {
         z: spot.z,
         radius: 2.6,
         approach: 1.3,
-        label: () => 'Open the treasure chest',
+        label: () => tr().prompts.openChest,
         enabled: () => !useGame.getState().level.treasures.includes(spot.id),
         onInteract: () => {
           const g = useGame.getState();
@@ -151,7 +152,7 @@ function Chest({ spot, total }: { spot: Spot; total: number }) {
           spawnBurst(spot.x, y + 0.8, spot.z, '#9fe7ff', 50, { speed: 3 });
           spawnBurst(spot.x, y + 0.8, spot.z, '#ffd36b', 30, { speed: 2.5 });
           const n = useGame.getState().level.treasures.length;
-          useGame.setState((s) => ({ toasts: [...s.toasts, { id: Date.now(), title: 'Treasure found!', text: `${n} of ${total} chests`, icon: '◆' }] }));
+          useGame.setState((s) => ({ toasts: [...s.toasts, { id: Date.now(), title: tr().toasts.treasure, text: tr().toasts.chestCount(n, total), icon: '◆' }] }));
           const id = useGame.getState().toasts.at(-1)!.id;
           setTimeout(() => useGame.getState().dismissToast(id), 2600);
           if (n === total) g.unlockAchievement('treasure_hunter', ACHIEVEMENTS.treasure_hunter.title, ACHIEVEMENTS.treasure_hunter.icon);

@@ -2,14 +2,22 @@
 
 A 3D adventure game for children aged 5–10, built with **React + TypeScript + Three.js (React Three Fiber)**.
 
-Anett is a seven-year-old girl who finds a magical map in her grandmother's treasure box. The map leads to five
+Anet is a seven-year-old girl who finds a magical map in her grandmother's treasure box. The map leads to five
 secret lands. Each land has a mission, friendly creatures, puzzles and a Magic Star. Collect all five stars to open
 the legendary Crystal Castle.
 
+> **Languages:** Bahasa Indonesia (default) and English. Switch with the **ID / EN** button on the main menu or in Settings.
+>
 > **Current status: playable vertical slice of World 1, the Enchanted Forest.** Worlds 2–5 are shown on the map as
 > "Coming soon" and are not built yet. See [Status](#status) for what's done, what's a placeholder and what's next.
 
 ---
+
+## Play online
+
+The game deploys automatically to **GitHub Pages** from the `main` branch (`.github/workflows/deploy.yml`).
+One-time setup: repository **Settings → Pages → Source: GitHub Actions**, then merge to `main`.
+The site will be at `https://syannuri.github.io/Adventure-Game/`.
 
 ## Quick start
 
@@ -43,15 +51,15 @@ Requirements: Node 18+ (developed on Node 22). Runs in any modern browser with W
 2. Find the **5 Wishing Stars**. They're hidden on top of giant mushrooms (jump from one to the next), on tall
    tree stumps, by the duck pond, in the flower meadow and on the stepping rocks. Pip the rabbit gives hints.
 3. When all five are found, a cinematic shows a beam of light near the waterfall. The wand is there.
-4. Pick up the wand (Anett carries it in her hand) and bring it back to Lumi.
-5. Finale: the forest sparkles, Anett celebrates and the **Level Complete** screen awards the Magic Star.
+4. Pick up the wand (Anet carries it in her hand) and bring it back to Lumi.
+5. Finale: the forest sparkles, Anet celebrates and the **Level Complete** screen awards the Magic Star.
 
 Optional extras: 22 golden acorns, 3 hidden treasure chests (Olli the owl gives hints), 6 achievements.
 Progress (completed worlds, Magic Stars, achievements, best scores, settings) is saved in browser storage.
 
 ## Features in this build
 
-- **Anett:** a procedural, rigged, stylized 3D character built to match the official reference image
+- **Anet:** a procedural, rigged, stylized 3D character built to match the official reference image
   [`docs/anett-reference.jpg`](docs/anett-reference.jpg): voluminous wavy dark hair with full bangs, a round
   face with fair, light skin and big amber eyes, an orange hooded zip jacket with ribbed cuffs and chest pockets,
   a big khaki hiking backpack with grey straps, cream shorts, slouchy socks and tan hiking boots. One shared model
@@ -69,9 +77,9 @@ Progress (completed worlds, Magic Stars, achievements, best scores, settings) is
   fireflies, a mushroom house, a glowing mushroom ring, magical path stones that brighten as stars are found,
   grass, flowers and a flower meadow.
 - **NPCs:** Lumi the fairy (iridescent wings, sad → happy expression), Pip the rabbit and Olli the owl, plus
-  ambient bunnies. All have idle and talking animations and face Anett when she's near.
+  ambient bunnies. All have idle and talking animations and face Anet when she's near.
 - **Dialogue:** speech bubbles with SVG character portraits, typewriter text and voice "chirps".
-- **UI:** animated main menu with 3D scene, storybook opening cinematic ("Anett discovers the map"), world
+- **UI:** animated main menu with 3D scene, storybook opening cinematic ("Anet discovers the map"), world
   select map, character introduction, settings (music volume, sound volume, graphics quality), pause menu, HUD
   (star, acorn and treasure counters, mission objective, rotating minimap with objective marker), achievement
   toasts, idle hints, loading screen and the level complete screen.
@@ -98,14 +106,15 @@ src/
     physics.ts                height-field ground, platforms, circle colliders, camera ray checks
     playerState.ts            per-frame player & camera data shared across systems
   data/                       worlds, achievements, dialogue text
+  i18n/                       languages: id.ts (Bahasa Indonesia), en.ts (English), useT() hook
   utils/math.ts
   components/
     characters/
-      Anett/
-        AnettModel.tsx        procedural rigged character (joint hierarchy)
-        AnettAnimations.ts    pose library (13 animations)
-        AnettAnimator.ts      state machine + blend tree + damping + blinking
-        AnettController.tsx   movement, jumping, collisions, emotes
+      Anet/
+        AnetModel.tsx        procedural rigged character (joint hierarchy)
+        AnetAnimations.ts    pose library (13 animations)
+        AnetAnimator.ts      state machine + blend tree + damping + blinking
+        AnetController.tsx   movement, jumping, collisions, emotes
       npc/                    Fairy (Lumi), Rabbit (Pip), Owl (Olli)
     worlds/
       EnchantedForest/        layout.ts (map data), Terrain, Sky, Trees, Vegetation, Water, Props, Critters
@@ -128,13 +137,13 @@ src/
 - **Worlds are data plus components.** Each world has a `layout.ts` (height function, positions, collectibles)
   and a `build…Physics()` that registers its colliders. To add a world, add a folder under `worlds/`, a mission
   under `gameplay/missions/`, set `built: true` in `data/worlds.ts` and route to it in `App.tsx`.
-- **Swapping in real art.** `AnettModel` exposes the same joint names a Mixamo/Blender rig would use (hips, spine,
+- **Swapping in real art.** `AnetModel` exposes the same joint names a Mixamo/Blender rig would use (hips, spine,
   neck, shoulders, elbows, legs, knees). A GLB model can replace it. Map its bones in `applyPose`, or use GLTF
   clips with an `AnimationMixer` and keep the controller and state machine as they are.
 - **Debug helpers.** `window.__anett` exposes the store, player and input for automated tests. Add `?capture` to
-  the URL to keep the WebGL drawing buffer for screenshots, and `#closeup` for a close-up "photo mode" of Anett on
+  the URL to keep the WebGL drawing buffer for screenshots, and `#closeup` for a close-up "photo mode" of Anet on
   the menu. **Character review mode:** `?view=face`, `?view=front`, `?view=side` or `?view=back` hides the menus
-  and shows Anett standing still from that angle, for comparing with the reference image.
+  and shows Anet standing still from that angle, for comparing with the reference image.
 
 ## Testing
 
@@ -155,7 +164,7 @@ which is far too slow to measure performance.
 | Area | Status |
 | --- | --- |
 | World 1 – Enchanted Forest | ✅ Playable from start to finish |
-| Anett character + 13 animations | ✅ Procedural model (placeholder for a sculpted GLB, see `ASSETS.md`) |
+| Anet character + 13 animations | ✅ Procedural model (placeholder for a sculpted GLB, see `ASSETS.md`) |
 | NPCs (fairy, rabbit, owl) | ✅ Procedural models |
 | Dialogue, quest, collectibles, achievements, saving | ✅ |
 | Menus, HUD, minimap, settings, pause, level complete | ✅ |
@@ -171,7 +180,7 @@ which is far too slow to measure performance.
 ## Roadmap
 
 1. Add a simple color-matching puzzle to the Enchanted Forest (glowing flowers that open the hollow log).
-2. Replace the procedural Anett with a sculpted, rigged GLB (Blender, Tripo AI or Meshy, plus Mixamo
+2. Replace the procedural Anet with a sculpted, rigged GLB (Blender, Tripo AI or Meshy, plus Mixamo
    animations), keeping the same palette and proportions.
 3. World 2 – Candy Village (ingredient-collecting mission, sorting puzzle).
 4. World 3 – Crystal Cave (crystal collecting, light-beam puzzle).

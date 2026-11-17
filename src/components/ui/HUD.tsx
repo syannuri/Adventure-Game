@@ -5,6 +5,7 @@ import { COINS, FAIRY_POS, PATHS, POND, STARS, TREASURES } from '../worlds/Encha
 import { FOREST_HINTS, forestObjective } from '../gameplay/missions/forestObjective';
 import { audio } from '../audio/audioEngine';
 import { cameraState } from '../../systems/playerState';
+import { useT } from '../../i18n/useT';
 
 function Counter({ ico, color, value, total }: { ico: string; color: string; value: number; total: number }) {
   const [bump, setBump] = useState(false);
@@ -84,6 +85,7 @@ export function HUD() {
   const dialogue = useGame((s) => s.dialogue);
   const toasts = useGame((s) => s.toasts);
   const cinematic = useGame((s) => s.cinematic);
+  const t = useT();
   const setPaused = useGame((s) => s.setPaused);
   const [objText, setObjText] = useState('');
   const [hint, setHint] = useState<string | null>(null);
@@ -93,7 +95,7 @@ export function HUD() {
       const g = useGame.getState();
       setObjText(forestObjective(g.level.stage, g.level.stars).text);
       const idle = performance.now() - g.level.lastProgressAt;
-      setHint(!g.dialogue && !g.cinematic && idle > 45000 && g.level.stage !== 'done' ? FOREST_HINTS[g.level.stage] : null);
+      setHint(!g.dialogue && !g.cinematic && idle > 45000 && g.level.stage !== 'done' ? FOREST_HINTS()[g.level.stage] : null);
     }, 300);
     return () => clearInterval(iv);
   }, []);
@@ -105,7 +107,7 @@ export function HUD() {
       <div className="loading">
         <div style={{ textAlign: 'center' }}>
           <div className="loading-star">★</div>
-          Opening the magic map…
+          {t.hud.loading}
         </div>
       </div>
     );
@@ -121,13 +123,13 @@ export function HUD() {
             <Counter ico="◆" color="#3fb7e0" value={level.treasures.length} total={TREASURES.length} />
           </div>
           <div className="objective passthrough">
-            <small>Mission</small>
+            <small>{t.hud.mission}</small>
             {objText}
           </div>
           <div className="hud-right">
             <button
               className="icon-btn"
-              aria-label="Pause"
+              aria-label={t.hud.pause}
               onClick={() => {
                 audio.sfx('click');
                 setPaused(true);
@@ -141,8 +143,8 @@ export function HUD() {
       )}
       {showIntroBanner && (
         <div className="world-banner passthrough">
-          <small>WORLD 1</small>
-          <div>Enchanted Forest</div>
+          <small>{t.hud.worldN(1)}</small>
+          <div>{t.worlds['enchanted-forest'].name}</div>
         </div>
       )}
       {prompt && !dialogue && (

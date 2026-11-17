@@ -5,19 +5,48 @@ import { ACHIEVEMENTS } from '../../data/achievements';
 import { audio } from '../audio/audioEngine';
 import { AnettPortrait } from './Portraits';
 import { GameLogo } from './GameLogo';
+import { useT } from '../../i18n/useT';
+import { LANGS } from '../../i18n';
 
 const click = () => {
   audio.unlock();
   audio.sfx('click');
 };
 
+/** Small ID / EN switch shown on the main menu and in Settings. */
+export function LanguageSwitch() {
+  const lang = useGame((s) => s.save.settings.language);
+  const update = useGame((s) => s.updateSettings);
+  return (
+    <div className="lang-switch" role="group" aria-label="Language / Bahasa">
+      {LANGS.map((l) => (
+        <button
+          key={l.code}
+          className={lang === l.code ? 'on' : ''}
+          title={l.label}
+          onClick={() => {
+            click();
+            update({ language: l.code });
+          }}
+        >
+          {l.code.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function MainMenu() {
   const save = useGame((s) => s.save);
   const setScreen = useGame((s) => s.setScreen);
   const setOverlay = useGame((s) => s.setOverlay);
   const startWorld = useGame((s) => s.startWorld);
+  const t = useT();
   return (
     <div className="menu">
+      <div className="menu-lang">
+        <LanguageSwitch />
+      </div>
       <GameLogo />
       <div className="menu-buttons">
         <button
@@ -28,24 +57,24 @@ export function MainMenu() {
             else startWorld('enchanted-forest');
           }}
         >
-          ▶ Play
+          {t.menu.play}
         </button>
         <div className="menu-row">
           <button className="btn" onClick={() => (click(), setScreen('worlds'))}>
-            🗺 Worlds
+            {t.menu.worlds}
           </button>
           <button className="btn pink" onClick={() => (click(), setOverlay('about'))}>
-            Meet Anett
+            {t.menu.meet}
           </button>
           <button className="btn teal" onClick={() => (click(), setScreen('story'))}>
-            📖 Story
+            {t.menu.story}
           </button>
           <button className="btn ghost" onClick={() => (click(), setOverlay('settings'))}>
-            ⚙ Settings
+            {t.menu.settings}
           </button>
         </div>
         <div className="star-badge">
-          <span className="s">★</span> Magic Stars: {save.magicStars} / 5
+          <span className="s">★</span> {t.menu.magicStars}: {save.magicStars} / 5
         </div>
       </div>
     </div>
@@ -64,15 +93,17 @@ export function WorldSelect() {
   const save = useGame((s) => s.save);
   const setScreen = useGame((s) => s.setScreen);
   const startWorld = useGame((s) => s.startWorld);
+  const t = useT();
   return (
     <div className="worlds">
-      <h1>The Magic Map</h1>
+      <h1>{t.worldsScreen.title}</h1>
       <div className="star-badge">
-        <span className="s">★</span> {save.magicStars} / 5 Magic Stars — collect all five to open the Crystal Castle!
+        <span className="s">★</span> {t.worldsScreen.collectAll(save.magicStars)}
       </div>
       <div className="world-grid">
         {WORLDS.map((w) => {
           const done = save.completedWorlds.includes(w.id);
+          const txt = t.worlds[w.id] ?? { name: w.name, mission: w.mission };
           return (
             <div
               key={w.id}
@@ -84,19 +115,21 @@ export function WorldSelect() {
                 startWorld(w.id);
               }}
             >
-              <span className="num">World {w.index}</span>
+              <span className="num">
+                {t.worldsScreen.world} {w.index}
+              </span>
               {done && <span className="done">★</span>}
               <div className="art passthrough">{WORLD_ART[w.id]}</div>
-              <h3>{w.name}</h3>
-              <p>{w.mission}</p>
-              {!w.built && <span className="lock">🔒 Coming soon</span>}
-              {w.built && <span className="lock">{done ? 'Play again ▶' : 'Play ▶'}</span>}
+              <h3>{txt.name}</h3>
+              <p>{txt.mission}</p>
+              {!w.built && <span className="lock">{t.worldsScreen.comingSoon}</span>}
+              {w.built && <span className="lock">{done ? t.worldsScreen.playAgain : t.worldsScreen.play}</span>}
             </div>
           );
         })}
       </div>
       <button className="btn ghost" onClick={() => (click(), setScreen('menu'))}>
-        ◀ Back
+        {t.worldsScreen.back}
       </button>
     </div>
   );
@@ -106,16 +139,27 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
   const settings = useGame((s) => s.save.settings);
   const update = useGame((s) => s.updateSettings);
   const reset = useGame((s) => s.resetProgress);
+  const t = useT();
   return (
     <div className="modal-bg" onPointerDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal panel">
-        <h2>Settings</h2>
+        <h2>{t.settings.title}</h2>
         <div className="setting">
-          <label>🎵 Music</label>
+          <label>{t.settings.language}</label>
+          <div className="toggle">
+            {LANGS.map((l) => (
+              <button key={l.code} className={settings.language === l.code ? 'on' : ''} onClick={() => update({ language: l.code })}>
+                {l.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="setting">
+          <label>{t.settings.music}</label>
           <input type="range" min={0} max={1} step={0.05} value={settings.musicVolume} onChange={(e) => update({ musicVolume: Number(e.target.value) })} />
         </div>
         <div className="setting">
-          <label>🔔 Sounds</label>
+          <label>{t.settings.sounds}</label>
           <input
             type="range"
             min={0}
@@ -127,31 +171,29 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
           />
         </div>
         <div className="setting">
-          <label>✨ Graphics</label>
+          <label>{t.settings.graphics}</label>
           <div className="toggle">
             <button className={settings.quality === 'high' ? 'on' : ''} onClick={() => update({ quality: 'high' })}>
-              Beautiful
+              {t.settings.beautiful}
             </button>
             <button className={settings.quality === 'low' ? 'on' : ''} onClick={() => update({ quality: 'low' })}>
-              Fast
+              {t.settings.fast}
             </button>
           </div>
         </div>
-        <p style={{ fontSize: 16 }}>
-          Keyboard: WASD / arrows to move · Shift to run · Space to jump · E to talk · F wave · G dance · Esc pause · drag the mouse to look around
-        </p>
+        <p style={{ fontSize: 16 }}>{t.settings.controls}</p>
         <div className="menu-row" style={{ marginTop: 14 }}>
           <button className="btn" onClick={() => (click(), onClose())}>
-            Done
+            {t.settings.done}
           </button>
           <button
             className="btn ghost"
             style={{ fontSize: 16 }}
             onClick={() => {
-              if (window.confirm('Start over? This clears your stars and achievements.')) reset();
+              if (window.confirm(t.settings.resetConfirm)) reset();
             }}
           >
-            Reset progress
+            {t.settings.reset}
           </button>
         </div>
       </div>
@@ -161,30 +203,29 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
 
 export function AboutAnett({ onClose }: { onClose: () => void }) {
   const achievements = useGame((s) => s.save.achievements);
+  const t = useT();
   return (
     <div className="modal-bg" onPointerDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal panel">
         <div style={{ width: 120, height: 120, borderRadius: '50%', overflow: 'hidden', margin: '0 auto 8px', border: '5px solid white', boxShadow: 'var(--shadow)' }}>
           <AnettPortrait />
         </div>
-        <h2>Hi, I'm Anett!</h2>
+        <h2>{t.about.hi}</h2>
+        <p>{t.about.p1}</p>
         <p>
-          I'm seven years old and I love exploring! I'm curious, brave and always happy to help a friend. In Grandma's old treasure box I found a magical map that leads to five secret lands.
+          <b>{t.about.loveLabel}</b> {t.about.love}
         </p>
-        <p>
-          <b>I love:</b> my orange adventure jacket, my big explorer backpack, my hiking boots, jumping on mushrooms and dancing with forest friends!
-        </p>
-        <h3 style={{ margin: '14px 0 6px', color: 'var(--purple-dark)' }}>My badges</h3>
+        <h3 style={{ margin: '14px 0 6px', color: 'var(--purple-dark)' }}>{t.about.badges}</h3>
         <div className="ach-list">
           {Object.values(ACHIEVEMENTS).map((a) => (
-            <div key={a.id} className="ach" style={{ opacity: achievements.includes(a.id) ? 1 : 0.4 }} title={a.description}>
+            <div key={a.id} className="ach" style={{ opacity: achievements.includes(a.id) ? 1 : 0.4 }} title={t.achievements[a.id]?.description ?? a.description}>
               <i>{a.icon}</i>
-              {a.title}
+              {t.achievements[a.id]?.title ?? a.title}
             </div>
           ))}
         </div>
         <button className="btn" onClick={() => (click(), onClose())}>
-          Let's go!
+          {t.about.go}
         </button>
       </div>
     </div>
@@ -197,6 +238,7 @@ export function PauseMenu() {
   const startWorld = useGame((s) => s.startWorld);
   const worldId = useGame((s) => s.worldId);
   const setOverlay = useGame((s) => s.setOverlay);
+  const t = useT();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.code === 'Escape' || e.code === 'KeyP') setPaused(false);
@@ -207,21 +249,21 @@ export function PauseMenu() {
   return (
     <div className="modal-bg">
       <div className="modal panel">
-        <h2>Taking a break</h2>
-        <p>Anett is waiting for you!</p>
+        <h2>{t.pause.title}</h2>
+        <p>{t.pause.waiting}</p>
         <div className="menu-buttons" style={{ marginTop: 16 }}>
           <button className="btn big yellow" onClick={() => (click(), setPaused(false))}>
-            ▶ Keep playing
+            {t.pause.keep}
           </button>
           <div className="menu-row">
             <button className="btn ghost" onClick={() => (click(), setOverlay('settings'))}>
-              ⚙ Settings
+              {t.pause.settings}
             </button>
             <button className="btn teal" onClick={() => (click(), worldId && startWorld(worldId))}>
-              ↺ Restart
+              {t.pause.restart}
             </button>
             <button className="btn pink" onClick={() => (click(), setScreen('menu'))}>
-              ⌂ Menu
+              {t.pause.menu}
             </button>
           </div>
         </div>

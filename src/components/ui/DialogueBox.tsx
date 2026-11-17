@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useGame } from '../../systems/store';
 import { Portrait, SPEAKERS } from './Portraits';
+import { useT } from '../../i18n/useT';
 import { audio } from '../audio/audioEngine';
 import { input } from '../../systems/input';
 
@@ -10,6 +11,7 @@ const PITCH: Record<string, number> = { anett: 1.25, lumi: 1.6, pip: 1.05, olli:
 export function DialogueBox() {
   const dialogue = useGame((s) => s.dialogue);
   const advance = useGame((s) => s.advanceDialogue);
+  const t = useT();
   const line = dialogue ? dialogue.lines[dialogue.index] : null;
   const [shown, setShown] = useState(0);
   const lineKey = dialogue ? `${dialogue.index}-${line?.text}` : '';
@@ -56,7 +58,7 @@ export function DialogueBox() {
   }, [dialogue, next]);
 
   if (!dialogue || !line) return null;
-  const sp = SPEAKERS[line.speaker];
+  const sp = { ...SPEAKERS[line.speaker], name: t.dialogue.speakers[line.speaker] };
   return (
     <div
       className="dialogue"
@@ -75,7 +77,7 @@ export function DialogueBox() {
           {sp.name}
         </div>
         <div className="line">{line.text.slice(0, shown)}</div>
-        {shown >= line.text.length && <div className="next">{dialogue.index + 1 < dialogue.lines.length ? 'Next ▶' : 'OK ✓'}</div>}
+        {shown >= line.text.length && <div className="next">{dialogue.index + 1 < dialogue.lines.length ? t.dialogue.next : t.dialogue.ok}</div>}
       </div>
     </div>
   );

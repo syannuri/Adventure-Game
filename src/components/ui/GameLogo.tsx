@@ -1,3 +1,4 @@
+import { useT } from '../../i18n/useT';
 /**
  * "ANET – The Magical Adventure" title logo.
  * Layered lettering (glossy gold fill, white rim, thick purple outline, 3D drop shadow), staggered
@@ -16,8 +17,9 @@ function Sparkle({ className, size }: { className: string; size: number }) {
 }
 
 export function GameLogo() {
+  const t = useT();
   return (
-    <div className="game-logo passthrough" role="img" aria-label="Anet: The Magical Adventure">
+    <div className="game-logo passthrough" role="img" aria-label={t.title}>
       <div className="logo-word">
         {TITLE.split('').map((c, i) => (
           <span key={i} className="logo-letter" data-l={c} style={{ animationDelay: `${i * 0.14}s`, ['--tilt' as string]: `${TILT[i % TILT.length]}deg` }}>
@@ -46,7 +48,7 @@ export function GameLogo() {
         <path d="M100 50 Q280 12 460 50" fill="none" stroke="#ffffff" strokeOpacity="0.35" strokeWidth="3" />
         <text className="logo-ribbon-text" textAnchor="middle">
           <textPath href="#ribbonArc" startOffset="50%">
-            The Magical Adventure
+            {t.logo.subtitle}
           </textPath>
         </text>
       </svg>

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { loadSave, writeSave, type SaveData, type Settings } from './save';
 import { audio } from '../components/audio/audioEngine';
+import { setLangSource, tr } from '../i18n';
 
 export type Screen = 'menu' | 'story' | 'worlds' | 'playing' | 'complete';
 export type Overlay = null | 'settings' | 'about';
@@ -161,7 +162,7 @@ export const useGame = create<GameState>((set, get) => ({
     if (s.save.achievements.includes(id)) return;
     const save = { ...s.save, achievements: [...s.save.achievements, id] };
     writeSave(save);
-    const toast = { id: toastId++, title: 'Achievement!', text: title, icon };
+    const toast = { id: toastId++, title: tr().toasts.achievement, text: tr().achievements[id]?.title ?? title, icon };
     set({ save, toasts: [...s.toasts, toast], newAchievements: [...s.newAchievements, id] });
     audio.sfx('achievement');
     setTimeout(() => get().dismissToast(toast.id), 3800);
@@ -213,3 +214,6 @@ function loadSaveDefaultsWith(settings: Settings): SaveData {
     settings,
   };
 }
+
+// i18n reads the current language from the saved settings
+setLangSource(() => useGame.getState().save.settings.language ?? 'id');

@@ -13,6 +13,7 @@ import { AboutAnett, MainMenu, PauseMenu, SettingsPanel, WorldSelect } from './c
 import { StoryIntro } from './components/ui/StoryIntro';
 import { LevelComplete } from './components/ui/LevelComplete';
 import { audio } from './components/audio/audioEngine';
+import { DICTS } from './i18n';
 import { player } from './systems/playerState';
 import { input } from './systems/input';
 import { groundHeightAt } from './systems/physics';
@@ -70,6 +71,12 @@ export default function App() {
   useEffect(() => {
     resetEdges();
   }, [screen]);
+
+  const language = useGame((s) => s.save.settings.language);
+  useEffect(() => {
+    document.title = DICTS[language]?.title ?? DICTS.id.title;
+    document.documentElement.lang = language;
+  }, [language]);
 
   // expose a tiny debug/test hook (used by automated browser tests)
   useEffect(() => {

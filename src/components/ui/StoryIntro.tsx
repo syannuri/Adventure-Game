@@ -1,4 +1,5 @@
-/** Opening storybook cinematic: Anett discovers the magical map in Grandma's treasure box. */
+import { useT } from '../../i18n/useT';
+/** Opening storybook cinematic: Anet discovers the magical map in Grandma's treasure box. */
 import { useState } from 'react';
 import { useGame } from '../../systems/store';
 import { audio } from '../audio/audioEngine';
@@ -40,7 +41,7 @@ const MapArt = () => (
   </g>
 );
 
-const Stars = () => (
+const Stars = ({ castle }: { castle: string }) => (
   <g>
     {[0, 1, 2, 3, 4].map((i) => (
       <text key={i} x={70 + i * 50} y={100 + Math.sin(i) * 30} fontSize="44" fill="#ffd23f" stroke="#b37a00" strokeWidth="1.5">
@@ -50,7 +51,7 @@ const Stars = () => (
     ))}
     <path d="M110 200 L180 150 L250 200 Z" fill="#c3a2ff" opacity="0.8" />
     <rect x="160" y="120" width="40" height="40" rx="6" fill="#8ee8ff" />
-    <text x="128" y="230" fontSize="22" fontWeight="800" fill="#7a3fd0">Crystal Castle</text>
+    <text x="180" y="230" textAnchor="middle" fontSize="22" fontWeight="800" fill="#7a3fd0">{castle}</text>
   </g>
 );
 
@@ -70,13 +71,7 @@ const Forest = () => (
   </g>
 );
 
-const PAGES = [
-  { art: <Box open={false} />, text: "One rainy afternoon, Anett found Grandma's old treasure box in the attic…" },
-  { art: <Box open />, text: 'Inside, something was glowing! It was a very old, very magical map.' },
-  { art: <MapArt />, text: 'The map showed five secret lands, full of friendly creatures who need help.' },
-  { art: <Stars />, text: 'Each land hides a Magic Star. Collect all five to open the legendary Crystal Castle!' },
-  { art: <Forest />, text: 'Suddenly the map began to shine… and Anett was in the Enchanted Forest! Her adventure begins!' },
-];
+const ART = [<Box key="0" open={false} />, <Box key="1" open />, <MapArt key="2" />, null, <Forest key="4" />];
 
 export function StoryIntro() {
   const [page, setPage] = useState(0);
@@ -87,18 +82,20 @@ export function StoryIntro() {
     markIntroSeen();
     startWorld('enchanted-forest');
   };
-  const p = PAGES[page];
+  const t = useT();
+  const pages = t.story.pages;
+  const art = ART[page] ?? <Stars castle={t.story.crystalCastle} />;
   return (
     <div className="story">
       <div className="story-card panel" key={page}>
-        <svg viewBox="0 0 360 240">{p.art}</svg>
-        <div className="text">{p.text}</div>
+        <svg viewBox="0 0 360 240">{art}</svg>
+        <div className="text">{pages[page]}</div>
         <div className="story-nav">
           <button className="btn ghost" style={{ fontSize: 17 }} onClick={() => (audio.sfx('click'), finish())}>
-            Skip
+            {t.story.skip}
           </button>
           <div className="dots">
-            {PAGES.map((_, i) => (
+            {pages.map((_, i) => (
               <i key={i} className={i === page ? 'on' : ''} />
             ))}
           </div>
@@ -107,11 +104,11 @@ export function StoryIntro() {
             onClick={() => {
               audio.unlock();
               audio.sfx('pop');
-              if (page + 1 < PAGES.length) setPage(page + 1);
+              if (page + 1 < pages.length) setPage(page + 1);
               else finish();
             }}
           >
-            {page + 1 < PAGES.length ? 'Next ▶' : "Let's go! ▶"}
+            {page + 1 < pages.length ? t.story.next : t.story.go}
           </button>
         </div>
       </div>

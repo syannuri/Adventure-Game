@@ -16,6 +16,8 @@ export interface Settings {
   musicVolume: number; // 0..1
   sfxVolume: number; // 0..1
   quality: 'high' | 'low';
+  /** UI / dialogue language (Bahasa Indonesia by default) */
+  language: 'id' | 'en';
 }
 
 const KEY = 'anett-magical-adventure-save-v1';
@@ -27,7 +29,7 @@ export const defaultSave = (): SaveData => ({
   achievements: [],
   bestCoins: {},
   seenIntro: false,
-  settings: { musicVolume: 0.6, sfxVolume: 0.8, quality: detectQuality() },
+  settings: { musicVolume: 0.6, sfxVolume: 0.8, quality: detectQuality(), language: 'id' },
 });
 
 function detectQuality(): 'high' | 'low' {

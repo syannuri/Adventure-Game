@@ -2,7 +2,7 @@
 import type { DialogueLine } from '../../systems/store';
 
 export const SPEAKERS: Record<DialogueLine['speaker'], { name: string; color: string }> = {
-  anett: { name: 'Anett', color: '#d9661f' },
+  anett: { name: 'Anet', color: '#d9661f' },
   lumi: { name: 'Lumi the Fairy', color: '#7b5cff' },
   pip: { name: 'Pip the Rabbit', color: '#2f8ad8' },
   olli: { name: 'Olli the Owl', color: '#9a6b4a' },
