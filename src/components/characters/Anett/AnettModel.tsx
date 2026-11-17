@@ -87,69 +87,72 @@ function ridges<T extends THREE.BufferGeometry>(g: T, count = 22, depth = 0.02):
 }
 
 /**
- * The big wavy hair mass: a surface of revolution around the head that is open at the front
- * (for the face), widens toward the shoulders, has soft large waves, fine strands and an
- * uneven wavy bottom edge.
+ * Anet's hair as ONE continuous surface (no stacked layers):
+ *  - crown: a smooth dome over the head
+ *  - front: the dome itself ends in a straight-cut fringe (bangs) just above the brows
+ *  - sides & back: the same surface continues down past the shoulders with soft waves,
+ *    opening only around the face
+ * Built with an outer and an inner layer so the edges look solid.
  */
-function hairMantle() {
-  const rows = 24;
-  const seg = 96;
-  const top = 0.1;
+function unifiedHair() {
+  const seg = 112;
+  const R = 0.286; // crown radius
+  const yOff = 0.016; // dome centre offset (a little volume on top)
+  const yBangs = 0.084; // fringe line, just above the brows
+  const thetaB = Math.acos((yBangs - yOff) / R);
+  const capRows = 20;
+  const lenRows = 24;
   const bottom = -0.37;
-  const thick = 0.035;
-  const ring = (rows + 1) * (seg + 1);
+  const thick = 0.032;
+  type Row = { y: number; r: number; open: number; t: number; cap: boolean };
+  const rows: Row[] = [];
+  for (let k = 0; k <= capRows; k++) {
+    const th = Math.max(0.02, thetaB * (k / capRows));
+    rows.push({ y: yOff + R * Math.cos(th), r: R * Math.sin(th), open: 0, t: 0, cap: true });
+  }
+  const rTop = R * Math.sin(thetaB);
+  for (let k = 0; k <= lenRows; k++) {
+    const t = k / lenRows;
+    const y = yBangs - 0.003 - (yBangs - 0.003 - bottom) * t;
+    const r = rTop + 0.078 * Math.pow(t, 1.3) - 0.022 * smoothstep(0.86, 1, t);
+    rows.push({ y, r, open: 0.98 - 0.4 * smoothstep(0.35, 1, t), t, cap: false });
+  }
+  const nR = rows.length;
+  const ring = nR * (seg + 1);
   const pos: number[] = [];
   const idx: number[] = [];
-  // two layers (outer surface + inner surface) so the hair has real body
   for (const layer of [0, 1]) {
-    for (let i = 0; i <= rows; i++) {
-      const t = i / rows;
-      const open = 0.98 - 0.4 * smoothstep(0.35, 1, t); // face opening narrows below the chin
+    for (const row of rows) {
       for (let j = 0; j <= seg; j++) {
         const u = j / seg;
-        const th = open + u * (Math.PI * 2 - 2 * open); // 0 = straight ahead (+z)
-        const a = Math.abs(th - Math.PI); // mirror-symmetric angle from the back of the head
-        // neat, full silhouette: gentle widening, ends tucked slightly inward
-        let r = 0.274 + 0.075 * Math.pow(t, 1.3) - 0.022 * smoothstep(0.86, 1, t);
-        r += Math.cos(a * 4 + t * 4) * 0.012 * smoothstep(0.2, 0.7, t); // soft waves
-        r *= 1 + Math.cos(a * 44) * 0.0035; // fine strand texture
-        if (layer === 1) r -= thick * (0.4 + 0.6 * smoothstep(0, 0.3, t));
-        let y = top + (bottom - top) * t;
-        if (i === rows) y += Math.cos(a * 3) * 0.012 + 0.01 + (layer === 1 ? 0.012 : 0); // smooth, slightly rounded ends
-        const back = Math.cos(th) < 0 ? 1.07 : 1; // a little extra room for the backpack
-        pos.push(Math.sin(th) * r, y, Math.cos(th) * r * back);
+        const th = row.open + u * (Math.PI * 2 - 2 * row.open); // 0 = straight ahead (+z)
+        const a = Math.abs(th - Math.PI); // mirror-symmetric angle from the back
+        let r = row.r;
+        if (!row.cap) r += Math.cos(a * 4 + row.t * 4) * 0.012 * smoothstep(0.2, 0.7, row.t); // soft waves
+        r *= 1 + Math.cos(a * 44) * 0.0035 * Math.min(1, row.r / 0.2); // fine strands, fading at the crown
+        if (layer === 1) r -= thick;
+        let y = row.y;
+        if (!row.cap && row.t === 1) y += Math.cos(a * 3) * 0.012 + 0.01 + (layer === 1 ? 0.012 : 0);
+        const back = Math.cos(th) < 0 ? 1 + 0.07 * smoothstep(0, 0.3, row.t) : 1; // room for the backpack
+        const front = Math.cos(th) > 0 && row.cap ? 1 - 0.03 * Math.cos(th) : 1; // fringe hugs the forehead
+        pos.push(Math.sin(th) * r, y, Math.cos(th) * r * back * front);
       }
     }
   }
   const at = (layer: number, i: number, j: number) => layer * ring + i * (seg + 1) + j;
-  for (let i = 0; i < rows; i++)
+  for (let i = 0; i < nR - 1; i++)
     for (let j = 0; j < seg; j++) {
       idx.push(at(0, i, j), at(0, i + 1, j), at(0, i, j + 1), at(0, i, j + 1), at(0, i + 1, j), at(0, i + 1, j + 1));
       idx.push(at(1, i, j), at(1, i, j + 1), at(1, i + 1, j), at(1, i, j + 1), at(1, i + 1, j + 1), at(1, i + 1, j));
     }
-  // close the bottom edge
-  for (let j = 0; j < seg; j++) idx.push(at(0, rows, j), at(1, rows, j), at(0, rows, j + 1), at(0, rows, j + 1), at(1, rows, j), at(1, rows, j + 1));
-  // close both edges around the face
+  const last = nR - 1;
+  for (let j = 0; j < seg; j++) idx.push(at(0, last, j), at(1, last, j), at(0, last, j + 1), at(0, last, j + 1), at(1, last, j), at(1, last, j + 1));
+  // close the edges around the face (from the fringe line down)
   for (const j of [0, seg])
-    for (let i = 0; i < rows; i++) idx.push(at(0, i, j), at(1, i, j), at(0, i + 1, j), at(0, i + 1, j), at(1, i, j), at(1, i + 1, j));
+    for (let i = capRows + 1; i < last; i++) idx.push(at(0, i, j), at(1, i, j), at(0, i + 1, j), at(0, i + 1, j), at(1, i, j), at(1, i + 1, j));
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.setIndex(idx);
-  g.computeVertexNormals();
-  return g;
-}
-
-/** Full straight-cut bangs with a neat, softly rounded lower edge. */
-function bangsGeometry() {
-  const g = new THREE.SphereGeometry(0.284, 80, 18, Math.PI / 2 - 1.08, 2.16, 0.16, 1.1);
-  const pos = g.attributes.position as THREE.BufferAttribute;
-  for (let i = 0; i < pos.count; i++) {
-    const y = pos.getY(i);
-    if (y < 0.13) {
-      const x = pos.getX(i);
-      pos.setY(i, y - Math.cos(x * 9) * 0.006); // neat, softly rounded straight cut
-    }
-  }
   g.computeVertexNormals();
   return g;
 }
@@ -262,56 +265,9 @@ function useMaterials() {
 const capsule = (r: number, l: number) => new THREE.CapsuleGeometry(r, l, 6, 18);
 
 /**
- * Layered hair locks: curved ribbons that follow the scalp from the crown down the sides and back,
- * giving soft volume and strand groups instead of a smooth helmet.
- */
-const HAIR_LOCKS = Array.from({ length: 16 }, (_, i) => ({
-  phi: 1.0 + (i / 15) * (Math.PI * 2 - 2.0), // around the head, skipping the face
-  from: 0.12 + (i % 3) * 0.05, // polar angle (from the crown) where the lock starts
-  to: 1.98 + (i % 2) * 0.06,
-  w: 0.062 + (i % 3) * 0.01,
-  lift: (i % 2) * 0.008,
-}));
-
-/** A hair lock: a flat ribbon following the scalp meridian, tapered at both ends (no visible cut edges). */
-function lockGeometry(from: number, to: number, w: number, lift: number) {
-  const thin = 0.022;
-  const steps = 24;
-  const sides = 10;
-  const pos: number[] = [];
-  const idx: number[] = [];
-  for (let k = 0; k <= steps; k++) {
-    const s = k / steps;
-    const th = from + (to - from) * s;
-    const taper = Math.max(0.05, smoothstep(0, 0.3, s)) * (1 - 0.35 * smoothstep(0.75, 1, s));
-    // start sunk inside the hair cap, rise onto the surface, sink again under the hair mass
-    const R = 0.284 + (0.012 + lift) * smoothstep(0.05, 0.4, s) - 0.01 * smoothstep(0.8, 1, s);
-    const ny = Math.cos(th);
-    const nz = Math.sin(th);
-    for (let q = 0; q < sides; q++) {
-      const al = (q / sides) * Math.PI * 2;
-      const bx = Math.cos(al) * w * taper; // sideways (binormal = x)
-      const rr = R + Math.sin(al) * thin * taper; // radial thickness
-      pos.push(bx, ny * rr, nz * rr);
-    }
-  }
-  for (let k = 0; k < steps; k++)
-    for (let q = 0; q < sides; q++) {
-      const a0 = k * sides + q;
-      const a1 = k * sides + ((q + 1) % sides);
-      idx.push(a0, a0 + sides, a1, a1, a0 + sides, a1 + sides);
-    }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  g.setIndex(idx);
-  g.computeVertexNormals();
-  return g;
-}
-
-/**
  * Hair dynamics: the lower part of the hair mass bends toward an offset vector (head space) that a
  * damped spring drives from the head's real motion, plus a light strand flutter while moving.
- * Upper hair (crown, bangs, locks) stays attached to the head.
+ * Upper hair (crown and fringe) stays attached to the head.
  */
 function createMovingHairMaterial(base: THREE.MeshPhysicalMaterial) {
   const mat = base.clone();
@@ -434,10 +390,7 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
     collar.rotateX(Math.PI / 2);
     return {
       head: new THREE.SphereGeometry(0.25, 48, 36),
-      hairCap: new THREE.SphereGeometry(0.28, 64, 26, 0, Math.PI * 2, 0, 1.4),
-      bangs: bangsGeometry(),
-      mantle: hairMantle(),
-      locks: HAIR_LOCKS.map((l) => lockGeometry(l.from, l.to, l.w, l.lift)),
+      mantle: unifiedHair(),
       eyeWhite: new THREE.SphereGeometry(0.062, 28, 20),
       iris: new THREE.CircleGeometry(0.05, 40),
       hl: new THREE.SphereGeometry(0.013, 10, 8),
@@ -667,11 +620,7 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
                 <mesh geometry={geo.cheekR} material={m.cheek} scale={[1.03, 0.97, 0.97]} renderOrder={1} />
 
                 {/* voluminous wavy dark hair */}
-                <mesh geometry={geo.hairCap} material={m.hair} position={[0, 0.012, -0.005]} scale={[1.05, 1.06, 1.04]} />
-                <mesh geometry={geo.bangs} material={m.hair} position={[0, 0.008, 0.004]} scale={[1.03, 1, 1]} />
-                {geo.locks.map((g, i) => (
-                  <mesh key={i} geometry={g} material={m.hair} rotation={[0, HAIR_LOCKS[i].phi, 0]} position={[0, 0.012, 0]} scale={[1.04, 1.05, 1.03]} />
-                ))}
+                {/* hair: one continuous piece (crown + fringe + long hair) */}
                 <group ref={r.hairBack}>
                   <mesh geometry={geo.mantle} material={movingHair.mat} />
                 </group>
