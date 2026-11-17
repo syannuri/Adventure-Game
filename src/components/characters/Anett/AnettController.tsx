@@ -140,6 +140,7 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
 
     // ------------------------------------------------ jumping
     if (input.jumpPressed && !locked && !finale) s.jumpBuffer = 0.15;
+    input.jumpPressed = false; // one press = one jump (the short buffer still forgives early presses)
     s.jumpBuffer -= dt;
     s.coyote -= dt;
     if (s.jumpBuffer > 0 && (s.grounded || s.coyote > 0)) {
@@ -194,6 +195,7 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
       g.playEmote(input.emote, input.emote === 'dance' ? 4.5 : 2.0);
       if (input.emote === 'dance') g.unlockAchievement('dancer', ACHIEVEMENTS.dancer.title, ACHIEVEMENTS.dancer.icon);
     }
+    input.emote = null; // one press = one wave / dance
 
     // ------------------------------------------------ choose animation state
     let action: AnimState | null = null;
