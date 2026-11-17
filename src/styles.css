@@ -210,8 +210,8 @@ canvas { display: block; touch-action: none; }
 /* wide screens: pro-game layout – logo + buttons on the left, Anet's island on the right */
 @media (min-aspect-ratio: 5/4) {
   .menu { align-items: flex-start; padding-left: max(5vw, 24px); }
-  .menu-buttons { align-items: flex-start; }
-  .menu-row { justify-content: flex-start; max-width: 520px; }
+  .menu .menu-buttons { align-items: flex-start; }
+  .menu .menu-row { justify-content: flex-start; max-width: 520px; }
 }
 
 @media (max-height: 520px) {
