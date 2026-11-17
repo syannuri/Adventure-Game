@@ -2,20 +2,22 @@
 
 Every asset in the game, where it comes from, and whether it is final or a placeholder.
 
-**Summary:** this build has **no external 3D models, textures, images or audio files**. Everything visual or
-audible is generated in code at runtime. The only external resource is the Google Font below.
+**Summary:** the game loads **no external 3D models, textures, images or audio files**. Everything visual or
+audible is generated in code at runtime. The only external resource it loads is the Google Font below. The
+repository also contains one design reference image, which the game does not load.
 
 ## External assets
 
 | Asset | Source | License | Used for |
 | --- | --- | --- | --- |
+| Anett character reference image (`docs/anett-reference.jpg`) | Provided by the project owner | Project owner's | Design reference only. Not loaded by the game. |
 | "Baloo 2" font | Google Fonts (loaded in `index.html`) | SIL Open Font License 1.1 | All UI text. Falls back to system fonts offline. |
 
 ## Generated assets (code)
 
 | Asset | File | Status |
 | --- | --- | --- |
-| Anett 3D model + joint rig | `src/components/characters/Anett/AnettModel.tsx` | **Placeholder.** Procedural primitives that follow the character sheet. To be replaced by a sculpted, rigged GLB. |
+| Anett 3D model + joint rig | `src/components/characters/Anett/AnettModel.tsx` | **Placeholder.** Procedural geometry matching `docs/anett-reference.jpg` (generated wavy hair mass, curved hair locks, painted amber iris texture). To be replaced by a sculpted, rigged GLB. |
 | Anett animations (13) | `src/components/characters/Anett/AnettAnimations.ts` | **Placeholder.** Procedural poses. To be replaced or augmented by GLTF/Mixamo clips. |
 | Lumi (fairy), Pip (rabbit), Olli (owl), ambient bunnies, ducks, butterflies, birds | `src/components/characters/npc/*`, `worlds/EnchantedForest/Critters.tsx` | **Placeholder** procedural models |
 | Terrain, trees, hero trees, grass, flowers, mushrooms, rocks, mushroom house, platforms, hollow log, chests, wand, stars, acorns | `src/components/worlds/EnchantedForest/*`, `gameplay/collectibles/*` | Procedural (stylized). Can stay, or be swapped for modeled props. |
@@ -36,4 +38,4 @@ render with the player's operating-system font and are not bundled with the game
 
 - Put GLB/GLTF models in `public/models/`, textures in `public/textures/` and audio in `public/audio/`, then add
   each one to this file with its source and license.
-- Keep Anett's palette (`ANETT_PALETTE` in `AnettModel.tsx`) and proportions as the reference for any sculpted model.
+- Use `docs/anett-reference.jpg` plus Anett's palette (`ANETT_PALETTE` in `AnettModel.tsx`) as the reference for any sculpted model.

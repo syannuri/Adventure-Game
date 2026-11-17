@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { useGame } from './systems/store';
 import { installKeyboard, resetEdges } from './systems/input';
 import { EnchantedForest } from './components/worlds/EnchantedForest/EnchantedForest';
-import { MenuScene } from './components/worlds/MenuScene/MenuScene';
+import { MenuScene, REVIEW_VIEW } from './components/worlds/MenuScene/MenuScene';
 import { PostFX } from './components/effects/PostFX';
 import { HUD } from './components/ui/HUD';
 import { DialogueBox } from './components/ui/DialogueBox';
@@ -98,7 +98,7 @@ export default function App() {
 
       <div className="ui-layer passthrough">
         <div className="passthrough" style={{ position: 'absolute', inset: 0 }}>
-          {screen === 'menu' && <MainMenu />}
+          {screen === 'menu' && !REVIEW_VIEW && <MainMenu />}
           {screen === 'worlds' && <WorldSelect />}
           {screen === 'story' && <StoryIntro />}
           {playing && <HUD />}

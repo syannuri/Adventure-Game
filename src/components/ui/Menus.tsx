@@ -178,7 +178,7 @@ export function AboutAnett({ onClose }: { onClose: () => void }) {
           I'm seven years old and I love exploring! I'm curious, brave and always happy to help a friend. In Grandma's old treasure box I found a magical map that leads to five secret lands.
         </p>
         <p>
-          <b>I love:</b> my yellow adventure jacket, my pink backpack, jumping on mushrooms and dancing with forest friends!
+          <b>I love:</b> my orange adventure jacket, my big explorer backpack, my hiking boots, jumping on mushrooms and dancing with forest friends!
         </p>
         <h3 style={{ margin: '14px 0 6px', color: 'var(--purple-dark)' }}>My badges</h3>
         <div className="ach-list">

@@ -39,8 +39,9 @@ function MenuAnett() {
       t -= c.d;
     }
     if (overlay === 'about') state = 'dance';
-    animator.update(rig.current, dt, { speed: 0, airborne: false, vy: 0, land: 0, action: state, overlay: 0, idleTime: 6 });
-    root.current.rotation.y = Math.sin(clock.current * 0.3) * 0.25 + (state === 'dance' ? Math.sin(clock.current * 1.6) * 0.5 : 0);
+    if (REVIEW_VIEW) state = null;
+    animator.update(rig.current, dt, { speed: 0, airborne: false, vy: 0, land: 0, action: state, overlay: 0, idleTime: REVIEW_VIEW ? 0 : 6 });
+    root.current.rotation.y = REVIEW_VIEW ? 0 : Math.sin(clock.current * 0.3) * 0.25 + (state === 'dance' ? Math.sin(clock.current * 1.6) * 0.5 : 0);
   });
   return (
     <group ref={root} position={[0, 0, 0]} scale={1.15}>
@@ -157,6 +158,14 @@ function MagicMap() {
 }
 
 const closeup = typeof location !== 'undefined' && location.hash === '#closeup';
+/** Character review mode: ?view=face|front|side|back (menus hidden, Anett idles). */
+export const REVIEW_VIEW = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('view') : null;
+const REVIEW_CAMS: Record<string, { pos: [number, number, number]; look: [number, number, number] }> = {
+  face: { pos: [0.15, 1.2, 1.25], look: [0, 1.15, 0] },
+  front: { pos: [0.4, 1.0, 3.0], look: [0, 0.68, 0] },
+  side: { pos: [3.0, 1.0, 0.4], look: [0, 0.68, 0] },
+  back: { pos: [-0.5, 1.1, -3.0], look: [0, 0.7, 0] },
+};
 
 export function MenuScene() {
   const { camera, size } = useThree();
@@ -164,10 +173,16 @@ export function MenuScene() {
   useFrame((_, dt) => {
     t.current += Math.min(dt, 0.05);
     const portrait = size.width < size.height;
+    const rc = REVIEW_VIEW ? REVIEW_CAMS[REVIEW_VIEW] : null;
+    if (rc) {
+      camera.position.set(...rc.pos);
+      camera.lookAt(...rc.look);
+      return;
+    }
     if (closeup) {
       // "photo mode" close-up used for character review (#closeup in the URL)
-      camera.position.set(0.25, 1.35, 2.0);
-      camera.lookAt(0, 1.05, 0);
+      camera.position.set(0.3, 1.25, 2.1);
+      camera.lookAt(0, 0.95, 0);
       return;
     }
     const d = portrait ? 6.2 : 4.9;
@@ -185,11 +200,11 @@ export function MenuScene() {
         <Lightformer form="rect" intensity={1} color="#bfe3ff" position={[-6, 4, 6]} scale={[10, 6, 1]} />
       </Environment>
       <Sky top="#5aa9ee" horizon="#ffe9cf" />
-      <Float speed={1} rotationIntensity={0.05} floatIntensity={0.4}>
+      <Float speed={REVIEW_VIEW ? 0 : 1} rotationIntensity={0.05} floatIntensity={REVIEW_VIEW ? 0 : 0.4}>
         <group position={[0, -0.2, 0]}>
           <Island />
           <MenuAnett />
-          <MagicMap />
+          {!REVIEW_VIEW && <MagicMap />}
         </group>
       </Float>
       <Sparkles count={120} scale={[14, 8, 10]} position={[0, 2, -2]} size={4} speed={0.3} color="#fff6b8" />

@@ -51,9 +51,11 @@ Progress (completed worlds, Magic Stars, achievements, best scores, settings) is
 
 ## Features in this build
 
-- **Anett:** a procedural, rigged, stylized 3D character that matches the character sheet: straight shiny
-  black hair with bangs, fair skin, big brown eyes, yellow jacket, white T-shirt, denim shorts, colorful sneakers
-  and a pink backpack. One shared model and palette, so she looks the same in every scene.
+- **Anett:** a procedural, rigged, stylized 3D character built to match the official reference image
+  [`docs/anett-reference.jpg`](docs/anett-reference.jpg): voluminous wavy dark hair with full bangs, a round
+  chubby face with warm skin and big amber eyes, an orange hooded zip jacket with ribbed cuffs and chest pockets,
+  a big khaki hiking backpack with grey straps, cream shorts, slouchy socks and tan hiking boots. One shared model
+  and palette, so she looks the same in every scene.
 - **Animation system:** an animation state machine with a blend tree (idle ↔ walk ↔ run, by speed), jump/fall
   blending by vertical velocity, landing squash, and damped joint blending between all states. It also has an
   upper-body overlay layer for collecting. All 13 required animations are in: idle breathing, eye blinking,
@@ -131,7 +133,8 @@ src/
   clips with an `AnimationMixer` and keep the controller and state machine as they are.
 - **Debug helpers.** `window.__anett` exposes the store, player and input for automated tests. Add `?capture` to
   the URL to keep the WebGL drawing buffer for screenshots, and `#closeup` for a close-up "photo mode" of Anett on
-  the menu.
+  the menu. **Character review mode:** `?view=face`, `?view=front`, `?view=side` or `?view=back` hides the menus
+  and shows Anett standing still from that angle, for comparing with the reference image.
 
 ## Testing
 

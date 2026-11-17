@@ -1,36 +1,50 @@
 /**
  * Anett – procedural stylized 3D character.
  *
- * PLACEHOLDER NOTICE: this is a code-generated model (Three.js primitives with a joint hierarchy)
- * used until a sculpted & rigged GLB (Blender / Mixamo pipeline) is available. It follows the
- * character sheet exactly: straight shiny black hair with bangs, fair skin, big dark-brown eyes,
- * yellow adventure jacket, white T-shirt, denim shorts, colorful sneakers and a pink backpack.
+ * DESIGN REFERENCE: docs/anett-reference.jpg (the official look).
+ *  - voluminous, wavy dark-brown/black hair falling past the shoulders, full straight-cut bangs
+ *  - round chubby face, warm skin, big amber-brown eyes with long lashes, small nose, soft smile
+ *  - orange hooded zip-up jacket: ribbed darker-orange cuffs & hem, chest pockets with flaps,
+ *    silver zipper, white hood drawstrings
+ *  - big khaki hiking backpack with grey shoulder straps, sternum strap and dangling strap ends
+ *  - cream shorts, thick slouchy cream socks, tan lace-up hiking boots with cream soles
  *
- * The joint groups (hips, spine, neck, shoulders, elbows, legs, knees) form a skeleton that
- * AnettAnimations drives procedurally. Never change proportions/colours between scenes:
- * all instances use the same component and the same palette below.
+ * PLACEHOLDER NOTICE: built from Three.js primitives + generated geometry until a sculpted & rigged
+ * GLB (Blender / Mixamo pipeline) is available. The joint groups (hips, spine, neck, shoulders,
+ * elbows, legs, knees) form the skeleton that AnettAnimations drives. Never change proportions or
+ * colours between scenes: every scene uses this one component and the palette below.
  */
 import { forwardRef, useImperativeHandle, useLayoutEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { RoundedBox } from '@react-three/drei';
+import { smoothstep } from '../../../utils/math';
 
 export const ANETT_PALETTE = {
-  skin: '#f7d9c8',
-  skinShade: '#efc1ac',
-  hair: '#15121a',
-  eyeIris: '#4a2a17',
-  jacket: '#f7c531',
-  jacketTrim: '#e9a91c',
-  shirt: '#fbfbf7',
-  denim: '#4f7fc4',
-  denimDark: '#3d679f',
-  shoe: '#ff6f91',
-  shoeAccent: '#3fd0c9',
-  sole: '#ffffff',
-  backpack: '#ff92bd',
-  backpackDark: '#e46f9d',
-  cheek: '#ff9aaa',
-  mouth: '#b4485c',
+  skin: '#f1c5a1',
+  skinShade: '#e3a98a',
+  hair: '#2b221e',
+  hairSheen: '#8c7b70',
+  irisInner: '#f2a145',
+  irisMid: '#b8621d',
+  irisRim: '#4a230b',
+  lash: '#1e1512',
+  brow: '#4a352b',
+  jacket: '#e9843b',
+  jacketRib: '#c8622a',
+  zipper: '#c9c9cf',
+  drawstring: '#f3ece0',
+  shorts: '#efe6d4',
+  sock: '#ece3d3',
+  boot: '#c99468',
+  bootDark: '#a9744d',
+  sole: '#f2e7d4',
+  pack: '#b39b76',
+  packDark: '#9b8463',
+  packLight: '#c4ae8a',
+  strap: '#7f7a70',
+  strapDark: '#3a3936',
+  cheek: '#ff9b8f',
+  lips: '#c4655c',
 };
 
 export interface AnettRig {
@@ -54,42 +68,10 @@ export interface AnettRig {
   hairBack: THREE.Group;
 }
 
-function useMaterials() {
-  return useMemo(() => {
-    const P = ANETT_PALETTE;
-    const std = (color: string, roughness = 0.7, extra: Partial<THREE.MeshPhysicalMaterialParameters> = {}) =>
-      new THREE.MeshPhysicalMaterial({ color, roughness, metalness: 0, ...extra });
-    return {
-      skin: std(P.skin, 0.55, { sheen: 0.4, sheenColor: new THREE.Color('#ffd6c9'), sheenRoughness: 0.6 }),
-      skinShade: std(P.skinShade, 0.6),
-      hair: std(P.hair, 0.42, { clearcoat: 0.35, clearcoatRoughness: 0.4, sheen: 1, sheenColor: new THREE.Color('#5a5478'), sheenRoughness: 0.45, side: THREE.DoubleSide }),
-      eyeWhite: std('#ffffff', 0.15, { clearcoat: 1 }),
-      iris: std(P.eyeIris, 0.2, { clearcoat: 1 }),
-      pupil: std('#0b0706', 0.1, { clearcoat: 1 }),
-      highlight: new THREE.MeshBasicMaterial({ color: '#ffffff' }),
-      lash: std('#120e12', 0.6),
-      jacket: std(P.jacket, 0.62, { sheen: 0.5, sheenColor: new THREE.Color('#fff2b0') }),
-      jacketTrim: std(P.jacketTrim, 0.7),
-      shirt: std(P.shirt, 0.8),
-      denim: std(P.denim, 0.85, { sheen: 0.3, sheenColor: new THREE.Color('#9cc0ff') }),
-      denimDark: std(P.denimDark, 0.85),
-      shoe: std(P.shoe, 0.5, { clearcoat: 0.4 }),
-      shoeAccent: std(P.shoeAccent, 0.5),
-      sole: std(P.sole, 0.6),
-      sock: std('#ffffff', 0.85),
-      backpack: std(P.backpack, 0.6, { sheen: 0.5, sheenColor: new THREE.Color('#ffd1e4') }),
-      backpackDark: std(P.backpackDark, 0.65),
-      cheek: new THREE.MeshBasicMaterial({ color: P.cheek, transparent: true, opacity: 0.45, depthWrite: false }),
-      mouth: std(P.mouth, 0.5),
-      mouthInner: std('#7a2234', 0.6),
-    };
-  }, []);
-}
+// ------------------------------------------------------------------ generated geometry helpers
 
-const capsule = (r: number, l: number) => new THREE.CapsuleGeometry(r, l, 6, 16);
-
-/** Adds fine vertical ridges around the Y axis so straight hair reads as strands, not a helmet. */
-function strands<T extends THREE.BufferGeometry>(g: T, count = 22, depth = 0.022): T {
+/** Fine vertical ridges around the Y axis (hair strands, knit ribbing). */
+function ridges<T extends THREE.BufferGeometry>(g: T, count = 22, depth = 0.02): T {
   const pos = g.attributes.position as THREE.BufferAttribute;
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i);
@@ -100,6 +82,156 @@ function strands<T extends THREE.BufferGeometry>(g: T, count = 22, depth = 0.022
     pos.setZ(i, z * k);
   }
   g.computeVertexNormals();
+  return g;
+}
+
+/**
+ * The big wavy hair mass: a surface of revolution around the head that is open at the front
+ * (for the face), widens toward the shoulders, has soft large waves, fine strands and an
+ * uneven wavy bottom edge.
+ */
+function hairMantle() {
+  const rows = 22;
+  const seg = 96;
+  const top = 0.1;
+  const bottom = -0.38;
+  const pos: number[] = [];
+  const idx: number[] = [];
+  for (let i = 0; i <= rows; i++) {
+    const t = i / rows;
+    const open = 0.98 - 0.42 * smoothstep(0.35, 1, t); // face opening narrows below the chin
+    for (let j = 0; j <= seg; j++) {
+      const u = j / seg;
+      const th = open + u * (Math.PI * 2 - 2 * open); // 0 = straight ahead (+z)
+      // mirror-symmetric angle measured from the back of the head
+      const a = Math.abs(th - Math.PI);
+      let r = 0.272 + 0.11 * Math.pow(t, 1.2) + 0.045 * smoothstep(0.65, 1, t);
+      r += (Math.cos(a * 6 + t * 6.5) * 0.03 + Math.cos(a * 11 - t * 4) * 0.012) * smoothstep(0.12, 0.6, t);
+      r *= 1 + Math.cos(a * 50) * 0.006 + Math.cos(a * 21 + 2) * 0.009;
+      let y = top + (bottom - top) * t;
+      if (i === rows) y += Math.cos(a * 8) * 0.035 + Math.cos(a * 4.5 + 1) * 0.02 + 0.02;
+      pos.push(Math.sin(th) * r, y, Math.cos(th) * r);
+    }
+  }
+  for (let i = 0; i < rows; i++)
+    for (let j = 0; j < seg; j++) {
+      const a = i * (seg + 1) + j;
+      const b = a + seg + 1;
+      idx.push(a, b, a + 1, a + 1, b, b + 1);
+    }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  return g;
+}
+
+/** Full straight-cut bangs with a slightly uneven (wispy) lower edge. */
+function bangsGeometry() {
+  const g = new THREE.SphereGeometry(0.284, 80, 18, Math.PI / 2 - 1.08, 2.16, 0.16, 1.1);
+  const pos = g.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < pos.count; i++) {
+    const y = pos.getY(i);
+    if (y < 0.13) {
+      const x = pos.getX(i);
+      pos.setY(i, y - (Math.sin(x * 140) * 0.5 + 0.5) * 0.014 - Math.abs(Math.sin(x * 37)) * 0.008);
+    }
+  }
+  g.computeVertexNormals();
+  return g;
+}
+
+let irisTex: THREE.Texture | null = null;
+/** Painted amber iris with radial streaks, dark limbal ring and pupil. */
+function irisTexture() {
+  if (irisTex) return irisTex;
+  const P = ANETT_PALETTE;
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const g = c.getContext('2d')!;
+  const grd = g.createRadialGradient(64, 64, 10, 64, 64, 64);
+  grd.addColorStop(0, P.irisInner);
+  grd.addColorStop(0.55, P.irisMid);
+  grd.addColorStop(0.86, '#7a3a12');
+  grd.addColorStop(1, P.irisRim);
+  g.fillStyle = grd;
+  g.fillRect(0, 0, 128, 128);
+  g.globalAlpha = 0.22;
+  for (let i = 0; i < 70; i++) {
+    const a = (i / 70) * Math.PI * 2;
+    g.strokeStyle = i % 2 ? '#ffd08a' : '#5a2a0c';
+    g.lineWidth = 2;
+    g.beginPath();
+    g.moveTo(64 + Math.cos(a) * 22, 64 + Math.sin(a) * 22);
+    g.lineTo(64 + Math.cos(a) * 58, 64 + Math.sin(a) * 58);
+    g.stroke();
+  }
+  g.globalAlpha = 1;
+  g.fillStyle = '#120804';
+  g.beginPath();
+  g.arc(64, 64, 25, 0, Math.PI * 2);
+  g.fill();
+  irisTex = new THREE.CanvasTexture(c);
+  irisTex.colorSpace = THREE.SRGBColorSpace;
+  return irisTex;
+}
+
+function useMaterials() {
+  return useMemo(() => {
+    const P = ANETT_PALETTE;
+    const mat = (color: string, roughness = 0.7, extra: Partial<THREE.MeshPhysicalMaterialParameters> = {}) =>
+      new THREE.MeshPhysicalMaterial({ color, roughness, metalness: 0, ...extra });
+    return {
+      skin: mat(P.skin, 0.55, { sheen: 0.5, sheenColor: new THREE.Color('#ffd9c4'), sheenRoughness: 0.6 }),
+      skinShade: mat(P.skinShade, 0.6),
+      hair: mat(P.hair, 0.5, { sheen: 1, sheenColor: new THREE.Color(P.hairSheen), sheenRoughness: 0.4, clearcoat: 0.2, clearcoatRoughness: 0.5, side: THREE.DoubleSide }),
+      eyeWhite: mat('#fffdf8', 0.2, { clearcoat: 1 }),
+      iris: mat('#ffffff', 0.2, { map: irisTexture(), clearcoat: 1, clearcoatRoughness: 0.05 }),
+      highlight: new THREE.MeshBasicMaterial({ color: '#ffffff' }),
+      lash: mat(P.lash, 0.6),
+      brow: mat(P.brow, 0.8),
+      jacket: mat(P.jacket, 0.62, { sheen: 0.6, sheenColor: new THREE.Color('#ffc59a'), sheenRoughness: 0.5, clearcoat: 0.15 }),
+      jacketRib: mat(P.jacketRib, 0.85),
+      zipper: mat(P.zipper, 0.3, { metalness: 0.8 }),
+      drawstring: mat(P.drawstring, 0.8),
+      shorts: mat(P.shorts, 0.85, { sheen: 0.4, sheenColor: new THREE.Color('#ffffff') }),
+      sock: mat(P.sock, 0.95),
+      boot: mat(P.boot, 0.6, { sheen: 0.3, sheenColor: new THREE.Color('#f0c8a4') }),
+      bootDark: mat(P.bootDark, 0.7),
+      sole: mat(P.sole, 0.7),
+      pack: mat(P.pack, 0.8, { sheen: 0.4, sheenColor: new THREE.Color('#e6d7bd') }),
+      packDark: mat(P.packDark, 0.8),
+      packLight: mat(P.packLight, 0.8),
+      strap: mat(P.strap, 0.75),
+      strapDark: mat(P.strapDark, 0.5),
+      cheek: new THREE.MeshBasicMaterial({ color: P.cheek, transparent: true, opacity: 0.38, depthWrite: false }),
+      lips: mat(P.lips, 0.45),
+      mouthInner: mat('#7a2a30', 0.6),
+    };
+  }, []);
+}
+
+const capsule = (r: number, l: number) => new THREE.CapsuleGeometry(r, l, 6, 18);
+
+/**
+ * Layered hair locks: curved ribbons that follow the scalp from the crown down the sides and back,
+ * giving soft volume and strand groups instead of a smooth helmet.
+ */
+const HAIR_LOCKS = Array.from({ length: 16 }, (_, i) => ({
+  phi: 1.0 + (i / 15) * (Math.PI * 2 - 2.0), // around the head, skipping the face
+  from: 0.1 + (i % 3) * 0.05, // polar angle (from the crown) where the lock starts
+  to: 1.72 + (i % 2) * 0.12,
+  w: 0.062 + (i % 3) * 0.01,
+  lift: (i % 2) * 0.008,
+}));
+
+function lockGeometry(from: number, to: number, w: number, lift: number) {
+  const R = 0.298 + lift;
+  const thin = 0.026;
+  const g = new THREE.TorusGeometry(R, thin, 6, 20, to - from);
+  g.scale(1, 1, w / thin); // wide ribbon sideways, thin radially
+  g.rotateZ(Math.PI / 2 - to); // arc spans polar angles [from, to]
+  g.rotateY(-Math.PI / 2); // into the front meridian plane (y/z)
   return g;
 }
 
@@ -138,21 +270,32 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
     return out as unknown as AnettRig;
   });
 
-  const geo = useMemo(
-    () => ({
-      head: new THREE.SphereGeometry(0.25, 40, 32),
-      hairCap: strands(new THREE.SphereGeometry(0.268, 72, 24, 0, Math.PI * 2, 0, 1.25), 26, 0.012),
-      hairBackShell: strands(new THREE.SphereGeometry(0.275, 72, 28, Math.PI - 0.45, Math.PI + 0.9, 0.2, 2.15), 26, 0.016),
-      bangs: strands(new THREE.SphereGeometry(0.274, 60, 16, Math.PI / 2 - 0.95, 1.9, 0.18, 1.12), 34, 0.01),
-      hairLong: strands(new THREE.CylinderGeometry(0.262, 0.278, 0.3, 72, 4, true, Math.PI / 2 - 0.4, Math.PI + 0.8), 26, 0.02),
-      eyeWhite: new THREE.SphereGeometry(0.058, 24, 18),
-      iris: new THREE.SphereGeometry(0.043, 24, 18),
-      pupil: new THREE.SphereGeometry(0.022, 16, 12),
-      hl: new THREE.SphereGeometry(0.012, 10, 8),
-      smile: new THREE.TorusGeometry(0.042, 0.009, 8, 24, Math.PI),
-    }),
-    [],
-  );
+  const geo = useMemo(() => {
+    const rib = (g: THREE.BufferGeometry, n: number, d: number) => ridges(g, n, d);
+    const hemTorus = new THREE.TorusGeometry(0.168, 0.034, 10, 48);
+    hemTorus.rotateX(Math.PI / 2);
+    const cuffTorus = new THREE.TorusGeometry(0.05, 0.022, 8, 32);
+    cuffTorus.rotateX(Math.PI / 2);
+    const collar = new THREE.TorusGeometry(0.1, 0.046, 12, 40);
+    collar.rotateX(Math.PI / 2);
+    return {
+      head: new THREE.SphereGeometry(0.25, 48, 36),
+      hairCap: new THREE.SphereGeometry(0.28, 64, 26, 0, Math.PI * 2, 0, 1.4),
+      bangs: bangsGeometry(),
+      mantle: hairMantle(),
+      locks: HAIR_LOCKS.map((l) => lockGeometry(l.from, l.to, l.w, l.lift)),
+      eyeWhite: new THREE.SphereGeometry(0.062, 28, 20),
+      iris: new THREE.CircleGeometry(0.05, 40),
+      hl: new THREE.SphereGeometry(0.013, 10, 8),
+      lashArc: new THREE.TorusGeometry(0.062, 0.0075, 6, 24, Math.PI * 0.95),
+      smile: new THREE.TorusGeometry(0.032, 0.008, 8, 24, Math.PI * 0.8),
+      hem: rib(hemTorus, 70, 0.03),
+      cuff: rib(cuffTorus, 30, 0.05),
+      collar: rib(collar, 50, 0.02),
+      sock: rib(new THREE.CylinderGeometry(0.064, 0.059, 0.1, 28, 1), 26, 0.04),
+      sockFold: rib(new THREE.TorusGeometry(0.063, 0.02, 8, 28).rotateX(Math.PI / 2), 26, 0.05),
+    };
+  }, []);
 
   useLayoutEffect(() => {
     r.root.current.traverse((o) => {
@@ -170,58 +313,71 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
   }, []);
 
   const Eye = ({ side, eref }: { side: 1 | -1; eref: React.RefObject<THREE.Group> }) => (
-    <group ref={eref} position={[0.092 * side, 0.205, 0.198]} rotation={[0, 0.32 * side, 0]}>
-      <mesh geometry={geo.eyeWhite} material={m.eyeWhite} scale={[1, 1.18, 0.55]} />
-      <mesh geometry={geo.iris} material={m.iris} position={[0, -0.004, 0.022]} scale={[1, 1.12, 0.45]} />
-      <mesh geometry={geo.pupil} material={m.pupil} position={[0, -0.004, 0.036]} scale={[1, 1.1, 0.4]} />
-      <mesh geometry={geo.hl} material={m.highlight} position={[0.016 * side, 0.024, 0.044]} />
-      <mesh geometry={geo.hl} material={m.highlight} position={[-0.012 * side, -0.02, 0.043]} scale={0.55} />
-      {/* upper lash line */}
-      <mesh material={m.lash} position={[0.004 * side, 0.066, 0.012]} rotation={[0.25, 0, -0.18 * side]}>
-        <boxGeometry args={[0.105, 0.012, 0.02]} />
-      </mesh>
-      <mesh material={m.lash} position={[0.055 * side, 0.058, 0.006]} rotation={[0, 0, -0.75 * side]}>
-        <boxGeometry args={[0.03, 0.008, 0.012]} />
+    <group ref={eref} position={[0.097 * side, -0.02, 0.196]} rotation={[0, 0.3 * side, 0]}>
+      <mesh geometry={geo.eyeWhite} material={m.eyeWhite} scale={[1, 1.1, 0.5]} />
+      <mesh geometry={geo.iris} material={m.iris} position={[0, -0.003, 0.0312]} scale={[1, 1.06, 1]} />
+      {/* highlights: same side on both eyes (single key light) */}
+      <mesh geometry={geo.hl} material={m.highlight} position={[-0.017, 0.022, 0.037]} />
+      <mesh geometry={geo.hl} material={m.highlight} position={[0.016, -0.02, 0.036]} scale={0.5} />
+      {/* upper lash line + outer flicks */}
+      <mesh geometry={geo.lashArc} material={m.lash} position={[0, -0.004, 0.012]} rotation={[0.35, 0, 0.02]} scale={[1.02, 1.04, 1]} />
+      {[0, 1, 2].map((i) => (
+        <mesh key={i} material={m.lash} position={[(0.058 - i * 0.012) * side, 0.04 + i * 0.01, 0.014]} rotation={[0, 0, (-0.9 + i * 0.25) * side]}>
+          <boxGeometry args={[0.026, 0.006, 0.006]} />
+        </mesh>
+      ))}
+      {/* faint lower lash */}
+      <mesh material={m.brow} position={[0, -0.058, 0.018]} rotation={[-0.3, 0, Math.PI]} scale={[0.75, 0.5, 1]}>
+        <torusGeometry args={[0.05, 0.003, 4, 16, Math.PI * 0.7]} />
       </mesh>
     </group>
   );
 
   const Arm = ({ side, sref, eref, item }: { side: 1 | -1; sref: React.RefObject<THREE.Group>; eref: React.RefObject<THREE.Group>; item?: React.ReactNode }) => (
-    <group ref={sref} position={[0.168 * side, 0.285, 0]}>
-      <mesh geometry={capsule(0.054, 0.1)} material={m.jacket} position={[0, -0.075, 0]} />
+    <group ref={sref} position={[0.185 * side, 0.285, 0]}>
+      <mesh geometry={capsule(0.066, 0.09)} material={m.jacket} position={[0, -0.075, 0]} />
       <group ref={eref} position={[0, -0.165, 0]}>
-        <mesh material={m.jacketTrim} position={[0, 0.012, 0]}>
-          <torusGeometry args={[0.046, 0.014, 8, 18]} />
+        <mesh geometry={capsule(0.059, 0.075)} material={m.jacket} position={[0, -0.055, 0.004]} />
+        <mesh geometry={geo.cuff} material={m.jacketRib} position={[0, -0.125, 0.004]} />
+        <mesh material={m.skin} position={[0, -0.168, 0.01]} scale={[0.92, 1.05, 0.88]}>
+          <sphereGeometry args={[0.05, 18, 14]} />
         </mesh>
-        <mesh geometry={capsule(0.04, 0.085)} material={m.skin} position={[0, -0.065, 0]} />
-        <mesh material={m.skin} position={[0, -0.14, 0.008]} scale={[0.9, 1.05, 0.85]}>
-          <sphereGeometry args={[0.048, 16, 12]} />
+        {/* thumb */}
+        <mesh material={m.skin} position={[-0.03 * side, -0.155, 0.035]} scale={[0.6, 0.9, 0.6]}>
+          <sphereGeometry args={[0.025, 10, 8]} />
         </mesh>
-        {item && <group position={[0, -0.15, 0.03]}>{item}</group>}
+        {item && <group position={[0, -0.175, 0.03]}>{item}</group>}
       </group>
     </group>
   );
 
   const Leg = ({ side, lref, kref }: { side: 1 | -1; lref: React.RefObject<THREE.Group>; kref: React.RefObject<THREE.Group> }) => (
-    <group ref={lref} position={[0.078 * side, -0.02, 0]}>
-      <mesh material={m.denim} position={[0, -0.045, 0]}>
-        <cylinderGeometry args={[0.078, 0.074, 0.11, 18]} />
+    <group ref={lref} position={[0.082 * side, -0.02, 0]}>
+      {/* short leg opening */}
+      <mesh material={m.shorts} position={[0, -0.05, 0]}>
+        <cylinderGeometry args={[0.084, 0.086, 0.12, 22]} />
       </mesh>
-      <mesh geometry={capsule(0.055, 0.12)} material={m.skin} position={[0, -0.12, 0]} />
+      <mesh geometry={capsule(0.064, 0.11)} material={m.skin} position={[0, -0.13, 0]} />
       <group ref={kref} position={[0, -0.225, 0]}>
-        <mesh geometry={capsule(0.05, 0.12)} material={m.skin} position={[0, -0.08, 0]} />
-        <mesh material={m.sock} position={[0, -0.17, 0]}>
-          <cylinderGeometry args={[0.054, 0.05, 0.05, 16]} />
-        </mesh>
-        <group position={[0, -0.225, 0.035]}>
-          <RoundedBox args={[0.125, 0.085, 0.2]} radius={0.04} smoothness={4} material={m.shoe} />
-          <RoundedBox args={[0.132, 0.03, 0.212]} radius={0.014} smoothness={3} material={m.sole} position={[0, -0.036, 0.002]} />
-          <mesh material={m.shoeAccent} position={[0.064 * side, 0.004, -0.01]} rotation={[0, Math.PI / 2, 0]}>
-            <torusGeometry args={[0.034, 0.009, 8, 16, Math.PI]} />
+        <mesh geometry={capsule(0.058, 0.1)} material={m.skin} position={[0, -0.07, 0]} />
+        {/* thick slouchy socks */}
+        <mesh geometry={geo.sock} material={m.sock} position={[0, -0.15, 0]} />
+        <mesh geometry={geo.sockFold} material={m.sock} position={[0, -0.1, 0]} />
+        {/* hiking boot */}
+        <group position={[0, -0.225, 0.028]}>
+          <mesh material={m.boot} position={[0, 0.035, -0.03]}>
+            <cylinderGeometry args={[0.068, 0.07, 0.07, 22]} />
           </mesh>
-          <mesh material={m.sole} position={[0, 0.044, 0.04]}>
-            <boxGeometry args={[0.06, 0.008, 0.07]} />
-          </mesh>
+          <RoundedBox args={[0.142, 0.1, 0.215]} radius={0.045} smoothness={4} material={m.boot} />
+          <RoundedBox args={[0.144, 0.05, 0.08]} radius={0.024} smoothness={3} material={m.bootDark} position={[0, -0.012, 0.07]} />
+          <RoundedBox args={[0.152, 0.036, 0.228]} radius={0.016} smoothness={3} material={m.sole} position={[0, -0.048, 0.003]} />
+          {/* tongue + laces */}
+          <RoundedBox args={[0.06, 0.03, 0.09]} radius={0.012} smoothness={2} material={m.bootDark} position={[0, 0.05, 0.02]} rotation={[0.35, 0, 0]} />
+          {[0, 1, 2].map((i) => (
+            <mesh key={i} material={m.drawstring} position={[0, 0.054 - i * 0.012, 0.0 + i * 0.03]} rotation={[0.35, 0, 0]}>
+              <boxGeometry args={[0.08, 0.008, 0.01]} />
+            </mesh>
+          ))}
         </group>
       </group>
     </group>
@@ -231,105 +387,147 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
     <group ref={r.root} scale={scale}>
       <group ref={r.body}>
         <group ref={r.hips} position={[0, 0.535, 0]}>
-          {/* denim shorts */}
-          <mesh material={m.denim} position={[0, -0.005, 0]}>
-            <cylinderGeometry args={[0.148, 0.165, 0.15, 24]} />
-          </mesh>
-          <mesh material={m.denimDark} position={[0, 0.07, 0]}>
-            <torusGeometry args={[0.148, 0.012, 8, 28]} />
+          {/* cream shorts */}
+          <mesh material={m.shorts} position={[0, 0.0, 0]}>
+            <cylinderGeometry args={[0.158, 0.178, 0.16, 28]} />
           </mesh>
           <Leg side={1} lref={r.legL} kref={r.kneeL} />
           <Leg side={-1} lref={r.legR} kref={r.kneeR} />
 
           <group ref={r.spine} position={[0, 0.06, 0]}>
-            {/* jacket body */}
-            <mesh geometry={capsule(0.155, 0.15)} material={m.jacket} position={[0, 0.16, 0]} scale={[1, 1, 0.86]} />
-            <mesh material={m.jacketTrim} position={[0, 0.045, 0]} rotation={[Math.PI / 2, 0, 0]} scale={[1, 0.86, 1]}>
-              <torusGeometry args={[0.152, 0.022, 10, 32]} />
+            {/* orange zip jacket */}
+            <mesh geometry={capsule(0.172, 0.14)} material={m.jacket} position={[0, 0.165, 0]} scale={[1, 1, 0.9]} />
+            <mesh geometry={geo.hem} material={m.jacketRib} position={[0, 0.035, 0]} scale={[1, 1, 0.9]} />
+            {/* zipper */}
+            <mesh material={m.zipper} position={[0, 0.17, 0.156]}>
+              <boxGeometry args={[0.012, 0.25, 0.008]} />
             </mesh>
-            {/* white T-shirt visible through the open jacket */}
-            <RoundedBox args={[0.11, 0.2, 0.04]} radius={0.018} smoothness={3} material={m.shirt} position={[0, 0.17, 0.118]} />
-            {/* jacket lapels */}
-            <RoundedBox args={[0.035, 0.22, 0.03]} radius={0.012} smoothness={3} material={m.jacketTrim} position={[0.062, 0.165, 0.127]} rotation={[0, 0, -0.05]} />
-            <RoundedBox args={[0.035, 0.22, 0.03]} radius={0.012} smoothness={3} material={m.jacketTrim} position={[-0.062, 0.165, 0.127]} rotation={[0, 0, 0.05]} />
-            <mesh material={m.jacketTrim} position={[0, 0.3, 0]} rotation={[Math.PI / 2, 0, 0]}>
-              <torusGeometry args={[0.08, 0.026, 10, 24]} />
+            <mesh material={m.zipper} position={[0.008, 0.27, 0.163]}>
+              <boxGeometry args={[0.012, 0.03, 0.006]} />
             </mesh>
-            {/* pockets */}
-            <RoundedBox args={[0.06, 0.04, 0.02]} radius={0.01} material={m.jacketTrim} position={[0.1, 0.09, 0.115]} rotation={[0, 0.5, 0]} />
-            <RoundedBox args={[0.06, 0.04, 0.02]} radius={0.01} material={m.jacketTrim} position={[-0.1, 0.09, 0.115]} rotation={[0, -0.5, 0]} />
+            {/* chest pockets with flaps */}
+            {[1, -1].map((s) => (
+              <group key={s} position={[0.085 * s, 0.105, 0.138]} rotation={[0, 0.42 * s, 0]}>
+                <RoundedBox args={[0.085, 0.075, 0.022]} radius={0.01} smoothness={2} material={m.jacket} />
+                <RoundedBox args={[0.09, 0.025, 0.026]} radius={0.01} smoothness={2} material={m.jacketRib} position={[0, 0.036, 0.002]} />
+              </group>
+            ))}
+            {/* hood collar + hood */}
+            <mesh geometry={geo.collar} material={m.jacket} position={[0, 0.305, 0.0]} />
+            <mesh material={m.jacket} position={[0, 0.31, -0.1]} scale={[1.25, 0.7, 0.75]}>
+              <sphereGeometry args={[0.12, 20, 14]} />
+            </mesh>
+            {/* drawstrings */}
+            {[1, -1].map((s) => (
+              <group key={s} position={[0.035 * s, 0.27, 0.15]}>
+                <mesh material={m.drawstring} position={[0, -0.04, 0]}>
+                  <cylinderGeometry args={[0.006, 0.006, 0.08, 6]} />
+                </mesh>
+                <mesh material={m.drawstring} position={[0, -0.085, 0]} scale={[1, 1.4, 1]}>
+                  <sphereGeometry args={[0.011, 8, 6]} />
+                </mesh>
+              </group>
+            ))}
 
-            {/* pink adventure backpack */}
-            <group position={[0, 0.17, -0.165]}>
-              <RoundedBox args={[0.23, 0.25, 0.11]} radius={0.045} smoothness={4} material={m.backpack} />
-              <RoundedBox args={[0.235, 0.09, 0.12]} radius={0.04} smoothness={3} material={m.backpackDark} position={[0, 0.085, -0.006]} />
-              <RoundedBox args={[0.14, 0.09, 0.04]} radius={0.02} smoothness={3} material={m.backpackDark} position={[0, -0.045, -0.06]} />
-              <mesh material={m.shoeAccent} position={[0, -0.02, -0.082]}>
-                <sphereGeometry args={[0.014, 10, 8]} />
+            {/* big khaki hiking backpack */}
+            <group position={[0, 0.16, -0.245]}>
+              <RoundedBox args={[0.3, 0.4, 0.16]} radius={0.06} smoothness={4} material={m.pack} />
+              <RoundedBox args={[0.31, 0.11, 0.18]} radius={0.05} smoothness={4} material={m.packDark} position={[0, 0.2, 0.005]} />
+              <RoundedBox args={[0.2, 0.17, 0.05]} radius={0.03} smoothness={3} material={m.packLight} position={[0, -0.07, -0.09]} />
+              <mesh material={m.strapDark} position={[0, -0.0, -0.117]}>
+                <boxGeometry args={[0.16, 0.006, 0.004]} />
+              </mesh>
+              {[1, -1].map((s) => (
+                <RoundedBox key={s} args={[0.055, 0.18, 0.1]} radius={0.025} smoothness={3} material={m.packLight} position={[0.165 * s, -0.08, 0.0]} />
+              ))}
+              {[-0.02, -0.12].map((y) => (
+                <mesh key={y} material={m.strap} position={[0, y, -0.12]}>
+                  <boxGeometry args={[0.24, 0.018, 0.008]} />
+                </mesh>
+              ))}
+              {/* little orange loop */}
+              <mesh material={m.jacket} position={[-0.11, 0.25, 0.0]} rotation={[0, Math.PI / 2, 0]}>
+                <torusGeometry args={[0.026, 0.009, 6, 14]} />
               </mesh>
             </group>
+            {/* shoulder straps over the shoulders and down the front */}
             {[1, -1].map((s) => (
-              <mesh key={s} material={m.backpackDark} position={[0.085 * s, 0.215, -0.01]} rotation={[0, Math.PI / 2, 0]} scale={[1, 1.05, 1]}>
-                <torusGeometry args={[0.158, 0.014, 6, 20, Math.PI]} />
-              </mesh>
+              <group key={s}>
+                <mesh material={m.strap} position={[0.1 * s, 0.205, -0.04]} rotation={[0, Math.PI / 2, 0]} scale={[1.05, 1, 1]}>
+                  <torusGeometry args={[0.16, 0.017, 6, 22, Math.PI * 0.8]} />
+                </mesh>
+                <mesh material={m.strap} position={[0.098 * s, 0.13, 0.158]} rotation={[0.04, 0, 0.1 * s]}>
+                  <boxGeometry args={[0.042, 0.26, 0.014]} />
+                </mesh>
+                <mesh material={m.strapDark} position={[0.104 * s, 0.03, 0.165]}>
+                  <boxGeometry args={[0.044, 0.025, 0.012]} />
+                </mesh>
+                {/* dangling strap end */}
+                <mesh material={m.strap} position={[0.112 * s, -0.06, 0.16]} rotation={[0.05, 0, -0.05 * s]}>
+                  <boxGeometry args={[0.024, 0.17, 0.008]} />
+                </mesh>
+                <mesh material={m.strapDark} position={[0.116 * s, -0.15, 0.16]}>
+                  <boxGeometry args={[0.028, 0.024, 0.012]} />
+                </mesh>
+              </group>
             ))}
+            {/* sternum strap + buckle */}
+            <mesh material={m.strap} position={[0, 0.205, 0.164]}>
+              <boxGeometry args={[0.19, 0.02, 0.008]} />
+            </mesh>
+            <mesh material={m.strapDark} position={[0, 0.205, 0.17]}>
+              <boxGeometry args={[0.036, 0.03, 0.012]} />
+            </mesh>
 
             <Arm side={1} sref={r.shoulderL} eref={r.elbowL} />
             <Arm side={-1} sref={r.shoulderR} eref={r.elbowR} item={rightHandItem} />
 
-            {/* neck + head */}
+            {/* neck + head (head slightly oversized for the chibi look) */}
             <group ref={r.neck} position={[0, 0.315, 0]}>
               <mesh material={m.skin} position={[0, 0.02, 0]}>
-                <cylinderGeometry args={[0.045, 0.05, 0.07, 14]} />
+                <cylinderGeometry args={[0.048, 0.054, 0.07, 14]} />
               </mesh>
-              <group position={[0, 0.04, 0]}>
-                <mesh geometry={geo.head} material={m.skin} position={[0, 0.22, 0]} scale={[1, 0.96, 0.95]} />
-                {/* ears */}
+              <group position={[0, 0.06 + 0.22 * 1.1, 0]} scale={1.1}>
+                <mesh geometry={geo.head} material={m.skin} scale={[1.03, 0.97, 0.97]} />
+                {/* chubby cheeks */}
                 {[1, -1].map((s) => (
-                  <mesh key={s} material={m.skinShade} position={[0.243 * s, 0.2, -0.01]} scale={[0.5, 1, 0.8]}>
-                    <sphereGeometry args={[0.05, 14, 10]} />
+                  <mesh key={s} material={m.skin} position={[0.112 * s, -0.125, 0.145]} scale={[1, 0.85, 0.8]}>
+                    <sphereGeometry args={[0.075, 20, 14]} />
                   </mesh>
                 ))}
                 <Eye side={1} eref={r.eyeL} />
                 <Eye side={-1} eref={r.eyeR} />
-                {/* eyebrows */}
+                {/* soft brows (mostly hidden by the bangs, like the reference) */}
                 {[1, -1].map((s) => (
-                  <mesh key={s} material={m.lash} position={[0.092 * s, 0.305, 0.215]} rotation={[0.2, 0.3 * s, 0.12 * s]}>
-                    <capsuleGeometry args={[0.008, 0.05, 4, 8]} />
+                  <mesh key={s} material={m.brow} position={[0.098 * s, 0.072, 0.225]} rotation={[0.25, 0.3 * s, 0.08 * s]}>
+                    <capsuleGeometry args={[0.007, 0.045, 4, 8]} />
                   </mesh>
                 ))}
-                {/* nose */}
-                <mesh material={m.skinShade} position={[0, 0.15, 0.24]} scale={[1.2, 0.9, 1]}>
-                  <sphereGeometry args={[0.018, 12, 10]} />
+                {/* button nose */}
+                <mesh material={m.skinShade} position={[0, -0.085, 0.243]} scale={[1.25, 0.85, 1]}>
+                  <sphereGeometry args={[0.02, 12, 10]} />
                 </mesh>
                 {/* mouth */}
-                <mesh ref={r.mouthSmile} geometry={geo.smile} material={m.mouth} position={[0, 0.098, 0.228]} rotation={[0.25, 0, Math.PI]} />
-                <mesh ref={r.mouthOpen} material={m.mouthInner} position={[0, 0.094, 0.226]} scale={[1, 0.8, 0.45]} visible={false}>
-                  <sphereGeometry args={[0.036, 16, 12]} />
+                <mesh ref={r.mouthSmile} geometry={geo.smile} material={m.lips} position={[0, -0.148, 0.222]} rotation={[0.3, 0, Math.PI + Math.PI * 0.1]} />
+                <mesh ref={r.mouthOpen} material={m.mouthInner} position={[0, -0.15, 0.22]} scale={[1, 0.8, 0.45]} visible={false}>
+                  <sphereGeometry args={[0.032, 16, 12]} />
                 </mesh>
-                {/* cheeks */}
+                {/* blush */}
                 {[1, -1].map((s) => (
-                  <mesh key={s} material={m.cheek} position={[0.152 * s, 0.12, 0.185]} rotation={[0, 0.65 * s, 0]} scale={[1.2, 0.8, 0.2]}>
+                  <mesh key={s} material={m.cheek} position={[0.135 * s, -0.11, 0.2]} rotation={[0, 0.55 * s, 0]} scale={[1.3, 0.8, 0.2]}>
                     <sphereGeometry args={[0.04, 16, 10]} />
                   </mesh>
                 ))}
 
-                {/* straight shiny black hair */}
-                <mesh geometry={geo.hairCap} material={m.hair} position={[0, 0.235, -0.008]} />
-                <mesh geometry={geo.bangs} material={m.hair} position={[0, 0.232, 0.004]} />
-                <group ref={r.hairBack}>
-                  <mesh geometry={geo.hairBackShell} material={m.hair} position={[0, 0.225, -0.012]} />
-                  <mesh geometry={geo.hairLong} material={m.hair} position={[0, 0.1, -0.02]} scale={[1, 1, 0.9]} />
-                  <mesh material={m.hair} position={[0, -0.045, -0.035]} rotation={[Math.PI / 2, 0, Math.PI]} scale={[1.08, 0.62, 1]}>
-                    <torusGeometry args={[0.245, 0.026, 6, 30, Math.PI]} />
-                  </mesh>
-                </group>
-                {/* side strands framing the face */}
-                {[1, -1].map((s) => (
-                  <mesh key={s} material={m.hair} position={[0.215 * s, 0.1, 0.07]} rotation={[0.08, 0, 0.05 * s]} scale={[0.75, 1, 0.9]}>
-                    <capsuleGeometry args={[0.05, 0.22, 4, 12]} />
-                  </mesh>
+                {/* voluminous wavy dark hair */}
+                <mesh geometry={geo.hairCap} material={m.hair} position={[0, 0.012, -0.005]} scale={[1.05, 1.06, 1.04]} />
+                <mesh geometry={geo.bangs} material={m.hair} position={[0, 0.008, 0.004]} scale={[1.03, 1, 1]} />
+                {geo.locks.map((g, i) => (
+                  <mesh key={i} geometry={g} material={m.hair} rotation={[0, HAIR_LOCKS[i].phi, 0]} position={[0, 0.012, 0]} scale={[1.04, 1.05, 1.03]} />
                 ))}
+                <group ref={r.hairBack}>
+                  <mesh geometry={geo.mantle} material={m.hair} />
+                </group>
               </group>
             </group>
           </group>

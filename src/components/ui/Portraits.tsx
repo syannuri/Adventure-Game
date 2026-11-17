@@ -2,7 +2,7 @@
 import type { DialogueLine } from '../../systems/store';
 
 export const SPEAKERS: Record<DialogueLine['speaker'], { name: string; color: string }> = {
-  anett: { name: 'Anett', color: '#e39a00' },
+  anett: { name: 'Anett', color: '#d9661f' },
   lumi: { name: 'Lumi the Fairy', color: '#7b5cff' },
   pip: { name: 'Pip the Rabbit', color: '#2f8ad8' },
   olli: { name: 'Olli the Owl', color: '#9a6b4a' },
@@ -11,23 +11,40 @@ export const SPEAKERS: Record<DialogueLine['speaker'], { name: string; color: st
 export function AnettPortrait() {
   return (
     <svg viewBox="0 0 100 100">
-      <rect width="100" height="100" fill="#ffe9a8" />
-      <path d="M14 100 Q16 78 50 76 Q84 78 86 100 Z" fill="#f7c531" />
-      <path d="M40 78 L50 92 L60 78 Z" fill="#fbfbf7" />
-      <path d="M22 44 Q20 82 30 84 L70 84 Q80 82 78 44 Z" fill="#15121a" />
-      <ellipse cx="50" cy="50" rx="25" ry="25" fill="#f7d9c8" />
-      <path d="M24 48 Q24 22 50 22 Q76 22 76 48 L76 40 Q70 37 50 37 Q30 37 24 40 Z" fill="#15121a" />
-      <path d="M24 46 Q26 20 50 20 Q74 20 76 46 Q74 36 50 36 Q26 36 24 46" fill="#2a2433" opacity="0.6" />
-      <path d="M33 26 Q44 22 52 24" stroke="#5a5070" strokeWidth="2" fill="none" opacity="0.7" />
-      <ellipse cx="40" cy="52" rx="6" ry="7" fill="#fff" />
-      <ellipse cx="60" cy="52" rx="6" ry="7" fill="#fff" />
-      <ellipse cx="40.5" cy="53" rx="4.4" ry="5.2" fill="#4a2a17" />
-      <ellipse cx="60.5" cy="53" rx="4.4" ry="5.2" fill="#4a2a17" />
-      <circle cx="42" cy="50.5" r="1.6" fill="#fff" />
-      <circle cx="62" cy="50.5" r="1.6" fill="#fff" />
-      <ellipse cx="31" cy="61" rx="4.5" ry="2.6" fill="#ff9aaa" opacity="0.6" />
-      <ellipse cx="69" cy="61" rx="4.5" ry="2.6" fill="#ff9aaa" opacity="0.6" />
-      <path d="M43 64 Q50 70 57 64" stroke="#b4485c" strokeWidth="2.6" fill="none" strokeLinecap="round" />
+      <rect width="100" height="100" fill="#ffe2c4" />
+      {/* backpack straps peeking over the jacket */}
+      <path d="M8 100 Q12 80 50 78 Q88 80 92 100 Z" fill="#e9843b" />
+      <path d="M38 79 Q50 86 62 79 L60 75 Q50 80 40 75 Z" fill="#c8622a" />
+      <rect x="30" y="80" width="7" height="20" fill="#7f7a70" />
+      <rect x="63" y="80" width="7" height="20" fill="#7f7a70" />
+      <path d="M50 82 L50 100" stroke="#c9c9cf" strokeWidth="1.6" />
+      {/* hair volume behind the face */}
+      <path d="M14 48 Q10 22 50 14 Q90 22 86 48 Q92 64 86 78 Q80 86 74 80 Q70 88 64 82 L36 82 Q30 88 26 80 Q20 86 14 78 Q8 64 14 48 Z" fill="#2b221e" />
+      <path d="M20 60 Q16 70 20 78 M80 60 Q84 70 80 78" stroke="#5c4d45" strokeWidth="2" fill="none" />
+      {/* round chubby face */}
+      <ellipse cx="50" cy="54" rx="26" ry="25" fill="#f1c5a1" />
+      <ellipse cx="34" cy="64" rx="9" ry="7" fill="#f1c5a1" />
+      <ellipse cx="66" cy="64" rx="9" ry="7" fill="#f1c5a1" />
+      {/* full straight bangs */}
+      <path d="M22 50 Q20 24 50 22 Q80 24 78 50 L74 46 L70 49 L66 45 L61 48 L56 45 L50 48 L44 45 L39 48 L34 45 L30 49 L26 46 Z" fill="#2b221e" />
+      <path d="M34 30 Q46 24 60 27" stroke="#6b5a52" strokeWidth="2" fill="none" opacity="0.8" />
+      {/* big amber eyes */}
+      <ellipse cx="39" cy="56" rx="7.4" ry="8" fill="#fff" />
+      <ellipse cx="61" cy="56" rx="7.4" ry="8" fill="#fff" />
+      <circle cx="39.5" cy="57" r="5.8" fill="#b8621d" />
+      <circle cx="61.5" cy="57" r="5.8" fill="#b8621d" />
+      <circle cx="39.5" cy="57.5" r="3.6" fill="#f2a145" opacity="0.55" />
+      <circle cx="61.5" cy="57.5" r="3.6" fill="#f2a145" opacity="0.55" />
+      <circle cx="39.5" cy="57" r="2.6" fill="#140804" />
+      <circle cx="61.5" cy="57" r="2.6" fill="#140804" />
+      <circle cx="37.5" cy="54.5" r="1.7" fill="#fff" />
+      <circle cx="59.5" cy="54.5" r="1.7" fill="#fff" />
+      <path d="M31 53 Q39 46 47 53 M53 53 Q61 46 69 53" stroke="#1e1512" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+      <path d="M31 53 L28 50 M69 53 L72 50" stroke="#1e1512" strokeWidth="1.6" strokeLinecap="round" />
+      <ellipse cx="30" cy="66" rx="5" ry="3" fill="#ff9b8f" opacity="0.55" />
+      <ellipse cx="70" cy="66" rx="5" ry="3" fill="#ff9b8f" opacity="0.55" />
+      <ellipse cx="50" cy="65" rx="2.4" ry="1.7" fill="#e3a98a" />
+      <path d="M44 71 Q50 75 56 71" stroke="#c4655c" strokeWidth="2.4" fill="none" strokeLinecap="round" />
     </svg>
   );
 }
