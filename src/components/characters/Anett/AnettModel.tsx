@@ -141,6 +141,33 @@ function bangsGeometry() {
   return g;
 }
 
+let blushTex: THREE.Texture | null = null;
+/** Soft radial blush that fades to nothing at the edges (no hard outline). */
+function blushTexture() {
+  if (blushTex) return blushTex;
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const g = c.getContext('2d')!;
+  const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grd.addColorStop(0, 'rgba(255,255,255,0.75)');
+  grd.addColorStop(0.45, 'rgba(255,255,255,0.4)');
+  grd.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = grd;
+  g.fillRect(0, 0, 128, 128);
+  blushTex = new THREE.CanvasTexture(c);
+  return blushTex;
+}
+
+/**
+ * A patch of the head sphere around one cheek, so the blush lies exactly on the skin's curve.
+ * Sphere angles: x = -r·cos(phi)·sin(theta), y = r·cos(theta), z = r·sin(phi)·sin(theta).
+ */
+function cheekPatch(side: 1 | -1) {
+  const phiC = side === 1 ? 2.12 : Math.PI - 2.12;
+  const thetaC = 1.92;
+  return new THREE.SphereGeometry(0.2512, 20, 14, phiC - 0.36, 0.72, thetaC - 0.27, 0.54);
+}
+
 let irisTex: THREE.Texture | null = null;
 /** Painted amber iris with radial streaks, dark limbal ring and pupil. */
 function irisTexture() {
@@ -204,7 +231,15 @@ function useMaterials() {
       packLight: mat(P.packLight, 0.8),
       strap: mat(P.strap, 0.75),
       strapDark: mat(P.strapDark, 0.5),
-      cheek: new THREE.MeshBasicMaterial({ color: P.cheek, transparent: true, opacity: 0.22, depthWrite: false }),
+      cheek: new THREE.MeshBasicMaterial({
+        color: P.cheek,
+        map: blushTexture(),
+        transparent: true,
+        opacity: 0.55,
+        depthWrite: false,
+        polygonOffset: true,
+        polygonOffsetFactor: -2,
+      }),
       lips: mat(P.lips, 0.45),
       mouthInner: mat('#7a2a30', 0.6),
     };
@@ -288,7 +323,10 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
       iris: new THREE.CircleGeometry(0.05, 40),
       hl: new THREE.SphereGeometry(0.013, 10, 8),
       lashArc: new THREE.TorusGeometry(0.062, 0.0075, 6, 24, Math.PI * 0.95),
-      smile: new THREE.TorusGeometry(0.032, 0.008, 8, 24, Math.PI * 0.8),
+      smile: new THREE.TorusGeometry(0.036, 0.0055, 8, 32, Math.PI * 0.7),
+      lowerLip: new THREE.SphereGeometry(0.016, 16, 10),
+      cheekL: cheekPatch(1),
+      cheekR: cheekPatch(-1),
       hem: rib(hemTorus, 70, 0.03),
       cuff: rib(cuffTorus, 30, 0.05),
       collar: rib(collar, 50, 0.02),
@@ -493,21 +531,21 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
                     <capsuleGeometry args={[0.007, 0.045, 4, 8]} />
                   </mesh>
                 ))}
-                {/* button nose */}
-                <mesh material={m.skinShade} position={[0, -0.085, 0.243]} scale={[1.25, 0.85, 1]}>
-                  <sphereGeometry args={[0.02, 12, 10]} />
+                {/* small soft nose: a gentle bump in the same skin tone, read by shading only */}
+                <mesh material={m.skin} position={[0, -0.078, 0.221]} scale={[1.15, 0.8, 0.62]}>
+                  <sphereGeometry args={[0.019, 16, 12]} />
                 </mesh>
-                {/* mouth */}
-                <mesh ref={r.mouthSmile} geometry={geo.smile} material={m.lips} position={[0, -0.148, 0.222]} rotation={[0.3, 0, Math.PI + Math.PI * 0.1]} />
-                <mesh ref={r.mouthOpen} material={m.mouthInner} position={[0, -0.15, 0.22]} scale={[1, 0.8, 0.45]} visible={false}>
-                  <sphereGeometry args={[0.032, 16, 12]} />
-                </mesh>
-                {/* blush */}
-                {[1, -1].map((s) => (
-                  <mesh key={s} material={m.cheek} position={[0.128 * s, -0.095, 0.2]} rotation={[0, 0.6 * s, 0]} scale={[1.1, 0.65, 0.15]}>
-                    <sphereGeometry args={[0.036, 16, 10]} />
+                {/* mouth: small closed smile sitting on the face surface, with a hint of lower lip */}
+                <group position={[0, -0.142, 0.196]} rotation={[0.62, 0, 0]}>
+                  <mesh ref={r.mouthSmile} geometry={geo.smile} material={m.lips} position={[0, 0.012, 0.002]} rotation={[0, 0, Math.PI + Math.PI * 0.15]} scale={[1, 0.7, 1]} />
+                  <mesh geometry={geo.lowerLip} material={m.cheek} position={[0, -0.012, 0.0]} scale={[1.1, 0.45, 0.25]} />
+                  <mesh ref={r.mouthOpen} material={m.mouthInner} position={[0, 0, 0.0]} scale={[1, 0.8, 0.45]} visible={false}>
+                    <sphereGeometry args={[0.03, 16, 12]} />
                   </mesh>
-                ))}
+                </group>
+                {/* natural blush painted on the cheek curve */}
+                <mesh geometry={geo.cheekL} material={m.cheek} scale={[1.03, 0.97, 0.97]} renderOrder={1} />
+                <mesh geometry={geo.cheekR} material={m.cheek} scale={[1.03, 0.97, 0.97]} renderOrder={1} />
 
                 {/* voluminous wavy dark hair */}
                 <mesh geometry={geo.hairCap} material={m.hair} position={[0, 0.012, -0.005]} scale={[1.05, 1.06, 1.04]} />
