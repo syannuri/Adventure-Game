@@ -53,7 +53,7 @@ Progress (completed worlds, Magic Stars, achievements, best scores, settings) is
 
 - **Anett:** a procedural, rigged, stylized 3D character built to match the official reference image
   [`docs/anett-reference.jpg`](docs/anett-reference.jpg): voluminous wavy dark hair with full bangs, a round
-  face with warm skin and big amber eyes, an orange hooded zip jacket with ribbed cuffs and chest pockets,
+  face with fair, light skin and big amber eyes, an orange hooded zip jacket with ribbed cuffs and chest pockets,
   a big khaki hiking backpack with grey straps, cream shorts, slouchy socks and tan hiking boots. One shared model
   and palette, so she looks the same in every scene.
 - **Animation system:** an animation state machine with a blend tree (idle ↔ walk ↔ run, by speed), jump/fall

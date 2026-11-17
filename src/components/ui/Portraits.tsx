@@ -22,9 +22,7 @@ export function AnettPortrait() {
       <path d="M14 48 Q10 22 50 14 Q90 22 86 48 Q92 64 86 78 Q80 86 74 80 Q70 88 64 82 L36 82 Q30 88 26 80 Q20 86 14 78 Q8 64 14 48 Z" fill="#2b221e" />
       <path d="M20 60 Q16 70 20 78 M80 60 Q84 70 80 78" stroke="#5c4d45" strokeWidth="2" fill="none" />
       {/* round chubby face */}
-      <ellipse cx="50" cy="54" rx="26" ry="25" fill="#f1c5a1" />
-      <ellipse cx="34" cy="64" rx="9" ry="7" fill="#f1c5a1" />
-      <ellipse cx="66" cy="64" rx="9" ry="7" fill="#f1c5a1" />
+      <ellipse cx="50" cy="54" rx="26" ry="25" fill="#f9dcc6" />
       {/* full straight bangs */}
       <path d="M22 50 Q20 24 50 22 Q80 24 78 50 L74 46 L70 49 L66 45 L61 48 L56 45 L50 48 L44 45 L39 48 L34 45 L30 49 L26 46 Z" fill="#2b221e" />
       <path d="M34 30 Q46 24 60 27" stroke="#6b5a52" strokeWidth="2" fill="none" opacity="0.8" />
@@ -41,9 +39,9 @@ export function AnettPortrait() {
       <circle cx="59.5" cy="54.5" r="1.7" fill="#fff" />
       <path d="M31 53 Q39 46 47 53 M53 53 Q61 46 69 53" stroke="#1e1512" strokeWidth="2.2" fill="none" strokeLinecap="round" />
       <path d="M31 53 L28 50 M69 53 L72 50" stroke="#1e1512" strokeWidth="1.6" strokeLinecap="round" />
-      <ellipse cx="30" cy="66" rx="5" ry="3" fill="#ff9b8f" opacity="0.55" />
-      <ellipse cx="70" cy="66" rx="5" ry="3" fill="#ff9b8f" opacity="0.55" />
-      <ellipse cx="50" cy="65" rx="2.4" ry="1.7" fill="#e3a98a" />
+      <ellipse cx="31" cy="65" rx="4.5" ry="2.6" fill="#ff9b8f" opacity="0.35" />
+      <ellipse cx="69" cy="65" rx="4.5" ry="2.6" fill="#ff9b8f" opacity="0.35" />
+      <ellipse cx="50" cy="65" rx="2.4" ry="1.7" fill="#efc2a6" />
       <path d="M44 71 Q50 75 56 71" stroke="#c4655c" strokeWidth="2.4" fill="none" strokeLinecap="round" />
     </svg>
   );

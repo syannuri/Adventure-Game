@@ -3,7 +3,7 @@
  *
  * DESIGN REFERENCE: docs/anett-reference.jpg (the official look).
  *  - voluminous, wavy dark-brown/black hair falling past the shoulders, full straight-cut bangs
- *  - round face, warm skin, big amber-brown eyes with long lashes, small nose, soft smile
+ *  - round face, fair light skin (Indonesian / East-Asian fair tone), big amber-brown eyes with long lashes, small nose, soft smile
  *  - orange hooded zip-up jacket: ribbed darker-orange cuffs & hem, chest pockets with flaps,
  *    silver zipper, white hood drawstrings
  *  - big khaki hiking backpack with grey shoulder straps, sternum strap and dangling strap ends
@@ -20,8 +20,8 @@ import { RoundedBox } from '@react-three/drei';
 import { smoothstep } from '../../../utils/math';
 
 export const ANETT_PALETTE = {
-  skin: '#f1c5a1',
-  skinShade: '#e3a98a',
+  skin: '#f9dcc6', // fair, light warm-ivory (Indonesian / East-Asian fair skin)
+  skinShade: '#efc2a6',
   hair: '#2b221e',
   hairSheen: '#8c7b70',
   irisInner: '#f2a145',
@@ -182,7 +182,7 @@ function useMaterials() {
     const mat = (color: string, roughness = 0.7, extra: Partial<THREE.MeshPhysicalMaterialParameters> = {}) =>
       new THREE.MeshPhysicalMaterial({ color, roughness, metalness: 0, ...extra });
     return {
-      skin: mat(P.skin, 0.55, { sheen: 0.5, sheenColor: new THREE.Color('#ffd9c4'), sheenRoughness: 0.6 }),
+      skin: mat(P.skin, 0.55, { sheen: 0.3, sheenColor: new THREE.Color('#ffe2d2'), sheenRoughness: 0.6, emissive: new THREE.Color('#ff9f7a'), emissiveIntensity: 0.07 }),
       skinShade: mat(P.skinShade, 0.6),
       hair: mat(P.hair, 0.5, { sheen: 1, sheenColor: new THREE.Color(P.hairSheen), sheenRoughness: 0.4, clearcoat: 0.2, clearcoatRoughness: 0.5, side: THREE.DoubleSide }),
       eyeWhite: mat('#fffdf8', 0.2, { clearcoat: 1 }),
