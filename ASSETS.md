@@ -21,7 +21,7 @@ repository also contains the design reference images in `docs/`.
 
 | Asset | File | Status |
 | --- | --- | --- |
-| Anet 3D model + joint rig | `src/components/characters/Anett/AnettModel.tsx` | **Placeholder.** Procedural geometry matching `docs/anett-reference.jpg` (generated one-piece hair surface with fringe, painted amber iris texture). To be replaced by a sculpted, rigged GLB. |
+| Anet 3D model + joint rig | `src/components/characters/Anett/AnettModel.tsx` | **Placeholder.** Procedural geometry matching the cover illustration `docs/anet-cover-source.png` (generated one-piece centre-part hair surface, striped-shirt and corduroy textures, painted iris texture). To be replaced by a sculpted, rigged GLB. |
 | Anet animations (13) | `src/components/characters/Anett/AnettAnimations.ts` | **Placeholder.** Procedural poses. To be replaced or augmented by GLTF/Mixamo clips. |
 | Lumi (fairy), Pip (rabbit), Olli (owl), ambient bunnies, ducks, butterflies, birds | `src/components/characters/npc/*`, `worlds/EnchantedForest/Critters.tsx` | **Placeholder** procedural models |
 | Terrain, trees, hero trees, grass, flowers, mushrooms, rocks, mushroom house, platforms, hollow log, chests, wand, stars, acorns | `src/components/worlds/EnchantedForest/*`, `gameplay/collectibles/*` | Procedural (stylized). Can stay, or be swapped for modeled props. |
