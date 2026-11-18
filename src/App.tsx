@@ -51,11 +51,11 @@ export default function App() {
     window.addEventListener('pointerdown', unlock, { passive: true });
     // every menu button gives a little sound the moment it is touched (in-game touch controls have their own)
     const press = (e: PointerEvent) => {
-      const el = (e.target as HTMLElement | null)?.closest?.('.btn, .world-card, .lang-switch button, .icon-btn, .help-btn, .toggle button');
+      const el = (e.target as HTMLElement | null)?.closest?.('.btn, .world-card, .lang-switch button, .icon-btn, .help-btn, .toggle button, .home-play, .home-pill');
       if (!el || (el as HTMLButtonElement).disabled) return;
       audio.unlock();
       if (el.classList.contains('locked')) return audio.sfx('pop', { pitch: 0.7 });
-      audio.sfx(el.classList.contains('big') ? 'tapPlay' : 'tap', { pitch: 0.94 + Math.random() * 0.12 });
+      audio.sfx(el.classList.contains('big') || el.classList.contains('home-play') ? 'tapPlay' : 'tap', { pitch: 0.94 + Math.random() * 0.12 });
     };
     window.addEventListener('pointerdown', press, { passive: true });
     window.addEventListener('keydown', unlock);

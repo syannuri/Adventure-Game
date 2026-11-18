@@ -9,6 +9,11 @@ export const en = {
     story: 'Story',
     settings: 'Settings',
     magicStars: 'Magic Stars',
+    next: 'Next adventure',
+    again: 'Play again',
+    worldN: (n: number, name: string) => `World ${n} · ${name}`,
+    starsOf: (n: number) => `${n} / 5 Magic Stars`,
+    anetLines: (world: string) => ['Hi! Ready for an adventure?', `Next stop: ${world}!`, 'Tap an island in the sky to see a world!', "Let's collect all five Magic Stars!", 'Tap me, I love to jump!'],
   },
   worldsScreen: {
     title: 'The Magic Map',

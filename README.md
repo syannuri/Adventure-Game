@@ -114,6 +114,7 @@ Progress (completed worlds, Magic Stars, achievements, best scores, settings) is
 - **NPCs:** Lumi the fairy (iridescent wings, sad → happy expression), Pip the rabbit and Olli the owl, plus
   ambient bunnies. All have idle and talking animations and face Anet when she's near.
 - **Dialogue:** speech bubbles with SVG character portraits, typewriter text and voice "chirps".
+- **Living main menu:** a parallax golden-hour sky; the five worlds float as islands (tap to see their names); birds and fireflies; Anet hops and talks when tapped; a "next adventure" card and a pulsing Play button that continues with the first unfinished world; the Magic Stars collected so far.
 - **UI:** animated main menu with 3D scene, storybook opening cinematic ("Anet discovers the map"), world
   select map, character introduction, settings (music volume, sound volume, graphics quality), pause menu, HUD
   (star, acorn and treasure counters, mission objective, rotating minimap with objective marker), achievement

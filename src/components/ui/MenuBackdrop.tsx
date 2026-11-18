@@ -2,8 +2,12 @@
  * Painted golden-hour backdrop for the menus (pure SVG + CSS animation: no WebGL, so it is light
  * and perfectly smooth on phones). Anet stands on the meadow, breathing, blinking and waving.
  */
-import { memo, useMemo } from 'react';
-import type { Screen } from '../../systems/store';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { useGame, type Screen } from '../../systems/store';
+import { useT } from '../../i18n/useT';
+import { WORLDS } from '../../data/worlds';
+import { audio } from '../audio/audioEngine';
+import { sparkleBurst } from './sparkleBurst';
 
 // deterministic pseudo-random so the meadow looks the same every time
 function rng(seed: number) {
@@ -200,9 +204,48 @@ const Scene = memo(function Scene() {
  */
 const COVER = { small: './cover/anet-720.webp', large: './cover/anet-1300.webp' };
 
-const AnetCover = memo(function AnetCover() {
+/** Anet on the main menu: tap her and she hops, sparkles and says something; she also chats on her own. */
+function AnetCover() {
+  const t = useT();
+  const save = useGame((s) => s.save);
+  const next = WORLDS.find((w) => w.built && !save.completedWorlds.includes(w.id)) ?? WORLDS[0];
+  const lines = t.menu.anetLines(t.worlds[next.id]?.name ?? next.name);
+  const [line, setLine] = useState<string | null>(null);
+  const [hop, setHop] = useState(0);
+  const idx = useRef(0);
+  const hideT = useRef(0);
+  const say = () => {
+    setLine(lines[idx.current++ % lines.length]);
+    window.clearTimeout(hideT.current);
+    hideT.current = window.setTimeout(() => setLine(null), 3600);
+  };
+  const sayRef = useRef(say);
+  sayRef.current = say;
+  useEffect(() => {
+    const first = window.setTimeout(() => sayRef.current(), 1200);
+    const iv = window.setInterval(() => sayRef.current(), 8000);
+    return () => {
+      window.clearTimeout(first);
+      window.clearInterval(iv);
+      window.clearTimeout(hideT.current);
+    };
+  }, []);
   return (
-    <div className="cover-anet">
+    <div
+      className={'cover-anet' + (hop % 2 ? ' hop-a' : hop ? ' hop-b' : '')}
+      onClick={(e) => {
+        audio.unlock();
+        audio.sfx('jump', { volume: 0.7 });
+        sparkleBurst(e.clientX, e.clientY);
+        setHop((h) => h + 1);
+        say();
+      }}
+    >
+      {line && (
+        <div key={line} className="cover-bubble">
+          {line}
+        </div>
+      )}
       <div className="cover-shadow" />
       <div className="cover-figure">
         <img
@@ -217,6 +260,23 @@ const AnetCover = memo(function AnetCover() {
         {/* warm sunlight wash, masked to Anet's shape */}
         <div className="cover-sunlight" style={{ WebkitMaskImage: `url(${COVER.small})`, maskImage: `url(${COVER.small})` }} />
       </div>
+    </div>
+  );
+}
+
+/** A few birds crossing the evening sky. */
+const Birds = memo(function Birds() {
+  return (
+    <div className="mb-birds">
+      {[
+        [16, 28, 0],
+        [22, 34, 11],
+        [12, 42, 22],
+      ].map(([top, dur, delay], i) => (
+        <svg key={i} viewBox="0 0 24 12" style={{ top: `${top}%`, animationDuration: `${dur}s`, animationDelay: `-${delay}s` }}>
+          <path d="M1 7 Q6 1 12 7 Q18 1 23 7" stroke="#5a4a7a" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+        </svg>
+      ))}
     </div>
   );
 });
@@ -254,7 +314,10 @@ function LensFlare() {
 export function MenuBackdrop({ screen }: { screen: Screen }) {
   return (
     <div className={'menu-backdrop' + (screen === 'menu' ? '' : ' dim')} aria-hidden>
-      <Scene />
+      <div className="mb-parallax">
+        <Scene />
+      </div>
+      <Birds />
       <div className="mb-warmth" />
       <LensFlare />
       <Motes />
