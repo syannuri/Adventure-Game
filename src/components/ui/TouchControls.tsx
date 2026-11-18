@@ -1,6 +1,6 @@
 /** On-screen virtual joystick, jump, action and emote buttons for phones and tablets. */
 import { useEffect, useRef, useState } from 'react';
-import { input, onRunToggle, setTouchMove, toggleRun } from '../../systems/input';
+import { input, JOY_RUN, setTouchMove } from '../../systems/input';
 import { useGame } from '../../systems/store';
 import { useT } from '../../i18n/useT';
 
@@ -19,8 +19,7 @@ export function TouchControls() {
   const knob = useRef<HTMLDivElement>(null);
   const active = useRef<number | null>(null);
   const prompt = useGame((s) => s.prompt);
-  const [running, setRunning] = useState(input.runToggle);
-  useEffect(() => onRunToggle(setRunning), []);
+  const [running, setRunning] = useState(false);
   const t = useT();
 
   const update = (cx: number, cy: number) => {
@@ -35,11 +34,14 @@ export function TouchControls() {
     }
     knob.current!.style.transform = `translate(${dx}px, ${dy}px)`;
     setTouchMove(dx / max, -dy / max);
+    const run = Math.hypot(dx, dy) / max > JOY_RUN;
+    setRunning((r) => (r === run ? r : run));
   };
   const end = () => {
     active.current = null;
     knob.current!.style.transform = '';
     setTouchMove(0, 0);
+    setRunning(false);
   };
   useEffect(() => () => setTouchMove(0, 0), []);
 
@@ -53,7 +55,7 @@ export function TouchControls() {
     <div className="touch">
       <div
         ref={base}
-        className="joystick"
+        className={'joystick' + (running ? ' running' : '')}
         onPointerDown={(e) => {
           e.stopPropagation();
           active.current = e.pointerId;
@@ -66,7 +68,9 @@ export function TouchControls() {
         onPointerUp={end}
         onPointerCancel={end}
       >
+        <div className="joy-run-zone" />
         <div ref={knob} className="knob" />
+        {running && <div className="joy-run-label">🏃</div>}
       </div>
       <div className="touch-buttons">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
@@ -75,9 +79,6 @@ export function TouchControls() {
           </button>
           <button className="tbtn small" aria-label={t.touch.dance} onPointerDown={press(() => (input.emote = 'dance'))}>
             ♪
-          </button>
-          <button className={'tbtn run' + (running ? ' on' : '')} aria-pressed={running} onPointerDown={press(() => toggleRun())}>
-            {running ? t.touch.runOn : t.touch.run}
           </button>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center' }}>

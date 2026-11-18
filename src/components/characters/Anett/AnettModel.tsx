@@ -161,6 +161,9 @@ function unifiedHair() {
   g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   g.setIndex(idx);
   g.computeVertexNormals();
+  // real tangents for the strand normal map (screen-space derivatives can produce NaN pixels,
+  // which bloom then smears over the whole screen)
+  g.computeTangents();
   return g;
 }
 
@@ -282,11 +285,9 @@ function useMaterials() {
         // strand detail + stretched, hair-like highlight
         normalMap: strandNormalTexture(),
         normalScale: new THREE.Vector2(0.28, 0.28),
-        anisotropy: 0.35,
-        anisotropyRotation: Math.PI / 2,
       }),
-      eyeWhite: mat('#fffdf8', 0.2, { clearcoat: 1 }),
-      iris: mat('#ffffff', 0.2, { map: irisTexture(), clearcoat: 1, clearcoatRoughness: 0.05 }),
+      eyeWhite: mat('#fffdf8', 0.35, { clearcoat: 0.35, clearcoatRoughness: 0.3 }),
+      iris: mat('#ffffff', 0.3, { map: irisTexture(), clearcoat: 0.5, clearcoatRoughness: 0.2 }),
       highlight: new THREE.MeshBasicMaterial({ color: '#ffffff' }),
       lash: mat(P.lash, 0.6),
       brow: mat(P.brow, 0.8),

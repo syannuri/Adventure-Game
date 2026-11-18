@@ -9,7 +9,7 @@ import * as THREE from 'three';
 import { AnettModel, type AnettRig } from './AnettModel';
 import { AnettAnimator } from './AnettAnimator';
 import type { AnimState } from './AnettAnimations';
-import { input } from '../../../systems/input';
+import { input, joystickSpeed } from '../../../systems/input';
 import { cameraState, player } from '../../../systems/playerState';
 import { groundHeightAt, resolveCollisions } from '../../../systems/physics';
 import { useGame } from '../../../systems/store';
@@ -114,7 +114,13 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
       const l = Math.hypot(dx, dz) || 1;
       dx /= l;
       dz /= l;
-      speedWanted = (input.run ? RUN_SPEED : WALK_SPEED) * Math.min(1, mlen);
+      if (input.analog && !input.runToggle) {
+        // touch joystick: push a little = slow walk, further = walk, far = run (smooth blend)
+        const f = joystickSpeed(Math.min(1, mlen));
+        speedWanted = f <= 1 ? WALK_SPEED * f : WALK_SPEED + (RUN_SPEED - WALK_SPEED) * (f - 1);
+      } else {
+        speedWanted = (input.run ? RUN_SPEED : WALK_SPEED) * Math.min(1, mlen);
+      }
       player.autoTarget = null;
       s.idleTime = 0;
       if (s.action) s.action = null; // moving cancels emotes

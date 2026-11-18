@@ -46,6 +46,7 @@ export type AnimState =
   | 'walk'
   | 'run'
   | 'jump'
+  | 'apex'
   | 'fall'
   | 'land'
   | 'wave'
@@ -130,37 +131,62 @@ export const POSES: Record<AnimState, (t: number, phase: number) => Pose> = {
     return p;
   },
 
+  /** Take-off / rising: arms thrown up high, knees tucked up, chest open, looking up. */
   jump: (t) => {
     const p = emptyPose();
-    p.joints.legL = [-0.75, 0, 0.05];
-    p.joints.kneeL = [1.25, 0, 0];
-    p.joints.legR = [0.25, 0, -0.05];
-    p.joints.kneeR = [0.55, 0, 0];
-    p.joints.shoulderL = [-0.6, 0, 1.0];
-    p.joints.shoulderR = [-0.6, 0, -1.0];
-    p.joints.elbowL = [-0.5, 0, 0];
-    p.joints.elbowR = [-0.5, 0, 0];
-    p.joints.spine = [-0.05, 0, 0];
+    p.joints.legL = [-0.85, 0, 0.1];
+    p.joints.kneeL = [1.55, 0, 0];
+    p.joints.legR = [-0.55, 0, -0.1];
+    p.joints.kneeR = [1.35, 0, 0];
+    // arms thrown up overhead in a "V" (hooray!), clear of the face
+    p.joints.shoulderL = [-0.2, 0, 2.05];
+    p.joints.shoulderR = [-0.2, 0, -2.05];
+    p.joints.elbowL = [0, 0, 0.35];
+    p.joints.elbowR = [0, 0, -0.35];
+    p.joints.spine = [-0.16, 0, 0];
     p.joints.neck = [-0.12, 0, S(t * 3) * 0.03];
-    p.mouth = 0.55;
+    p.joints.hips = [-0.05, 0, 0];
+    p.mouth = 0.6;
     p.brow = 0.55;
+    p.squint = 0.2;
     return p;
   },
 
+  /** Top of the jump: a happy tuck – knees up, arms out in a "V". */
+  apex: (t) => {
+    const p = emptyPose();
+    p.joints.legL = [-1.05, 0, 0.14];
+    p.joints.kneeL = [1.85, 0, 0];
+    p.joints.legR = [-0.95, 0, -0.14];
+    p.joints.kneeR = [1.8, 0, 0];
+    p.joints.shoulderL = [-1.1, 0, 1.75];
+    p.joints.shoulderR = [-1.1, 0, -1.75];
+    p.joints.elbowL = [-0.15, 0, 0.2];
+    p.joints.elbowR = [-0.15, 0, -0.2];
+    p.joints.spine = [0.08, 0, 0];
+    p.joints.neck = [-0.08, 0, S(t * 4) * 0.04];
+    p.mouth = 0.75;
+    p.brow = 0.45;
+    p.squint = 0.45;
+    return p;
+  },
+
+  /** Coming down: arms out wide for balance, legs reaching down for the ground, eyes on the landing. */
   fall: (t) => {
     const p = emptyPose();
-    const w = S(t * 9) * 0.15;
-    p.joints.legL = [-0.35, 0, 0.12];
-    p.joints.kneeL = [0.7, 0, 0];
-    p.joints.legR = [-0.1, 0, -0.12];
-    p.joints.kneeR = [0.45, 0, 0];
-    p.joints.shoulderL = [-0.2, 0, 1.35 + w];
-    p.joints.shoulderR = [-0.2, 0, -1.35 - w];
-    p.joints.elbowL = [-0.3, 0, 0];
-    p.joints.elbowR = [-0.3, 0, 0];
-    p.joints.neck = [0.1, 0, 0];
-    p.mouth = 0.35;
-    p.brow = 0.35;
+    const w = S(t * 9) * 0.12;
+    p.joints.legL = [-0.32, 0, 0.1];
+    p.joints.kneeL = [0.42, 0, 0];
+    p.joints.legR = [-0.12, 0, -0.1];
+    p.joints.kneeR = [0.3, 0, 0];
+    p.joints.shoulderL = [-0.35, 0, 1.45 + w];
+    p.joints.shoulderR = [-0.35, 0, -1.45 - w];
+    p.joints.elbowL = [-0.35, 0, 0.15];
+    p.joints.elbowR = [-0.35, 0, -0.15];
+    p.joints.spine = [0.14, 0, 0];
+    p.joints.neck = [0.14, 0, 0];
+    p.mouth = 0.4;
+    p.brow = 0.4;
     return p;
   },
 
