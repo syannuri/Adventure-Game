@@ -73,6 +73,9 @@ Progress (completed worlds, Magic Stars, achievements, best scores, settings) is
   - The file `public/models/anet.glb` is about 1 MB (meshopt + WebP).
   - The procedural model is the fallback: it shows while the HD model loads, if loading fails, or
     with `?procedural` in the URL. One shared rig, so she moves the same way in every scene.
+  - Face: eyelids that blink and squint when she smiles, and a mouth that opens when she talks,
+    laughs or is surprised. Both are driven by the same expression values as the procedural face.
+    Use `?view=face&face=closed` (or `face=open`) to review them.
 - **Animation system:** an animation state machine with a blend tree (idle ↔ walk ↔ run, by speed), jump/fall
   blending by vertical velocity, landing squash, and damped joint blending between all states. It also has an
   upper-body overlay layer for collecting. All 13 required animations are in: idle breathing, eye blinking,
@@ -189,7 +192,7 @@ which is far too slow to measure performance.
 
 ## Roadmap
 
-2. Facial animation for the HD model (blinking, talking mouth) via blend shapes or a painted face layer.
+2. Real blend-shape facial animation for the HD model (it now has blinking/squinting eyelids and an opening mouth).
 3. World 2 – Candy Village (ingredient-collecting mission, sorting puzzle).
 4. World 3 – Crystal Cave (crystal collecting, light-beam puzzle).
 5. World 4 – Ocean Kingdom (swimming movement, rescue the baby sea turtle).
