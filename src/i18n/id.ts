@@ -11,6 +11,11 @@ export const id: Dict = {
     story: 'Cerita',
     settings: 'Pengaturan',
     magicStars: 'Bintang Ajaib',
+    next: 'Petualangan berikutnya',
+    again: 'Main lagi',
+    worldN: (n, name) => `Dunia ${n} · ${name}`,
+    starsOf: (n) => `${n} / 5 Bintang Ajaib`,
+    anetLines: (world) => ['Halo! Siap berpetualang?', `Berikutnya: ${world}!`, 'Ketuk pulau di langit untuk melihat dunia!', 'Ayo kumpulkan lima Bintang Ajaib!', 'Ketuk aku, aku suka melompat!'],
   },
   worldsScreen: {
     title: 'Peta Ajaib',
