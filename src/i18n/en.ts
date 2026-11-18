@@ -44,7 +44,7 @@ export const en = {
     hi: "Hi, I'm Anet!",
     p1: "I'm seven years old and I love exploring! I'm curious, brave and always happy to help a friend. In Grandma's old treasure box I found a magical map that leads to five secret lands.",
     loveLabel: 'I love:',
-    love: 'my yellow striped T-shirt, my favourite mustard overall dress, my hiking boots with pink laces, jumping on mushrooms and dancing with forest friends!',
+    love: 'my yellow striped T-shirt, my favourite mustard overall dress, my hiking boots with pink laces, my adventure backpack, jumping on mushrooms and dancing with forest friends!',
     badges: 'My badges',
     go: "Let's go!",
   },

@@ -9,6 +9,7 @@
  *  - mustard corduroy pinafore (overall) dress: bib with straps and metal clips, side buttons,
  *    two front patch pockets
  *  - pink socks, tan hiking boots with dark-brown toe / heel, pink laces and collar
+ *  - khaki adventure backpack with grey shoulder straps and sternum strap (Anet's explorer kit)
  *
  * PLACEHOLDER NOTICE: built from Three.js primitives + generated geometry until a sculpted & rigged
  * GLB (Blender / Mixamo pipeline) is available. The joint groups (hips, spine, neck, shoulders,
@@ -42,6 +43,11 @@ export const ANETT_PALETTE = {
   sole: '#5a4a3e',
   midsole: '#e9dcc6',
   lace: '#d8457e',
+  pack: '#b39b76',
+  packDark: '#9b8463',
+  packLight: '#c4ae8a',
+  strap: '#7f7a70',
+  strapDark: '#3a3936',
   cheek: '#ff9b8f',
   lips: '#d2706f',
 };
@@ -146,7 +152,8 @@ function unifiedHair() {
         let y = rowY;
         if (!row.cap && row.t === 1) y += Math.cos(a * 3) * 0.012 + 0.01 + (layer === 1 ? 0.012 : 0);
         const front = Math.cos(th) > 0 && row.cap ? 1 - 0.05 * Math.cos(th) : 1; // hair lies close to the forehead
-        pos.push(Math.sin(th) * r, y, Math.cos(th) * r * front);
+        const back = Math.cos(th) < 0 ? 1 + 0.07 * smoothstep(0, 0.3, row.t) : 1; // room for the backpack
+        pos.push(Math.sin(th) * r, y, Math.cos(th) * r * front * back);
       }
     }
   }
@@ -358,6 +365,11 @@ function useMaterials() {
       sole: mat(P.sole, 0.8),
       midsole: mat(P.midsole, 0.7),
       lace: mat(P.lace, 0.6),
+      pack: mat(P.pack, 0.8, { sheen: 0.4, sheenColor: new THREE.Color('#e6d7bd') }),
+      packDark: mat(P.packDark, 0.8),
+      packLight: mat(P.packLight, 0.8),
+      strap: mat(P.strap, 0.75),
+      strapDark: mat(P.strapDark, 0.5),
       cheek: new THREE.MeshBasicMaterial({
         color: P.cheek,
         map: blushTexture(),
@@ -653,6 +665,56 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
                 </mesh>
               </group>
             ))}
+
+            {/* big khaki hiking backpack */}
+            <group position={[0, 0.13, -0.235]}>
+              <RoundedBox args={[0.3, 0.4, 0.16]} radius={0.06} smoothness={4} material={m.pack} />
+              <RoundedBox args={[0.31, 0.11, 0.165]} radius={0.05} smoothness={4} material={m.packDark} position={[0, 0.2, 0.012]} />
+              <RoundedBox args={[0.2, 0.17, 0.05]} radius={0.03} smoothness={3} material={m.packLight} position={[0, -0.07, -0.09]} />
+              <mesh material={m.strapDark} position={[0, -0.0, -0.117]}>
+                <boxGeometry args={[0.16, 0.006, 0.004]} />
+              </mesh>
+              {[1, -1].map((s) => (
+                <RoundedBox key={s} args={[0.055, 0.18, 0.1]} radius={0.025} smoothness={3} material={m.packLight} position={[0.165 * s, -0.08, 0.0]} />
+              ))}
+              {[-0.02, -0.12].map((y) => (
+                <mesh key={y} material={m.strap} position={[0, y, -0.12]}>
+                  <boxGeometry args={[0.24, 0.018, 0.008]} />
+                </mesh>
+              ))}
+              {/* little orange loop */}
+              <mesh material={m.lace} position={[-0.11, 0.25, 0.0]} rotation={[0, Math.PI / 2, 0]}>
+                <torusGeometry args={[0.026, 0.009, 6, 14]} />
+              </mesh>
+            </group>
+            {/* shoulder straps over the shoulders and down the front */}
+            {[1, -1].map((s) => (
+              <group key={s}>
+                <mesh material={m.strap} position={[0.112 * s, 0.205, -0.04]} rotation={[0, Math.PI / 2, 0]} scale={[1.05, 1, 1]}>
+                  <torusGeometry args={[0.16, 0.017, 6, 22, Math.PI * 0.8]} />
+                </mesh>
+                <mesh material={m.strap} position={[0.112 * s, 0.13, 0.162]} rotation={[0.04, 0, 0.1 * s]}>
+                  <boxGeometry args={[0.042, 0.26, 0.014]} />
+                </mesh>
+                <mesh material={m.strapDark} position={[0.118 * s, 0.03, 0.168]}>
+                  <boxGeometry args={[0.044, 0.025, 0.012]} />
+                </mesh>
+                {/* dangling strap end */}
+                <mesh material={m.strap} position={[0.124 * s, -0.06, 0.168]} rotation={[0.05, 0, -0.05 * s]}>
+                  <boxGeometry args={[0.024, 0.17, 0.008]} />
+                </mesh>
+                <mesh material={m.strapDark} position={[0.128 * s, -0.15, 0.17]}>
+                  <boxGeometry args={[0.028, 0.024, 0.012]} />
+                </mesh>
+              </group>
+            ))}
+            {/* sternum strap + buckle */}
+            <mesh material={m.strap} position={[0, 0.235, 0.17]}>
+              <boxGeometry args={[0.215, 0.02, 0.008]} />
+            </mesh>
+            <mesh material={m.strapDark} position={[0, 0.235, 0.176]}>
+              <boxGeometry args={[0.036, 0.03, 0.012]} />
+            </mesh>
 
             <Arm side={1} sref={r.shoulderL} eref={r.elbowL} />
             <Arm side={-1} sref={r.shoulderR} eref={r.elbowR} item={rightHandItem} />

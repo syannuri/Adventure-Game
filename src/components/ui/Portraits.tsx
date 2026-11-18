@@ -22,6 +22,9 @@ export function AnettPortrait() {
       <rect x="63" y="80" width="6" height="12" rx="2" fill="#c98b2c" />
       <circle cx="35" cy="90" r="2.2" fill="#d8d8de" />
       <circle cx="65" cy="90" r="2.2" fill="#d8d8de" />
+      {/* backpack shoulder straps */}
+      <rect x="24" y="82" width="6" height="18" rx="2" fill="#7f7a70" />
+      <rect x="70" y="82" width="6" height="18" rx="2" fill="#7f7a70" />
       {/* face */}
       <ellipse cx="50" cy="52" rx="24" ry="26" fill="#f9dcc6" />
       {/* centre-part hair framing the face */}

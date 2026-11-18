@@ -46,7 +46,7 @@ export const id: Dict = {
     hi: 'Halo, aku Anet!',
     p1: 'Umurku tujuh tahun dan aku suka menjelajah! Aku penasaran, berani, dan selalu senang menolong teman. Di peti harta tua milik Nenek, aku menemukan peta ajaib menuju lima negeri rahasia.',
     loveLabel: 'Aku suka:',
-    love: 'kaos garis-garis kuningku, overall cokelat favoritku, sepatu gunungku dengan tali merah muda, melompat di atas jamur, dan menari bersama teman-teman hutan!',
+    love: 'kaos garis-garis kuningku, overall cokelat favoritku, sepatu gunungku dengan tali merah muda, ransel petualanganku, melompat di atas jamur, dan menari bersama teman-teman hutan!',
     badges: 'Lencanaku',
     go: 'Ayo berangkat!',
   },

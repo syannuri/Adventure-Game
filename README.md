@@ -64,7 +64,7 @@ Progress (completed worlds, Magic Stars, achievements, best scores, settings) is
 - **Anet:** a procedural, rigged, stylized 3D character built to match the main-menu cover illustration
   [`docs/anet-cover-source.png`](docs/anet-cover-source.png): long straight dark hair with a centre part, fair skin,
   big dark-brown eyes, a yellow-and-white striped T-shirt, a mustard corduroy pinafore (overall) dress with
-  metal clips and pockets, pink socks and tan hiking boots with pink laces. One shared model and palette, so she
+  metal clips and pockets, pink socks, tan hiking boots with pink laces and her khaki adventure backpack. One shared model and palette, so she
   looks the same in every scene.
 - **Animation system:** an animation state machine with a blend tree (idle ↔ walk ↔ run, by speed), jump/fall
   blending by vertical velocity, landing squash, and damped joint blending between all states. It also has an
