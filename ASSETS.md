@@ -2,15 +2,17 @@
 
 Every asset in the game, where it comes from, and whether it is final or a placeholder.
 
-**Summary:** the game loads **no external 3D models, textures, images or audio files**. Everything visual or
-audible is generated in code at runtime. The only external resources it loads are the Google Fonts below. The
-repository also contains one design reference image, which the game does not load.
+**Summary:** apart from the Anet cover illustration on the main menu (provided by the project owner), the game
+loads **no external 3D models, textures, images or audio files**. Everything else visual or audible is generated in
+code at runtime. The only external resources it loads are the Google Fonts below. The
+repository also contains the design reference images in `docs/`.
 
 ## External assets
 
 | Asset | Source | License | Used for |
 | --- | --- | --- | --- |
 | Anet character reference image (`docs/anett-reference.jpg`) | Provided by the project owner | Project owner's | Design reference only. Not loaded by the game. |
+| Anet cover illustration (`docs/anet-cover-source.png`) | Provided by the project owner | Project owner's | Cut out (background removed with the open-source BiRefNet model via `rembg`) into `public/cover/anet-720.webp` and `anet-1300.webp`: the main-menu cover figure. |
 | "Baloo 2" font | Google Fonts (loaded in `index.html`) | SIL Open Font License 1.1 | All UI text. Falls back to system fonts offline. |
 | "Luckiest Guy" font | Google Fonts | Apache License 2.0 | Title logo and big game headings |
 | "Fredoka" font | Google Fonts | SIL Open Font License 1.1 | Logo ribbon subtitle |

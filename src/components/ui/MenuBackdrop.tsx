@@ -84,7 +84,17 @@ const Scene = memo(function Scene() {
           <path key={i} d="M930 560 L912 -200 L948 -200 Z" transform={`rotate(${i * 36 - 90} 930 560)`} />
         ))}
       </g>
+      {/* breathing halo around the sun */}
+      <circle className="mb-halo" cx="930" cy="560" r="150" fill="#fff4c8" opacity="0.5" />
+      <circle className="mb-halo2" cx="930" cy="560" r="96" fill="#fffbe2" opacity="0.7" />
       <circle cx="930" cy="560" r="64" fill="#fffbe8" />
+      {/* god rays: soft beams falling across the meadow, each fading in and out on its own rhythm */}
+      <g className="mb-shafts" fill="#fff1c0">
+        <path className="mb-shaft s1" d="M930 560 L120 900 L330 900 Z" />
+        <path className="mb-shaft s2" d="M930 560 L520 900 L700 900 Z" />
+        <path className="mb-shaft s3" d="M930 560 L1180 900 L1330 900 Z" />
+        <path className="mb-shaft s4" d="M930 560 L1500 900 L1600 820 Z" />
+      </g>
 
       {/* soft drifting clouds lit pink from below */}
       {[
@@ -155,13 +165,15 @@ const Scene = memo(function Scene() {
         <path d="M-26 -20 Q0 -56 26 -20Z" fill="#8ee8ff" />
       </g>
 
-      {/* flowers */}
+      {/* flowers swaying in the evening breeze */}
+      <g className="mb-sway">
       {flowers.map((f, i) => (
         <g key={i}>
           <circle cx={f.x} cy={f.y} r={f.s} fill={f.c} />
           <circle cx={f.x} cy={f.y} r={f.s * 0.35} fill="#ffd36b" />
         </g>
       ))}
+      </g>
 
       {/* Lumi the fairy, floating near the sun */}
       <g className="mb-fairy">
@@ -181,138 +193,72 @@ const Scene = memo(function Scene() {
   );
 });
 
-/** Anet, painted in the same style as her 3D model, lit by the low sun from the left. */
-const Anet = memo(function Anet() {
+/**
+ * Cover figure of Anet (cut out from the official illustration) with dynamic sunlight:
+ * a warm light wash from the sun side that brightens and fades with the sun's glow,
+ * a soft rim light, gentle idle motion and a contact shadow.
+ */
+const COVER = { small: './cover/anet-720.webp', large: './cover/anet-1300.webp' };
+
+const AnetCover = memo(function AnetCover() {
   return (
-    <svg className="mb-anet" viewBox="0 0 320 560" aria-hidden>
-      <defs>
-        <linearGradient id="anHair" x1="0" y1="0" x2="1" y2="0.3">
-          <stop offset="0" stopColor="#6e4c3c" />
-          <stop offset="0.35" stopColor="#3a2b25" />
-          <stop offset="1" stopColor="#1f1714" />
-        </linearGradient>
-        <linearGradient id="anSkin" x1="0" y1="0" x2="1" y2="0.2">
-          <stop offset="0" stopColor="#ffe8d6" />
-          <stop offset="1" stopColor="#f3cfb6" />
-        </linearGradient>
-        <linearGradient id="anJacket" x1="0" y1="0" x2="1" y2="0.3">
-          <stop offset="0" stopColor="#ffb468" />
-          <stop offset="0.5" stopColor="#ef8a3e" />
-          <stop offset="1" stopColor="#d26326" />
-        </linearGradient>
-        <radialGradient id="anIris" cx="0.45" cy="0.42" r="0.6">
-          <stop offset="0" stopColor="#ffc06a" />
-          <stop offset="0.55" stopColor="#c46b1f" />
-          <stop offset="1" stopColor="#4a230b" />
-        </radialGradient>
-        <linearGradient id="anPack" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#cdb791" />
-          <stop offset="1" stopColor="#9b8463" />
-        </linearGradient>
-      </defs>
-
-      <ellipse cx="160" cy="532" rx="92" ry="14" fill="#2b4a2b" opacity="0.28" />
-
-      <g className="an-breathe">
-        {/* backpack behind the body */}
-        <rect x="74" y="258" width="172" height="130" rx="34" fill="url(#anPack)" />
-        <rect x="90" y="244" width="140" height="40" rx="18" fill="#9b8463" />
-
-        {/* legs, socks, hiking boots */}
-        <g>
-          <rect x="118" y="408" width="32" height="70" rx="15" fill="url(#anSkin)" />
-          <rect x="170" y="408" width="32" height="70" rx="15" fill="url(#anSkin)" />
-          <rect x="114" y="462" width="40" height="30" rx="12" fill="#efe6d4" />
-          <rect x="166" y="462" width="40" height="30" rx="12" fill="#e6dcc8" />
-          <path d="M118 470h32M118 478h32M170 470h32M170 478h32" stroke="#d6cab3" strokeWidth="2" />
-          <path d="M104 520 Q102 486 134 486 Q158 486 160 506 L160 520Z" fill="#d29b6c" />
-          <path d="M160 520 L160 506 Q162 486 188 486 Q220 486 218 520Z" fill="#b98457" />
-          <rect x="100" y="514" width="62" height="12" rx="6" fill="#f2e7d4" />
-          <rect x="158" y="514" width="62" height="12" rx="6" fill="#e8dcc6" />
-        </g>
-
-        {/* cream shorts */}
-        <path d="M108 372 H212 L218 424 Q190 432 166 422 L160 404 L154 422 Q130 432 102 424Z" fill="#f4ecdc" />
-
-        {/* left arm (her right) relaxed */}
-        <path d="M96 268 Q70 300 72 352" stroke="url(#anJacket)" strokeWidth="34" strokeLinecap="round" fill="none" />
-        <rect x="56" y="346" width="32" height="14" rx="7" fill="#c8622a" />
-        <circle cx="72" cy="372" r="15" fill="url(#anSkin)" />
-
-        {/* jacket body */}
-        <path d="M96 262 Q160 236 224 262 Q238 320 228 384 Q160 398 92 384 Q82 320 96 262Z" fill="url(#anJacket)" />
-        <path d="M92 380 Q160 394 228 380 L228 392 Q160 406 92 392Z" fill="#c8622a" />
-        <path d="M160 262 V392" stroke="#d7d7de" strokeWidth="4" />
-        <rect x="104" y="318" width="34" height="26" rx="6" fill="#ec8238" stroke="#c8622a" strokeWidth="3" />
-        <rect x="182" y="318" width="34" height="26" rx="6" fill="#e27932" stroke="#c8622a" strokeWidth="3" />
-        {/* backpack straps */}
-        <path d="M120 262 Q114 320 122 392" stroke="#7f7a70" strokeWidth="13" fill="none" strokeLinecap="round" />
-        <path d="M200 262 Q206 320 198 392" stroke="#6e6a62" strokeWidth="13" fill="none" strokeLinecap="round" />
-        <rect x="116" y="300" width="88" height="8" rx="4" fill="#7f7a70" />
-        <rect x="150" y="296" width="20" height="16" rx="4" fill="#3a3936" />
-        {/* hood collar */}
-        <path d="M118 258 Q160 282 202 258 Q200 246 160 250 Q120 246 118 258Z" fill="#c8622a" />
-        {/* warm sunlit rim on the left */}
-        <path d="M98 270 Q86 320 94 380" stroke="#ffe0a0" strokeWidth="5" fill="none" opacity="0.7" strokeLinecap="round" />
-
-        {/* right arm (her left) waving */}
-        <g className="an-wave">
-          <path d="M222 268 Q262 238 270 186" stroke="url(#anJacket)" strokeWidth="34" strokeLinecap="round" fill="none" />
-          <rect x="254" y="170" width="32" height="14" rx="7" fill="#c8622a" transform="rotate(-12 270 177)" />
-          {/* open waving hand: palm + thumb */}
-          <ellipse cx="272" cy="152" rx="17" ry="19" fill="url(#anSkin)" />
-          <ellipse cx="256" cy="160" rx="7" ry="10" fill="#f3cfb6" transform="rotate(-35 256 160)" />
-        </g>
-
-        {/* hair (back), head, face */}
-        <g className="an-hair">
-          <path d="M66 170 Q58 70 160 60 Q262 70 254 170 Q268 240 252 296 Q238 310 226 296 Q218 312 204 300 L116 300 Q102 312 94 296 Q82 310 68 296 Q52 240 66 170Z" fill="url(#anHair)" />
-          <path d="M80 214 Q72 250 84 286 M240 214 Q248 250 236 286" stroke="#7d5b48" strokeWidth="4" fill="none" opacity="0.6" strokeLinecap="round" />
-        </g>
-        <ellipse cx="160" cy="170" rx="92" ry="88" fill="url(#anSkin)" />
-        {/* straight-cut bangs */}
-        <path d="M70 168 Q62 66 160 62 Q258 66 250 168 Q244 136 226 128 Q160 120 94 128 Q76 136 70 168Z" fill="url(#anHair)" />
-        <path d="M96 126 Q160 118 224 126" stroke="#2a201b" strokeWidth="3" opacity="0.5" fill="none" />
-        <path d="M108 86 Q150 68 206 76" stroke="#a78a78" strokeWidth="7" strokeLinecap="round" fill="none" opacity="0.7" />
-        <path d="M70 168 Q60 110 92 82" stroke="#ffd79a" strokeWidth="4" fill="none" opacity="0.55" strokeLinecap="round" />
-
-        {/* eyes */}
-        <g>
-          {[118, 202].map((x) => (
-            <g key={x}>
-              <ellipse cx={x} cy="168" rx="27" ry="30" fill="#fffdf8" />
-              <circle cx={x + 2} cy="172" r="22" fill="url(#anIris)" />
-              <circle cx={x + 2} cy="172" r="10" fill="#140804" />
-              <circle cx={x - 7} cy="160" r="7" fill="#fff" />
-              <circle cx={x + 9} cy="182" r="3" fill="#fff" />
-              <path d={`M${x - 30} 158 Q${x} 128 ${x + 30} 158`} stroke="#1e1512" strokeWidth="6" fill="none" strokeLinecap="round" />
-            </g>
-          ))}
-          <path d="M88 158 L80 150 M232 158 L240 150" stroke="#1e1512" strokeWidth="4" strokeLinecap="round" />
-        </g>
-        {/* eyelids: shown for a moment to blink */}
-        <g className="an-lids">
-          {[118, 202].map((x) => (
-            <g key={x}>
-              <ellipse cx={x} cy="168" rx="29" ry="32" fill="#f7d7c2" />
-              <path d={`M${x - 26} 172 Q${x} 184 ${x + 26} 172`} stroke="#1e1512" strokeWidth="5" fill="none" strokeLinecap="round" />
-            </g>
-          ))}
-        </g>
-        <ellipse cx="96" cy="206" rx="18" ry="10" fill="#ff9b8f" opacity="0.38" />
-        <ellipse cx="224" cy="206" rx="18" ry="10" fill="#ff9b8f" opacity="0.38" />
-        <ellipse cx="160" cy="200" rx="6" ry="4" fill="#efc2a6" />
-        <path d="M142 218 Q160 232 178 218" stroke="#c4655c" strokeWidth="5" fill="none" strokeLinecap="round" />
-      </g>
-    </svg>
+    <div className="cover-anet">
+      <div className="cover-shadow" />
+      <div className="cover-figure">
+        <img
+          src={COVER.small}
+          srcSet={`${COVER.small} 382w, ${COVER.large} 690w`}
+          sizes="(min-height: 700px) 40vh, 30vh"
+          alt=""
+          draggable={false}
+          decoding="async"
+          fetchPriority="high"
+        />
+        {/* warm sunlight wash, masked to Anet's shape */}
+        <div className="cover-sunlight" style={{ WebkitMaskImage: `url(${COVER.small})`, maskImage: `url(${COVER.small})` }} />
+      </div>
+    </div>
   );
 });
+
+/** Floating pollen / dust motes glowing in the low sun. */
+const Motes = memo(function Motes() {
+  const motes = useMemo(() => {
+    const r = rng(23);
+    return Array.from({ length: 26 }, () => ({ x: r() * 100, y: 35 + r() * 60, s: 2 + r() * 4, d: r() * 9, t: 7 + r() * 8, dx: (r() - 0.5) * 60 }));
+  }, []);
+  return (
+    <div className="mb-motes">
+      {motes.map((m, i) => (
+        <span
+          key={i}
+          style={{ left: `${m.x}%`, top: `${m.y}%`, width: m.s, height: m.s, animationDelay: `-${m.d}s`, animationDuration: `${m.t}s`, ['--dx' as string]: `${m.dx}px` }}
+        />
+      ))}
+    </div>
+  );
+});
+
+/** Lens flare: soft discs on the line from the sun across the screen, drifting slowly. */
+function LensFlare() {
+  return (
+    <div className="mb-flare">
+      <i className="f1" />
+      <i className="f2" />
+      <i className="f3" />
+      <i className="f4" />
+    </div>
+  );
+}
 
 export function MenuBackdrop({ screen }: { screen: Screen }) {
   return (
     <div className={'menu-backdrop' + (screen === 'menu' ? '' : ' dim')} aria-hidden>
       <Scene />
-      {screen === 'menu' && <Anet />}
+      <div className="mb-warmth" />
+      <LensFlare />
+      <Motes />
+      {screen === 'menu' && <AnetCover />}
     </div>
   );
 }
