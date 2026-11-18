@@ -3,7 +3,6 @@ import { useGame } from '../../systems/store';
 import { player } from '../../systems/playerState';
 import { COINS, FAIRY_POS, PATHS, POND, STARS, TREASURES } from '../worlds/EnchantedForest/layout';
 import { FOREST_HINTS, forestObjective } from '../gameplay/missions/forestObjective';
-import { audio } from '../audio/audioEngine';
 import { cameraState } from '../../systems/playerState';
 import { useT } from '../../i18n/useT';
 import { matchedCount } from '../gameplay/puzzles/FlowerPuzzle';
@@ -133,7 +132,6 @@ export function HUD() {
               className="icon-btn"
               aria-label={t.hud.pause}
               onClick={() => {
-                audio.sfx('click');
                 setPaused(true);
               }}
             >

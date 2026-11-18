@@ -1,7 +1,6 @@
 import { useGame } from '../../systems/store';
 import { COINS, TREASURES } from '../worlds/EnchantedForest/layout';
 import { ACHIEVEMENTS } from '../../data/achievements';
-import { audio } from '../audio/audioEngine';
 import { useT } from '../../i18n/useT';
 
 export function LevelComplete() {
@@ -59,10 +58,10 @@ export function LevelComplete() {
           </>
         )}
         <div className="menu-row">
-          <button className="btn big yellow" onClick={() => (audio.sfx('click'), setScreen('worlds'))}>
+          <button className="btn big yellow" onClick={() => setScreen('worlds')}>
             {t.complete.continue}
           </button>
-          <button className="btn ghost" onClick={() => (audio.sfx('click'), startWorld('enchanted-forest'))}>
+          <button className="btn ghost" onClick={() => startWorld('enchanted-forest')}>
             {t.complete.playAgain}
           </button>
         </div>

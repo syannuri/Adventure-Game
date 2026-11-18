@@ -99,7 +99,7 @@ export function StoryIntro() {
         <svg viewBox="0 0 360 240">{art}</svg>
         <div className="text">{pages[page]}</div>
         <div className="story-nav">
-          <button className="btn ghost" style={{ fontSize: 17 }} {...tapProps(() => (audio.sfx('click'), finish()))}>
+          <button className="btn ghost" style={{ fontSize: 17 }} {...tapProps(() => finish())}>
             {t.story.skip}
           </button>
           <div className="dots">
@@ -111,7 +111,6 @@ export function StoryIntro() {
             className="btn yellow"
             {...tapProps(() => {
               audio.unlock();
-              audio.sfx('pop');
               if (page + 1 < pages.length) setPage((p) => p + 1);
               else finish();
             })}
