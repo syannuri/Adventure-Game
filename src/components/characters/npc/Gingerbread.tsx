@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { useGame } from '../../../systems/store';
 import { player } from '../../../systems/playerState';
 import { angleDelta, damp } from '../../../utils/math';
+import { contactShadowTexture } from '../../effects/textures';
 
 const COOKIE = '#b8692f';
 const ICING = '#fffaf2';
@@ -156,9 +157,9 @@ export function Gingerbread({ x, y, z }: { x: number; y: number; z: number }) {
         </group>
       </group>
       {/* soft contact shadow */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
-        <circleGeometry args={[0.32, 20]} />
-        <meshBasicMaterial color="#000" transparent opacity={0.16} depthWrite={false} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]}>
+        <planeGeometry args={[0.6, 0.45]} />
+        <meshBasicMaterial map={contactShadowTexture()} color="#2a1a30" transparent opacity={0.3} depthWrite={false} />
       </mesh>
     </group>
   );

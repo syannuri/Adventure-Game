@@ -81,7 +81,7 @@ function riverGeometry() {
     }
     if (i < N) {
       const a = i * 2;
-      idx.push(a, a + 2, a + 1, a + 1, a + 2, a + 3);
+      idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); // counter-clockwise from above (faces up)
     }
   }
   const g = new THREE.BufferGeometry();
@@ -99,6 +99,8 @@ export function ChocolateRiver() {
       new THREE.ShaderMaterial({
         transparent: true,
         fog: true,
+        side: THREE.DoubleSide,
+        depthWrite: false,
         uniforms: { ...THREE.UniformsLib.fog, uTime: { value: 0 } },
         vertexShader: `
           varying vec2 vUv; varying vec3 vW;
@@ -114,15 +116,22 @@ export function ChocolateRiver() {
           void main(){
             vec2 p = vec2(vUv.x * 0.6 - uTime * 0.9, vUv.y * 3.0);
             float w = n(p * 1.3) * 0.6 + n(p * 3.1 + 7.0) * 0.4;
-            vec3 dark = vec3(0.30, 0.15, 0.07), milk = vec3(0.55, 0.31, 0.16);
+            vec3 dark = vec3(0.20, 0.09, 0.04), milk = vec3(0.45, 0.22, 0.10);
             vec3 col = mix(dark, milk, w);
-            // creamy swirls and glossy highlights
-            float swirl = smoothstep(0.62, 0.7, n(vec2(vUv.x * 0.35 - uTime * 0.6, vUv.y * 2.0 + 3.0)));
-            col = mix(col, vec3(0.86, 0.68, 0.5), swirl * 0.35);
-            float gloss = pow(n(p * 2.2 + uTime * 0.3), 6.0);
-            col += vec3(1.0, 0.85, 0.7) * gloss * 0.35;
-            float edge = smoothstep(0.0, 0.16, vUv.y) * smoothstep(1.0, 0.84, vUv.y);
-            gl_FragColor = vec4(col, 0.97 * edge + 0.03);
+            // flowing ripples across the stream
+            float rip = sin(vUv.x * 2.4 - uTime * 3.0 + n(p * 2.0) * 4.0) * 0.5 + 0.5;
+            col *= 0.85 + rip * 0.25;
+            // creamy swirls of milk chocolate
+            float swirl = smoothstep(0.6, 0.7, n(vec2(vUv.x * 0.35 - uTime * 0.6, vUv.y * 2.0 + 3.0)));
+            col = mix(col, vec3(0.78, 0.55, 0.36), swirl * 0.3);
+            // glossy highlights that slide downstream
+            float gloss = pow(n(p * 2.2 + vec2(uTime * 0.3, 0.0)), 5.0);
+            col += vec3(1.0, 0.82, 0.62) * gloss * 0.6;
+            // a lighter creamy line where the chocolate meets the banks
+            float bankLine = smoothstep(0.1, 0.18, vUv.y) * smoothstep(0.26, 0.18, vUv.y) + smoothstep(0.9, 0.82, vUv.y) * smoothstep(0.74, 0.82, vUv.y);
+            col = mix(col, vec3(0.62, 0.38, 0.22), bankLine * 0.45);
+            float edge = smoothstep(0.0, 0.14, vUv.y) * smoothstep(1.0, 0.86, vUv.y);
+            gl_FragColor = vec4(col, 0.98 * edge);
             #include <colorspace_fragment>
             #include <fog_fragment>
           }`,

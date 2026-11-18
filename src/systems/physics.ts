@@ -98,12 +98,16 @@ export function segmentHitFraction(ax: number, az: number, bx: number, bz: numbe
   if (len2 < 1e-6) return 1;
   for (const c of world.colliders) {
     if (c.r > 4) continue; // skip big area colliders such as ponds
+    const rr = c.r + pad;
+    // where does the segment first enter the (padded) circle?
     const t = ((c.x - ax) * dx + (c.z - az) * dz) / len2;
-    if (t <= 0 || t >= 1) continue;
     const px = ax + dx * t - c.x;
     const pz = az + dz * t - c.z;
-    const rr = c.r + pad;
-    if (px * px + pz * pz < rr * rr) best = Math.min(best, Math.max(0.15, t - 0.08));
+    const d2 = px * px + pz * pz;
+    if (d2 >= rr * rr) continue;
+    const tEnter = t - Math.sqrt(rr * rr - d2) / Math.sqrt(len2);
+    if (tEnter >= 1 || t <= 0) continue;
+    best = Math.min(best, Math.max(0.15, tEnter - 0.04));
   }
   return best;
 }
