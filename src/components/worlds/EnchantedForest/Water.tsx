@@ -49,13 +49,24 @@ function useWaterMaterial(kind: 'pond' | 'fall') {
         uniform float uTime; varying vec2 vUv; varying vec3 vWorld;
         float hash(vec2 p){ return fract(sin(dot(p, vec2(41.3, 289.1))) * 43758.5453); }
         void main(){
-          float streak = hash(vec2(floor(vUv.x * 26.0), 0.0));
-          float flow = fract(vUv.y * 3.0 + uTime * (1.4 + streak * 0.8) + streak);
-          vec3 col = mix(vec3(0.55, 0.85, 0.95), vec3(1.0), smoothstep(0.5, 1.0, flow) * 0.8 + 0.15);
-          float edge = smoothstep(0.0, 0.14, vUv.x) * smoothstep(1.0, 0.86, vUv.x);
-          float foam = smoothstep(0.75, 1.0, vUv.y);
-          col = mix(col, vec3(1.0), foam * 0.6);
-          gl_FragColor = vec4(col, (0.72 + foam * 0.2) * edge);
+          // vUv.y runs from the top of the cliff (0) down to the pond (1): water moves toward +y,
+          // so the pattern scrolls with -uTime (it used to scroll the wrong way and looked like it rose)
+          float s1 = hash(vec2(floor(vUv.x * 30.0), 1.0));
+          float s2 = hash(vec2(floor(vUv.x * 12.0), 7.0));
+          float f1 = fract(vUv.y * 4.5 - uTime * (1.7 + s1 * 0.9) + s1);
+          float f2 = fract(vUv.y * 2.2 - uTime * (1.1 + s2 * 0.5) + s2 * 3.0);
+          // long falling streaks: brightest at their leading (lower) end
+          float streaks = smoothstep(0.45, 1.0, f1) * 0.55 + smoothstep(0.65, 1.0, f2) * 0.45;
+          vec3 deep = vec3(0.42, 0.74, 0.88);
+          vec3 col = mix(deep, vec3(1.0), clamp(0.18 + streaks, 0.0, 1.0));
+          // the water is brighter where it tips over the cliff edge
+          col = mix(col, vec3(1.0), smoothstep(0.35, 0.42, vUv.y) * (1.0 - smoothstep(0.42, 0.55, vUv.y)) * 0.35);
+          float edge = smoothstep(0.0, 0.16, vUv.x) * smoothstep(1.0, 0.84, vUv.x);
+          // churning white foam where it lands in the pond
+          float churn = hash(vec2(floor(vUv.x * 18.0), floor(vUv.y * 24.0 - uTime * 6.0)));
+          float foam = smoothstep(0.78, 0.98, vUv.y) * (0.65 + churn * 0.35);
+          col = mix(col, vec3(1.0), foam);
+          gl_FragColor = vec4(col, (0.74 + foam * 0.22) * edge);
           #include <colorspace_fragment>
           #include <fog_fragment>
         }`,
