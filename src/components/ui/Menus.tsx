@@ -178,7 +178,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
             </button>
           </div>
         </div>
-        <p style={{ fontSize: 16 }}>{t.settings.controls}</p>
+        <p className="settings-controls" style={{ fontSize: 16 }}>{t.settings.controls}</p>
         <div className="menu-row" style={{ marginTop: 14 }}>
           <button className="btn" onClick={() => (click(), onClose())}>
             {t.settings.done}
@@ -206,7 +206,7 @@ export function AboutAnett({ onClose }: { onClose: () => void }) {
   const t = useT();
   return (
     <div className="modal-bg" onPointerDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal panel">
+      <div className="modal panel about-modal">
         <div className="about-portrait" style={{ width: 120, height: 120, borderRadius: '50%', overflow: 'hidden', margin: '0 auto 8px', border: '5px solid white', boxShadow: 'var(--shadow)' }}>
           <AnettPortrait />
         </div>

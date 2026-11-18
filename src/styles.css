@@ -382,6 +382,18 @@ canvas { display: block; touch-action: none; }
   .complete .btn.big, .complete .btn { font-size: 16px; padding: 5px 22px; min-height: 38px; }
 }
 
+@media (orientation: landscape) and (max-height: 500px) {
+  .settings-controls { display: none; }
+  /* "Meet Anet": two columns (story left, badges + button right) */
+  .about-modal { display: grid; grid-template-columns: 1fr 1fr; column-gap: 18px; align-items: start; text-align: left; }
+  .about-modal > :nth-child(-n + 4) { grid-column: 1; }
+  .about-modal > .about-portrait { margin: 0 0 4px !important; }
+  .about-modal > h2 { text-align: left; }
+  .about-modal > h3 { grid-column: 2; grid-row: 1; align-self: end; }
+  .about-modal > .ach-list { grid-column: 2; grid-row: 2 / 4; justify-content: flex-start; }
+  .about-modal > .btn { grid-column: 2; grid-row: 4; justify-self: start; }
+}
+
 /* very short (iPhone SE sideways, ~320 px) */
 @media (orientation: landscape) and (max-height: 340px) {
   .logo-word { font-size: 40px; }
