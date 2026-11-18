@@ -1,0 +1,31 @@
+<!doctype html>
+<!-- Composes the ANET title logo onto the 3D icon art (used by tools/make-icons.mjs via Playwright).
+     ?src=<image>&font=<woff2> ; renders a 1024x1024 square. -->
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face { font-family: 'Luckiest Guy'; src: url('__FONT__') format('woff2'); }
+  html, body { margin: 0; width: 1024px; height: 1024px; overflow: hidden; }
+  .art { position: absolute; inset: 0; width: 1024px; height: 1024px; object-fit: cover; }
+  /* warm glow behind the lettering so it reads over the shirt */
+  .glow { position: absolute; left: 0; right: 0; bottom: 0; height: 330px; background: linear-gradient(180deg, rgba(120, 50, 140, 0) 0%, rgba(88, 34, 120, 0.55) 60%, rgba(60, 22, 96, 0.8) 100%); }
+  .logo { position: absolute; left: 0; right: 0; bottom: 56px; display: flex; justify-content: center; gap: 6px; font-family: 'Luckiest Guy', sans-serif; font-size: 214px; line-height: 1; }
+  .l { position: relative; display: inline-block; padding: 0 4px; transform: rotate(var(--tilt)); }
+  .l::before { content: attr(data-l); position: absolute; left: 0; top: 0; padding: inherit; color: #3b1a78; -webkit-text-stroke: 0.15em #3b1a78; text-shadow: 0 0.04em 0 #2a1060, 0 0.08em 0 #2a1060, 0 0.115em 0 #1e0a48, 0 0.18em 0.16em rgba(20, 8, 50, 0.5); }
+  .l::after { content: attr(data-l); position: absolute; left: 0; top: 0; padding: inherit; color: #fff; -webkit-text-stroke: 0.055em #fff; }
+  .f { position: relative; z-index: 2; display: inline-block; color: transparent; background: linear-gradient(180deg, #fffbe2 0%, #ffe680 24%, #ffc928 47%, #ff9a1f 53%, #ff7b00 80%, #e85d00 100%); -webkit-background-clip: text; background-clip: text; }
+  .l::before { z-index: 0; } .l::after { z-index: 1; }
+</style>
+</head>
+<body>
+  <img class="art" src="__SRC__" />
+  <div class="glow"></div>
+  <div class="logo">
+    <span class="l" data-l="A" style="--tilt:-6deg"><span class="f">A</span></span>
+    <span class="l" data-l="N" style="--tilt:3deg"><span class="f">N</span></span>
+    <span class="l" data-l="E" style="--tilt:-3deg"><span class="f">E</span></span>
+    <span class="l" data-l="T" style="--tilt:5deg"><span class="f">T</span></span>
+  </div>
+</body>
+</html>

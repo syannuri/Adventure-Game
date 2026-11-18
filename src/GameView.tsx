@@ -22,6 +22,8 @@ import { preloadAnettHD } from './components/characters/Anett/AnettHD';
 
 // start downloading the sculpted Anet model as soon as the 3D engine loads
 preloadAnettHD();
+// and Anet's dialogue avatar, so the first speech bubble shows it right away
+if (typeof Image !== 'undefined') new Image().src = `${import.meta.env.BASE_URL}portraits/anet.webp`;
 
 /** `?capture` keeps the drawing buffer so automated screenshots never catch an empty frame. */
 const CAPTURE = typeof location !== 'undefined' && new URLSearchParams(location.search).has('capture');
