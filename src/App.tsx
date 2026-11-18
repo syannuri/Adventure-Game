@@ -1,67 +1,44 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
-import * as THREE from 'three';
+/**
+ * App shell. The menus and the painted menu backdrop are plain HTML/SVG (instant, light on phones).
+ * The 3D engine (GameView) is only downloaded and started when a world begins.
+ */
+import { Suspense, lazy, useEffect } from 'react';
 import { useGame } from './systems/store';
 import { installKeyboard, resetEdges } from './systems/input';
-import { MenuScene, REVIEW_VIEW } from './components/worlds/MenuScene/MenuScene';
-import { HUD } from './components/ui/HUD';
-import { DialogueBox } from './components/ui/DialogueBox';
-import { TouchControls, useIsTouch } from './components/ui/TouchControls';
-import { AboutAnett, MainMenu, PauseMenu, SettingsPanel, WorldSelect } from './components/ui/Menus';
+import { AboutAnett, MainMenu, SettingsPanel, WorldSelect } from './components/ui/Menus';
 import { StoryIntro } from './components/ui/StoryIntro';
-import { LevelComplete } from './components/ui/LevelComplete';
-import { ControlsCard } from './components/ui/ControlsCard';
+import { MenuBackdrop } from './components/ui/MenuBackdrop';
 import { audio } from './components/audio/audioEngine';
 import { DICTS } from './i18n';
-import { cameraState, player } from './systems/playerState';
-import { input } from './systems/input';
-import { groundHeightAt } from './systems/physics';
 
-/** `?capture` keeps the drawing buffer so automated screenshots never catch an empty frame. */
-const CAPTURE = typeof location !== 'undefined' && new URLSearchParams(location.search).has('capture');
+/** Character review mode (?view=face|front|side|back) renders the 3D model instead of the menus. */
+const REVIEW = typeof location !== 'undefined' && new URLSearchParams(location.search).has('view');
 
-// Loaded on demand: the menu shows first, the forest and post-processing download in the background.
-const loadForest = () => import('./components/worlds/EnchantedForest/EnchantedForest').then((m) => ({ default: m.EnchantedForest }));
-const EnchantedForest = lazy(loadForest);
-const PostFX = lazy(() => import('./components/effects/PostFX'));
+const loadGame = () => import('./GameView');
+const GameView = lazy(loadGame);
 
-function Scene() {
-  const screen = useGame((s) => s.screen);
-  const runId = useGame((s) => s.runId);
-  const inWorld = screen === 'playing' || screen === 'complete';
-  return inWorld ? <EnchantedForest key={runId} /> : <MenuScene />;
-}
-
-/** Bloom etc. start a moment after the first frame so the menu appears immediately. */
-function DeferredPostFX({ quality, inWorld }: { quality: 'high' | 'low'; inWorld: boolean }) {
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    const id = window.setTimeout(() => setReady(true), 900);
-    return () => window.clearTimeout(id);
-  }, []);
-  if (!ready) return null;
+function Loading() {
+  const lang = useGame((s) => s.save.settings.language);
   return (
-    <Suspense fallback={null}>
-      <PostFX quality={quality} ao={inWorld} />
-    </Suspense>
+    <div className="loading">
+      <div style={{ textAlign: 'center' }}>
+        <div className="loading-star">★</div>
+        {DICTS[lang]?.hud.loading ?? DICTS.id.hud.loading}
+      </div>
+    </div>
   );
 }
 
 export default function App() {
   const screen = useGame((s) => s.screen);
   const overlay = useGame((s) => s.overlay);
-  const paused = useGame((s) => s.paused);
-  const quality = useGame((s) => s.save.settings.quality);
   const setOverlay = useGame((s) => s.setOverlay);
-  const isTouch = useIsTouch();
-  const dialogue = useGame((s) => s.dialogue);
-  const cinematic = useGame((s) => s.cinematic);
+  const inWorld = screen === 'playing' || screen === 'complete';
 
   useEffect(() => {
-    // hide the instant HTML splash, then fetch the forest quietly in the background
+    // hide the instant HTML splash
     document.getElementById('splash')?.classList.add('gone');
     window.setTimeout(() => document.getElementById('splash')?.remove(), 600);
-    const idle = window.setTimeout(() => void loadForest(), 2500);
     installKeyboard();
     const s = useGame.getState().save.settings;
     audio.setVolumes(s.musicVolume, s.sfxVolume);
@@ -71,7 +48,7 @@ export default function App() {
       const st = useGame.getState().screen;
       if (st === 'menu' || st === 'worlds' || st === 'story') audio.playMusic('menu');
     };
-    window.addEventListener('pointerdown', unlock);
+    window.addEventListener('pointerdown', unlock, { passive: true });
     window.addEventListener('keydown', unlock);
     const onKey = (e: KeyboardEvent) => {
       const g = useGame.getState();
@@ -84,7 +61,6 @@ export default function App() {
     };
     document.addEventListener('visibilitychange', onVis);
     return () => {
-      window.clearTimeout(idle);
       window.removeEventListener('pointerdown', unlock);
       window.removeEventListener('keydown', unlock);
       window.removeEventListener('keydown', onKey);
@@ -94,6 +70,8 @@ export default function App() {
 
   useEffect(() => {
     resetEdges();
+    // start fetching the 3D engine as soon as the player heads toward a world
+    if (screen !== 'menu') void loadGame();
   }, [screen]);
 
   const language = useGame((s) => s.save.settings.language);
@@ -102,42 +80,33 @@ export default function App() {
     document.documentElement.lang = language;
   }, [language]);
 
-  // expose a tiny debug/test hook (used by automated browser tests)
+  // tiny debug / automated-test hook (GameView adds the 3D bits when it loads)
   useEffect(() => {
-    (window as unknown as { __anett: unknown }).__anett = { useGame, player, input, groundHeightAt, cameraState };
+    const w = window as unknown as { __anett: Record<string, unknown> };
+    w.__anett = { ...(w.__anett ?? {}), useGame };
   }, []);
 
-  const playing = screen === 'playing';
+  if (REVIEW)
+    return (
+      <Suspense fallback={null}>
+        <GameView review />
+      </Suspense>
+    );
+
   return (
     <>
-      <Canvas
-        shadows={{ type: THREE.PCFShadowMap }}
-        dpr={screen === 'playing' || screen === 'complete' ? (quality === 'high' ? [1, 1.75] : [0.75, 1.25]) : [0.75, 1.5]}
-        gl={{ antialias: quality === 'low', powerPreference: 'high-performance', preserveDrawingBuffer: CAPTURE }}
-        camera={{ fov: 55, near: 0.1, far: 900, position: [0, 3, 8] }}
-        style={{ position: 'fixed', inset: 0 }}
-        onCreated={({ gl, scene }) => {
-          gl.toneMapping = THREE.NeutralToneMapping;
-          (window as unknown as { __anettScene: unknown }).__anettScene = { scene, gl };
-        }}
-      >
-        <Suspense fallback={null}>
-          <Scene />
-          <DeferredPostFX quality={quality} inWorld={screen === 'playing' || screen === 'complete'} />
+      {!inWorld && <MenuBackdrop screen={screen} />}
+      {inWorld && (
+        <Suspense fallback={<Loading />}>
+          <GameView />
         </Suspense>
-      </Canvas>
+      )}
 
       <div className="ui-layer passthrough">
         <div className="passthrough" style={{ position: 'absolute', inset: 0 }}>
-          {screen === 'menu' && !REVIEW_VIEW && <MainMenu />}
+          {screen === 'menu' && <MainMenu />}
           {screen === 'worlds' && <WorldSelect />}
           {screen === 'story' && <StoryIntro />}
-          {playing && <HUD />}
-          {playing && <DialogueBox />}
-          {playing && !dialogue && !paused && (!cinematic || cinematic.kind === 'finale') && <ControlsCard isTouch={isTouch} />}
-          {playing && isTouch && !dialogue && (!cinematic || cinematic.kind === 'finale') && !paused && <TouchControls />}
-          {screen === 'complete' && <LevelComplete />}
-          {paused && playing && !overlay && <PauseMenu />}
           {overlay === 'settings' && <SettingsPanel onClose={() => setOverlay(null)} />}
           {overlay === 'about' && <AboutAnett onClose={() => setOverlay(null)} />}
         </div>

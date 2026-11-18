@@ -1,5 +1,6 @@
 import { useT } from '../../i18n/useT';
 import { WorldArtGroup } from './WorldArt';
+import { tapProps } from './Menus';
 /** Opening storybook cinematic: Anet discovers the magical map in Grandma's treasure box. */
 import { useState } from 'react';
 import { useGame } from '../../systems/store';
@@ -98,7 +99,7 @@ export function StoryIntro() {
         <svg viewBox="0 0 360 240">{art}</svg>
         <div className="text">{pages[page]}</div>
         <div className="story-nav">
-          <button className="btn ghost" style={{ fontSize: 17 }} onClick={() => (audio.sfx('click'), finish())}>
+          <button className="btn ghost" style={{ fontSize: 17 }} {...tapProps(() => (audio.sfx('click'), finish()))}>
             {t.story.skip}
           </button>
           <div className="dots">
@@ -108,12 +109,12 @@ export function StoryIntro() {
           </div>
           <button
             className="btn yellow"
-            onClick={() => {
+            {...tapProps(() => {
               audio.unlock();
               audio.sfx('pop');
-              if (page + 1 < pages.length) setPage(page + 1);
+              if (page + 1 < pages.length) setPage((p) => p + 1);
               else finish();
-            }}
+            })}
           >
             {page + 1 < pages.length ? t.story.next : t.story.go}
           </button>

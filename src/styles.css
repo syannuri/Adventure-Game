@@ -35,7 +35,9 @@ canvas { display: block; touch-action: none; }
   transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s;
   min-height: 56px;
 }
-.btn:hover { transform: translateY(-2px) scale(1.03); filter: brightness(1.05); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { transform: translateY(-2px) scale(1.03); filter: brightness(1.05); }
+}
 .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--purple-dark), 0 6px 12px rgba(91, 63, 224, 0.3); }
 .btn.big { font-size: 34px; padding: 18px 64px; min-height: 76px; }
 .btn.yellow { background: linear-gradient(180deg, #ffe680, var(--yellow)); color: #5a3d00; box-shadow: 0 6px 0 var(--yellow-dark), 0 12px 24px rgba(242, 169, 0, 0.35); }
@@ -132,7 +134,9 @@ canvas { display: block; touch-action: none; }
 .worlds h1 { font-family: 'Luckiest Guy', 'Baloo 2', sans-serif; font-weight: 400; letter-spacing: 1px; color: #ffe680; font-size: clamp(34px, 6vw, 56px); margin: 0 0 4px; -webkit-text-stroke: 4px #7a3fd0; paint-order: stroke fill; text-shadow: 0 6px 0 #4b2399; }
 .world-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px; width: min(1100px, 100%); margin: 18px 0; }
 .world-card { border-radius: 26px; padding: 42px 18px 18px; min-height: 230px; color: white; position: relative; overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; border: 4px solid rgba(255, 255, 255, 0.7); transition: transform 0.15s; }
-.world-card:hover { transform: translateY(-4px) rotate(-0.5deg); }
+@media (hover: hover) and (pointer: fine) {
+  .world-card:hover { transform: translateY(-4px) rotate(-0.5deg); }
+}
 .world-card.locked { cursor: default; filter: saturate(0.55); }
 .world-card .num { position: absolute; top: 12px; left: 14px; font-size: 18px; font-weight: 800; background: rgba(255, 255, 255, 0.3); border-radius: 999px; padding: 2px 12px; }
 .world-card .done { position: absolute; top: 10px; right: 12px; font-size: 32px; color: var(--yellow); text-shadow: 0 2px 0 #b37a00; }
@@ -233,7 +237,7 @@ canvas { display: block; touch-action: none; }
 @media (min-aspect-ratio: 5/4) {
   .menu { align-items: flex-start; padding-left: max(5vw, 24px); }
   .menu .menu-buttons { align-items: flex-start; }
-  .menu .menu-row { justify-content: flex-start; max-width: 520px; }
+  .menu .menu-row { display: grid; grid-template-columns: auto auto; justify-content: start; max-width: 560px; }
 }
 
 @media (max-height: 520px) {
@@ -476,7 +480,9 @@ canvas { display: block; touch-action: none; }
   transform: translateX(-120%);
   transition: transform 0.7s ease;
 }
-.btn:hover::after { transform: translateX(120%); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover::after { transform: translateX(120%); }
+}
 .btn:active { transform: translateY(2px) scale(0.98); box-shadow: 0 4px 12px rgba(91, 63, 224, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -1px 0 rgba(40, 20, 120, 0.2); }
 .btn .icon { flex-shrink: 0; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15)); }
 .btn.yellow {
@@ -545,4 +551,58 @@ canvas { display: block; touch-action: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .btn.big.yellow::after, .tbtn.act.ready { animation: none; }
+}
+
+
+/* ======================================================================
+   Painted golden-hour menu backdrop + light, responsive buttons
+   ====================================================================== */
+.menu-backdrop { position: fixed; inset: 0; overflow: hidden; background: #ffdca0; z-index: 0; }
+.menu-backdrop .mb-scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.menu-backdrop.dim::after { content: ''; position: absolute; inset: 0; background: rgba(40, 24, 90, 0.18); }
+.mb-rays { transform-origin: 930px 560px; animation: mbRays 60s linear infinite; }
+@keyframes mbRays { to { transform: rotate(360deg); } }
+.mb-cloud { animation: mbDrift 46s ease-in-out infinite alternate; }
+@keyframes mbDrift { from { transform: translateX(-40px); } to { transform: translateX(60px); } }
+.mb-twinkle { animation: mbTwinkle 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes mbTwinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 1; } }
+.mb-fairy { animation: mbFloat 5s ease-in-out infinite; }
+@keyframes mbFloat { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(18px, -14px); } }
+.mb-pulse { animation: mbPulse 2.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes mbPulse { 50% { opacity: 0.55; transform: scale(0.9); } }
+
+/* Anet: right side in landscape, centered between logo and buttons in portrait */
+.mb-anet { position: absolute; right: 7vw; bottom: 5vh; height: 74vh; width: auto; filter: drop-shadow(0 18px 24px rgba(80, 40, 20, 0.22)); }
+@media (orientation: portrait) {
+  /* phone / tablet held upright: Anet stands between the logo and the buttons */
+  .mb-anet { right: auto; left: 50%; transform: translateX(-50%); top: 25vh; bottom: auto; height: 26vh; }
+  .menu { padding-top: max(56px, calc(env(safe-area-inset-top) + 44px)); }
+}
+@media (orientation: portrait) and (min-width: 700px) {
+  .mb-anet { top: 30vh; height: 30vh; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .mb-anet { right: 6vw; bottom: 2vh; height: 84vh; }
+}
+.an-breathe { animation: anBreathe 3.4s ease-in-out infinite; }
+@keyframes anBreathe { 50% { transform: translateY(-4px); } }
+.an-wave { transform-box: view-box; transform-origin: 222px 268px; animation: anWave 1.5s ease-in-out infinite alternate; }
+@keyframes anWave { from { transform: rotate(-10deg); } to { transform: rotate(12deg); } }
+.an-lids { opacity: 0; animation: anBlink 4.6s infinite; }
+@keyframes anBlink { 0%, 94.4%, 97.6%, 100% { opacity: 0; } 94.5%, 97.5% { opacity: 1; } }
+.an-hair { transform-box: view-box; transform-origin: 160px 120px; animation: anHair 4s ease-in-out infinite; }
+@keyframes anHair { 50% { transform: rotate(0.8deg); } }
+
+/* menu UI sits above the painted backdrop */
+.ui-layer { z-index: 10; }
+
+/* light buttons on the menu: no live blur (cheap to draw, instant feedback) */
+.menu .btn, .worlds .btn, .story .btn { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.menu .btn.ghost, .worlds .btn.ghost, .story .btn.ghost { background: linear-gradient(140deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.66)); }
+.menu .star-badge, .menu .lang-switch { -webkit-backdrop-filter: none; backdrop-filter: none; background: linear-gradient(140deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.6)); }
+.btn { touch-action: manipulation; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+.btn.pressed { transform: translateY(2px) scale(0.97); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mb-rays, .mb-cloud, .mb-twinkle, .mb-fairy, .mb-pulse, .an-breathe, .an-wave, .an-lids, .an-hair { animation: none; }
 }
