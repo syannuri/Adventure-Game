@@ -25,7 +25,11 @@ export interface WorldPhysics {
   colliders: CircleCollider[];
   platforms: Platform[];
   boundaryRadius: number;
+  /** what the ground is made of (for footstep sounds) */
+  surfaceAt?: (x: number, z: number) => Surface;
 }
+
+export type Surface = 'grass' | 'dirt' | 'wood';
 
 let world: WorldPhysics = {
   height: () => 0,
@@ -53,6 +57,12 @@ export function groundHeightAt(x: number, z: number, feetY: number) {
     if (dx * dx + dz * dz < p.r * p.r && feetY >= p.top - STEP && p.top > g) g = p.top;
   }
   return g;
+}
+
+/** Surface under the feet: platforms (stumps, mushroom caps, rocks) sound like wood, else ask the world. */
+export function surfaceAt(x: number, z: number, feetY: number): Surface {
+  if (feetY > world.height(x, z) + 0.08) return 'wood';
+  return world.surfaceAt ? world.surfaceAt(x, z) : 'grass';
 }
 
 /** Push a moving circle (the player) out of all solid obstacles. Mutates pos. */

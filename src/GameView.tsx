@@ -17,6 +17,7 @@ import { ControlsCard } from './components/ui/ControlsCard';
 import { cameraState, player } from './systems/playerState';
 import { input } from './systems/input';
 import { groundHeightAt } from './systems/physics';
+import { audio } from './components/audio/audioEngine';
 
 /** `?capture` keeps the drawing buffer so automated screenshots never catch an empty frame. */
 const CAPTURE = typeof location !== 'undefined' && new URLSearchParams(location.search).has('capture');
@@ -54,7 +55,7 @@ export default function GameView({ review = false }: { review?: boolean }) {
   // debug / automated-test hook
   useEffect(() => {
     const w = window as unknown as { __anett: Record<string, unknown> };
-    w.__anett = { ...(w.__anett ?? {}), useGame, player, input, groundHeightAt, cameraState };
+    w.__anett = { ...(w.__anett ?? {}), useGame, player, input, groundHeightAt, cameraState, audio };
   }, []);
 
   return (

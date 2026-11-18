@@ -11,7 +11,7 @@ import { AnettAnimator } from './AnettAnimator';
 import type { AnimState } from './AnettAnimations';
 import { input, joystickSpeed } from '../../../systems/input';
 import { cameraState, player } from '../../../systems/playerState';
-import { groundHeightAt, resolveCollisions } from '../../../systems/physics';
+import { groundHeightAt, resolveCollisions, surfaceAt } from '../../../systems/physics';
 import { useGame } from '../../../systems/store';
 import { angleDelta, damp } from '../../../utils/math';
 import { audio } from '../../audio/audioEngine';
@@ -170,7 +170,8 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
     if (pos.y <= ground) {
       if (!s.grounded && s.airTime > 0.18) {
         s.land = Math.min(1, 0.35 + -s.vy * 0.06);
-        audio.sfx('land', { volume: Math.min(1, -s.vy / 12) });
+        audio.sfx('land', { volume: Math.min(1.2, 0.35 + -s.vy / 12), pitch: surfaceAt(pos.x, pos.z, pos.y + 0.01) === 'wood' ? 1.4 : 1 });
+        if (surfaceAt(pos.x, pos.z, pos.y + 0.01) === 'wood') audio.sfx('stepWood', { volume: 0.9 });
         spawnDust(pos.x, pos.y, pos.z, 10, Math.min(1.6, -s.vy / 8));
       }
       pos.y = ground;
@@ -234,7 +235,13 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
       const a = Math.floor(prevPhase / Math.PI);
       const b = Math.floor(animator.phase / Math.PI);
       if (a !== b) {
-        audio.sfx('step', { volume: hs > 4.5 ? 1 : 0.7 });
+        const surf = surfaceAt(pos.x, pos.z, pos.y);
+        const running = hs > 4.5;
+        // alternate feet sound slightly different; running is quicker, louder and crunchier
+        audio.sfx(surf === 'wood' ? 'stepWood' : surf === 'dirt' ? 'stepDirt' : 'stepGrass', {
+          volume: running ? 1.15 : 0.8,
+          pitch: (b % 2 ? 1.04 : 0.96) * (running ? 1.08 : 1) * (0.97 + Math.random() * 0.06),
+        });
         if (hs > 4.5) spawnDust(pos.x, pos.y, pos.z, 3, 0.7); // little puffs when running
       }
     }

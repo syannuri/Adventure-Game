@@ -21,6 +21,9 @@ export type SfxName =
   | 'chest'
   | 'whoosh'
   | 'tap'
+  | 'stepGrass'
+  | 'stepDirt'
+  | 'stepWood'
   | 'tapPlay';
 
 interface Song {
@@ -362,6 +365,25 @@ class AudioEngine {
     }
   }
 
+  /** Filtered noise whose band slides from f0 to f1 (whooshes). */
+  private noiseSweep(t: number, dur: number, f0: number, f1: number, vol: number, out: AudioNode) {
+    const ctx = this.ctx!;
+    const src = ctx.createBufferSource();
+    src.buffer = this.noiseBuf;
+    const f = ctx.createBiquadFilter();
+    f.type = 'bandpass';
+    f.Q.value = 1.4;
+    f.frequency.setValueAtTime(f0, t);
+    f.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(vol, t + dur * 0.35);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(f).connect(g).connect(out);
+    src.start(t, Math.random() * 1.5);
+    src.stop(t + dur + 0.05);
+  }
+
   private noiseHit(t: number, dur: number, freq: number, vol: number, out: AudioNode, type: BiquadFilterType = 'highpass') {
     const ctx = this.ctx!;
     const src = ctx.createBufferSource();
@@ -412,13 +434,35 @@ class AudioEngine {
         this.tone('square', mtof(88) * p, mtof(88) * p, t + 0.07, 0.22, 0.04 * v, out);
         break;
       case 'jump':
-        this.tone('sine', 320 * p, 640 * p, t, 0.16, 0.12 * v, out);
+        // springy "boing" + a little whoosh of air
+        this.tone('sine', 240 * p, 620 * p, t, 0.2, 0.16 * v, out);
+        this.tone('triangle', 480 * p, 1240 * p, t + 0.01, 0.12, 0.05 * v, out);
+        this.noiseSweep(t, 0.24, 500, 2400, 0.16 * v, out);
         break;
       case 'land':
-        this.noiseHit(t, 0.12, 380, 0.25 * v, out, 'lowpass');
+        // solid "buk" thump, a puff of grass and a tiny settle
+        this.tone('sine', 140 * p, 42, t, 0.18, 0.4 * v, out);
+        this.noiseHit(t, 0.16, 420, 0.32 * v, out, 'lowpass');
+        this.noiseHit(t + 0.01, 0.12, 2800, 0.12 * v, out, 'bandpass');
         break;
       case 'step':
-        this.noiseHit(t, 0.06, 900 + Math.random() * 600, 0.07 * v, out, 'bandpass');
+      case 'stepGrass':
+        // soft footfall + grass rustle
+        this.tone('sine', 110 * p, 55, t, 0.07, 0.22 * v, out);
+        this.noiseHit(t, 0.09, 2600 * p + Math.random() * 900, 0.16 * v, out, 'bandpass');
+        this.noiseHit(t + 0.03, 0.06, 5200, 0.05 * v, out, 'highpass');
+        break;
+      case 'stepDirt':
+        // firmer footfall + gravel crunch (a few tiny clicks)
+        this.tone('sine', 120 * p, 60, t, 0.06, 0.24 * v, out);
+        this.noiseHit(t, 0.07, 1300 * p + Math.random() * 500, 0.2 * v, out, 'bandpass');
+        for (let i = 0; i < 3; i++) this.noiseHit(t + 0.01 + Math.random() * 0.05, 0.015, 3500 + Math.random() * 2500, 0.08 * v, out, 'bandpass');
+        break;
+      case 'stepWood':
+        // hollow knock on a stump / mushroom cap / rock
+        this.tone('triangle', 260 * p, 150 * p, t, 0.08, 0.2 * v, out);
+        this.tone('sine', 520 * p, 300 * p, t, 0.05, 0.06 * v, out);
+        this.noiseHit(t, 0.04, 900, 0.1 * v, out, 'bandpass');
         break;
       case 'talk':
         this.tone('sine', 500 * p, 560 * p, t, 0.05, 0.05 * v, out);
