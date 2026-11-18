@@ -11,7 +11,7 @@
  */
 import { useEffect, useLayoutEffect, useMemo } from 'react';
 import * as THREE from 'three';
-import { createPortal } from '@react-three/fiber';
+import { createPortal, useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import type { AnettRig } from './AnettModel';
 import RIG from './anetRig.json';
@@ -103,7 +103,90 @@ export function AnettHD({ joints, rightHandItem, onReady, backpack }: Props) {
           <group position={RIG.handR.pos as [number, number, number]}>{rightHandItem}</group>,
           bones.elbowR,
         )}
+      {createPortal(<Face joints={joints} />, bones.neck)}
       {backpack && createPortal(<group position={RIG.backpack as [number, number, number]}>{backpack}</group>, bones.spine)}
+    </>
+  );
+}
+
+// ---- face: eyelids that blink / squint and an opening mouth, placed on the sculpt's eyes and lips.
+// Positions are in the neck bone's space (sculpt units), measured on the model (tools/anet-rig).
+const EYES = [
+  { side: 1, pos: [0.05, 0.193, 0.107] as const },
+  { side: -1, pos: [-0.0475, 0.193, 0.107] as const },
+];
+const MOUTH_POS = [0, 0.1195, 0.1395] as const;
+const LID_H = 0.019;
+const LID_COLOR = '#c98a6c';
+/** `?face=closed` / `?face=open` freeze the face for reviewing it */
+const FACE_DEBUG = typeof location === 'undefined' ? null : new URLSearchParams(location.search).get('face');
+
+function Face({ joints }: { joints: Props['joints'] }) {
+  const lids = useMemo(() => [new THREE.Group(), new THREE.Group()], []);
+  const lidMeshes = useMemo(() => [new THREE.Group(), new THREE.Group()], []);
+  const mouth = useMemo(() => new THREE.Group(), []);
+  const mats = useMemo(
+    () => ({
+      lid: new THREE.MeshStandardMaterial({ color: LID_COLOR, roughness: 0.62 }),
+      lash: new THREE.MeshStandardMaterial({ color: '#2a1610', roughness: 0.6 }),
+      inner: new THREE.MeshStandardMaterial({ color: '#4a1a1e', roughness: 0.9 }),
+      teeth: new THREE.MeshStandardMaterial({ color: '#fbf6ef', roughness: 0.5 }),
+      tongue: new THREE.MeshStandardMaterial({ color: '#d9656b', roughness: 0.8 }),
+    }),
+    [],
+  );
+  useEffect(() => () => Object.values(mats).forEach((m) => m.dispose()), [mats]);
+
+  useFrame(({ clock }) => {
+    const eye = joints.eyeL?.current;
+    const mo = joints.mouthOpen?.current;
+    // the animator writes eye openness into the procedural eyes' scale.y (1 open, ~0.07 closed)
+    let closed = eye ? Math.min(1, Math.max(0, (1 - eye.scale.y) / 0.92)) : 0;
+    if (FACE_DEBUG === 'closed') closed = 1;
+    for (const m of lidMeshes) {
+      m.visible = closed > 0.03;
+      m.scale.y = Math.max(0.001, closed);
+    }
+    let open = mo?.visible ? mo.scale.y : 0;
+    let wide = mo?.visible ? mo.scale.x : 1;
+    if (FACE_DEBUG === 'open') (open = 1), (wide = 1);
+    mouth.visible = open > 0;
+    if (open > 0) {
+      const chatter = 0.85 + 0.15 * Math.sin(clock.elapsedTime * 15);
+      mouth.scale.set(wide, open * chatter, 1);
+    }
+  });
+
+  return (
+    <>
+      {EYES.map((e, i) => (
+        <primitive key={i} object={lids[i]} position={e.pos} rotation={[0.08, 0.32 * e.side, 0]}>
+          {/* the lid hangs from the top of the eye and grows downward */}
+          <primitive object={lidMeshes[i]} position={[0, LID_H * 1.02, -0.0085]}>
+            <group position={[0, -LID_H, 0]}>
+              <mesh material={mats.lid} scale={[0.0295, LID_H, 0.0145]}>
+                <sphereGeometry args={[1, 24, 16]} />
+              </mesh>
+              {/* lashes along the lid edge, curving down at the outer corner */}
+              <mesh material={mats.lash} position={[0, -LID_H * 0.74, 0.0118]} rotation={[0, 0, -0.08 * e.side]} scale={[0.025, 0.0028, 0.0042]}>
+                <sphereGeometry args={[1, 16, 8]} />
+              </mesh>
+            </group>
+          </primitive>
+        </primitive>
+      ))}
+      <primitive object={mouth} position={MOUTH_POS} rotation={[-0.12, 0, 0]}>
+        {/* a "D"-shaped open smile: flat top under the upper lip, round bottom */}
+        <mesh material={mats.inner} position={[0, 0.002, 0]} scale={[0.021, 0.013, 0.004]}>
+          <sphereGeometry args={[1, 28, 14, 0, Math.PI * 2, Math.PI * 0.32, Math.PI * 0.68]} />
+        </mesh>
+        <mesh material={mats.teeth} position={[0, 0.0068, 0.0022]} scale={[0.0135, 0.0024, 0.0025]}>
+          <sphereGeometry args={[1, 16, 8]} />
+        </mesh>
+        <mesh material={mats.tongue} position={[0, -0.0062, 0.0018]} scale={[0.012, 0.0045, 0.0028]}>
+          <sphereGeometry args={[1, 16, 8]} />
+        </mesh>
+      </primitive>
     </>
   );
 }
