@@ -1,13 +1,14 @@
 /**
- * Anett – procedural stylized 3D character.
+ * Anet – procedural stylized 3D character.
  *
- * DESIGN REFERENCE: docs/anett-reference.jpg (the official look).
- *  - voluminous, wavy dark-brown/black hair falling past the shoulders, full straight-cut bangs
- *  - round face, fair light skin (Indonesian / East-Asian fair tone), big amber-brown eyes with long lashes, small nose, soft smile
- *  - orange hooded zip-up jacket: ribbed darker-orange cuffs & hem, chest pockets with flaps,
- *    silver zipper, white hood drawstrings
- *  - big khaki hiking backpack with grey shoulder straps, sternum strap and dangling strap ends
- *  - cream shorts, thick slouchy cream socks, tan lace-up hiking boots with cream soles
+ * DESIGN REFERENCE: docs/anet-cover-source.png (the main-menu cover illustration – the official look).
+ *  - long, straight, very dark brown hair with a centre part, framing the face, past the shoulders
+ *  - round-oval face, fair light skin, big dark-brown eyes with long lashes, thin arched brows,
+ *    small nose, sweet closed smile, rosy cheeks
+ *  - yellow-and-white striped short-sleeved T-shirt
+ *  - mustard corduroy pinafore (overall) dress: bib with straps and metal clips, side buttons,
+ *    two front patch pockets
+ *  - pink socks, tan hiking boots with dark-brown toe / heel, pink laces and collar
  *
  * PLACEHOLDER NOTICE: built from Three.js primitives + generated geometry until a sculpted & rigged
  * GLB (Blender / Mixamo pipeline) is available. The joint groups (hips, spine, neck, shoulders,
@@ -23,29 +24,26 @@ import { smoothstep } from '../../../utils/math';
 export const ANETT_PALETTE = {
   skin: '#f9dcc6', // fair, light warm-ivory (Indonesian / East-Asian fair skin)
   skinShade: '#efc2a6',
-  hair: '#2b221e',
-  hairSheen: '#8c7b70',
-  irisInner: '#f2a145',
-  irisMid: '#b8621d',
-  irisRim: '#4a230b',
-  lash: '#1e1512',
-  brow: '#4a352b',
-  jacket: '#e9843b',
-  jacketRib: '#c8622a',
-  zipper: '#c9c9cf',
-  drawstring: '#f3ece0',
-  shorts: '#efe6d4',
-  sock: '#ece3d3',
-  boot: '#c99468',
-  bootDark: '#a9744d',
-  sole: '#f2e7d4',
-  pack: '#b39b76',
-  packDark: '#9b8463',
-  packLight: '#c4ae8a',
-  strap: '#7f7a70',
-  strapDark: '#3a3936',
+  hair: '#1f1714',
+  hairSheen: '#7a5a48',
+  irisInner: '#9a6238',
+  irisMid: '#5c341a',
+  irisRim: '#26130a',
+  lash: '#160f0c',
+  brow: '#3b2a22',
+  shirtYellow: '#f6c33c',
+  shirtWhite: '#fbf8f0',
+  overall: '#c98b2c',
+  overallDark: '#a8701f',
+  metal: '#d8d8de',
+  sock: '#ff9fbf',
+  boot: '#bf8a52',
+  bootDark: '#4a3528',
+  sole: '#5a4a3e',
+  midsole: '#e9dcc6',
+  lace: '#d8457e',
   cheek: '#ff9b8f',
-  lips: '#c4655c',
+  lips: '#d2706f',
 };
 
 export interface AnettRig {
@@ -97,7 +95,7 @@ function ridges<T extends THREE.BufferGeometry>(g: T, count = 22, depth = 0.02):
  * Built with an outer and an inner layer so the edges look solid.
  */
 function unifiedHair() {
-  const seg = 112;
+  const seg = 128;
   const R = 0.286; // crown radius
   const yOff = 0.016; // dome centre offset (a little volume on top)
   const yBangs = 0.084; // fringe line, just above the brows
@@ -106,18 +104,18 @@ function unifiedHair() {
   const lenRows = 24;
   const bottom = -0.37;
   const thick = 0.032;
-  type Row = { y: number; r: number; open: number; t: number; cap: boolean };
+  type Row = { y: number; r: number; open: number; t: number; cap: boolean; f: number };
   const rows: Row[] = [];
   for (let k = 0; k <= capRows; k++) {
     const th = Math.max(0.02, thetaB * (k / capRows));
-    rows.push({ y: yOff + R * Math.cos(th), r: R * Math.sin(th), open: 0, t: 0, cap: true });
+    rows.push({ y: yOff + R * Math.cos(th), r: R * Math.sin(th), open: 0, t: 0, cap: true, f: k / capRows });
   }
   const rTop = R * Math.sin(thetaB);
   for (let k = 0; k <= lenRows; k++) {
     const t = k / lenRows;
     const y = yBangs - 0.003 - (yBangs - 0.003 - bottom) * t;
     const r = rTop + 0.078 * Math.pow(t, 1.3) - 0.022 * smoothstep(0.86, 1, t);
-    rows.push({ y, r, open: 0.98 - 0.4 * smoothstep(0.35, 1, t), t, cap: false });
+    rows.push({ y, r, open: 0.98 - 0.4 * smoothstep(0.35, 1, t), t, cap: false, f: 1 });
   }
   const nR = rows.length;
   const ring = nR * (seg + 1);
@@ -130,14 +128,25 @@ function unifiedHair() {
         const th = row.open + u * (Math.PI * 2 - 2 * row.open); // 0 = straight ahead (+z)
         const a = Math.abs(th - Math.PI); // mirror-symmetric angle from the back
         let r = row.r;
-        if (!row.cap) r += Math.cos(a * 4 + row.t * 4) * 0.012 * smoothstep(0.2, 0.7, row.t); // soft waves
+        let rowY = row.y;
+        const azFront = Math.min(th, Math.PI * 2 - th); // 0 = front centre
+        if (row.cap) {
+          // centre-part hairstyle: the hairline sits high at the front (forehead visible) and drops
+          // to the temples at the sides; the band below sweeps down to frame the face
+          const hairline = thetaB + (0.95 - thetaB) * (1 - smoothstep(0.3, 0.98, azFront));
+          const pol = Math.max(0.02, hairline * row.f);
+          r = R * Math.sin(pol);
+          rowY = yOff + R * Math.cos(pol);
+          // the parting: a soft groove along the centre line on the front half of the head
+          if (azFront < Math.PI / 2) r *= 1 - 0.035 * (1 - smoothstep(0, 0.09, azFront)) * smoothstep(0.15, 0.6, row.f);
+        }
+        if (!row.cap) r += Math.cos(a * 4 + row.t * 4) * 0.008 * smoothstep(0.2, 0.7, row.t); // gentle movement, mostly straight
         r *= 1 + Math.cos(a * 44) * 0.0035 * Math.min(1, row.r / 0.2); // fine strands, fading at the crown
         if (layer === 1) r -= thick;
-        let y = row.y;
+        let y = rowY;
         if (!row.cap && row.t === 1) y += Math.cos(a * 3) * 0.012 + 0.01 + (layer === 1 ? 0.012 : 0);
-        const back = Math.cos(th) < 0 ? 1 + 0.07 * smoothstep(0, 0.3, row.t) : 1; // room for the backpack
-        const front = Math.cos(th) > 0 && row.cap ? 1 - 0.03 * Math.cos(th) : 1; // fringe hugs the forehead
-        pos.push(Math.sin(th) * r, y, Math.cos(th) * r * back * front);
+        const front = Math.cos(th) > 0 && row.cap ? 1 - 0.05 * Math.cos(th) : 1; // hair lies close to the forehead
+        pos.push(Math.sin(th) * r, y, Math.cos(th) * r * front);
       }
     }
   }
@@ -203,6 +212,53 @@ function strandNormalTexture() {
   strandTex.wrapS = strandTex.wrapT = THREE.RepeatWrapping;
   strandTex.repeat.set(2, 1);
   return strandTex;
+}
+
+let stripeTex: THREE.Texture | null = null;
+/** Yellow-and-white horizontal stripes for the T-shirt. */
+function stripeTexture() {
+  if (stripeTex) return stripeTex;
+  const P = ANETT_PALETTE;
+  const c = document.createElement('canvas');
+  c.width = 8;
+  c.height = 64;
+  const g = c.getContext('2d')!;
+  g.fillStyle = P.shirtWhite;
+  g.fillRect(0, 0, 8, 64);
+  g.fillStyle = P.shirtYellow;
+  g.fillRect(0, 0, 8, 30);
+  stripeTex = new THREE.CanvasTexture(c);
+  stripeTex.colorSpace = THREE.SRGBColorSpace;
+  stripeTex.wrapS = stripeTex.wrapT = THREE.RepeatWrapping;
+  stripeTex.repeat.set(1, 7);
+  return stripeTex;
+}
+
+let cordTex: THREE.Texture | null = null;
+/** Fine vertical corduroy ribs (normal map) for the pinafore dress. */
+function corduroyNormal() {
+  if (cordTex) return cordTex;
+  const W = 128;
+  const c = document.createElement('canvas');
+  c.width = W;
+  c.height = 4;
+  const g = c.getContext('2d')!;
+  const img = g.createImageData(W, 4);
+  for (let y = 0; y < 4; y++)
+    for (let x = 0; x < W; x++) {
+      const nx = Math.cos((x / W) * Math.PI * 2 * 16) * 0.6;
+      const l = Math.hypot(nx, 1);
+      const o = (y * W + x) * 4;
+      img.data[o] = ((nx / l) * 0.5 + 0.5) * 255;
+      img.data[o + 1] = 128;
+      img.data[o + 2] = (1 / l) * 255;
+      img.data[o + 3] = 255;
+    }
+  g.putImageData(img, 0, 0);
+  cordTex = new THREE.CanvasTexture(c);
+  cordTex.wrapS = cordTex.wrapT = THREE.RepeatWrapping;
+  cordTex.repeat.set(3, 1);
+  return cordTex;
 }
 
 let blushTex: THREE.Texture | null = null;
@@ -291,20 +347,17 @@ function useMaterials() {
       highlight: new THREE.MeshBasicMaterial({ color: '#ffffff' }),
       lash: mat(P.lash, 0.6),
       brow: mat(P.brow, 0.8),
-      jacket: mat(P.jacket, 0.62, { sheen: 0.6, sheenColor: new THREE.Color('#ffc59a'), sheenRoughness: 0.5, clearcoat: 0.15 }),
-      jacketRib: mat(P.jacketRib, 0.85),
-      zipper: mat(P.zipper, 0.3, { metalness: 0.8 }),
-      drawstring: mat(P.drawstring, 0.8),
-      shorts: mat(P.shorts, 0.85, { sheen: 0.4, sheenColor: new THREE.Color('#ffffff') }),
+      shirt: mat('#ffffff', 0.8, { map: stripeTexture(), sheen: 0.3, sheenColor: new THREE.Color('#fff6d8') }),
+      shirtTrim: mat(P.shirtYellow, 0.8),
+      overall: mat(P.overall, 0.85, { normalMap: corduroyNormal(), normalScale: new THREE.Vector2(0.6, 0.6), sheen: 0.5, sheenColor: new THREE.Color('#ffd58a'), sheenRoughness: 0.6 }),
+      overallDark: mat(P.overallDark, 0.85),
+      metal: mat(P.metal, 0.25, { metalness: 0.85 }),
       sock: mat(P.sock, 0.95),
       boot: mat(P.boot, 0.6, { sheen: 0.3, sheenColor: new THREE.Color('#f0c8a4') }),
       bootDark: mat(P.bootDark, 0.7),
-      sole: mat(P.sole, 0.7),
-      pack: mat(P.pack, 0.8, { sheen: 0.4, sheenColor: new THREE.Color('#e6d7bd') }),
-      packDark: mat(P.packDark, 0.8),
-      packLight: mat(P.packLight, 0.8),
-      strap: mat(P.strap, 0.75),
-      strapDark: mat(P.strapDark, 0.5),
+      sole: mat(P.sole, 0.8),
+      midsole: mat(P.midsole, 0.7),
+      lace: mat(P.lace, 0.6),
       cheek: new THREE.MeshBasicMaterial({
         color: P.cheek,
         map: blushTexture(),
@@ -442,12 +495,10 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
 
   const geo = useMemo(() => {
     const rib = (g: THREE.BufferGeometry, n: number, d: number) => ridges(g, n, d);
-    const hemTorus = new THREE.TorusGeometry(0.168, 0.034, 10, 48);
-    hemTorus.rotateX(Math.PI / 2);
-    const cuffTorus = new THREE.TorusGeometry(0.05, 0.022, 8, 32);
-    cuffTorus.rotateX(Math.PI / 2);
-    const collar = new THREE.TorusGeometry(0.1, 0.046, 12, 40);
-    collar.rotateX(Math.PI / 2);
+    const sleeveTrim = new THREE.TorusGeometry(0.066, 0.012, 8, 32);
+    sleeveTrim.rotateX(Math.PI / 2);
+    const neckTrim = new THREE.TorusGeometry(0.085, 0.014, 8, 36);
+    neckTrim.rotateX(Math.PI / 2);
     return {
       head: new THREE.SphereGeometry(0.25, 48, 36),
       mantle: unifiedHair(),
@@ -459,9 +510,9 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
       lowerLip: new THREE.SphereGeometry(0.016, 16, 10),
       cheekL: cheekPatch(1),
       cheekR: cheekPatch(-1),
-      hem: rib(hemTorus, 70, 0.03),
-      cuff: rib(cuffTorus, 30, 0.05),
-      collar: rib(collar, 50, 0.02),
+      sleeveTrim,
+      neckTrim,
+      skirt: new THREE.CylinderGeometry(0.168, 0.228, 0.27, 40, 1, true),
       sock: rib(new THREE.CylinderGeometry(0.064, 0.059, 0.1, 28, 1), 26, 0.04),
       sockFold: rib(new THREE.TorusGeometry(0.063, 0.02, 8, 28).rotateX(Math.PI / 2), 26, 0.05),
     };
@@ -500,11 +551,13 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
   );
 
   const Arm = ({ side, sref, eref, item }: { side: 1 | -1; sref: React.RefObject<THREE.Group>; eref: React.RefObject<THREE.Group>; item?: React.ReactNode }) => (
-    <group ref={sref} position={[0.185 * side, 0.285, 0]}>
-      <mesh geometry={capsule(0.066, 0.09)} material={m.jacket} position={[0, -0.075, 0]} />
+    <group ref={sref} position={[0.178 * side, 0.285, 0]}>
+      {/* short striped sleeve with a yellow trim, bare arm below */}
+      <mesh geometry={capsule(0.066, 0.04)} material={m.shirt} position={[0, -0.045, 0]} />
+      <mesh geometry={geo.sleeveTrim} material={m.shirtTrim} position={[0, -0.09, 0]} />
+      <mesh geometry={capsule(0.046, 0.1)} material={m.skin} position={[0, -0.1, 0]} />
       <group ref={eref} position={[0, -0.165, 0]}>
-        <mesh geometry={capsule(0.059, 0.075)} material={m.jacket} position={[0, -0.055, 0.004]} />
-        <mesh geometry={geo.cuff} material={m.jacketRib} position={[0, -0.125, 0.004]} />
+        <mesh geometry={capsule(0.042, 0.085)} material={m.skin} position={[0, -0.06, 0.004]} />
         {/* hand: soft palm, four short curled fingers and a thumb */}
         <mesh material={m.skin} position={[0, -0.162, 0.008]} scale={[1, 0.95, 0.66]}>
           <sphereGeometry args={[0.044, 18, 14]} />
@@ -523,30 +576,29 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
   );
 
   const Leg = ({ side, lref, kref }: { side: 1 | -1; lref: React.RefObject<THREE.Group>; kref: React.RefObject<THREE.Group> }) => (
-    <group ref={lref} position={[0.082 * side, -0.02, 0]}>
-      {/* short leg opening */}
-      <mesh material={m.shorts} position={[0, -0.05, 0]}>
-        <cylinderGeometry args={[0.084, 0.086, 0.12, 22]} />
-      </mesh>
-      <mesh geometry={capsule(0.064, 0.11)} material={m.skin} position={[0, -0.13, 0]} />
+    <group ref={lref} position={[0.078 * side, -0.02, 0]}>
+      <mesh geometry={capsule(0.058, 0.13)} material={m.skin} position={[0, -0.12, 0]} />
       <group ref={kref} position={[0, -0.225, 0]}>
-        <mesh geometry={capsule(0.058, 0.1)} material={m.skin} position={[0, -0.07, 0]} />
-        {/* thick slouchy socks */}
+        <mesh geometry={capsule(0.052, 0.1)} material={m.skin} position={[0, -0.07, 0]} />
+        {/* pink socks */}
         <mesh geometry={geo.sock} material={m.sock} position={[0, -0.15, 0]} />
-        <mesh geometry={geo.sockFold} material={m.sock} position={[0, -0.1, 0]} />
-        {/* hiking boot */}
+        <mesh geometry={geo.sockFold} material={m.sock} position={[0, -0.112, 0]} />
+        {/* hiking boot: tan upper, dark-brown toe cap and heel, pink laces and collar */}
         <group position={[0, -0.225, 0.028]}>
-          <mesh material={m.boot} position={[0, 0.035, -0.03]}>
-            <cylinderGeometry args={[0.068, 0.07, 0.07, 22]} />
+          <mesh material={m.boot} position={[0, 0.04, -0.03]}>
+            <cylinderGeometry args={[0.068, 0.072, 0.08, 22]} />
           </mesh>
+          <mesh geometry={geo.sockFold} material={m.lace} position={[0, 0.082, -0.03]} scale={[1.08, 0.7, 1.08]} />
           <RoundedBox args={[0.142, 0.1, 0.215]} radius={0.045} smoothness={4} material={m.boot} />
-          <RoundedBox args={[0.144, 0.05, 0.08]} radius={0.024} smoothness={3} material={m.bootDark} position={[0, -0.012, 0.07]} />
-          <RoundedBox args={[0.152, 0.036, 0.228]} radius={0.016} smoothness={3} material={m.sole} position={[0, -0.048, 0.003]} />
-          {/* tongue + laces */}
-          <RoundedBox args={[0.06, 0.03, 0.09]} radius={0.012} smoothness={2} material={m.bootDark} position={[0, 0.05, 0.02]} rotation={[0.35, 0, 0]} />
-          {[0, 1, 2].map((i) => (
-            <mesh key={i} material={m.drawstring} position={[0, 0.054 - i * 0.012, 0.0 + i * 0.03]} rotation={[0.35, 0, 0]}>
-              <boxGeometry args={[0.08, 0.008, 0.01]} />
+          <RoundedBox args={[0.146, 0.06, 0.085]} radius={0.028} smoothness={3} material={m.bootDark} position={[0, -0.01, 0.068]} />
+          <RoundedBox args={[0.146, 0.06, 0.06]} radius={0.026} smoothness={3} material={m.bootDark} position={[0, -0.008, -0.08]} />
+          <RoundedBox args={[0.152, 0.02, 0.226]} radius={0.01} smoothness={2} material={m.midsole} position={[0, -0.042, 0.003]} />
+          <RoundedBox args={[0.152, 0.024, 0.228]} radius={0.012} smoothness={2} material={m.sole} position={[0, -0.058, 0.003]} />
+          {/* tongue + pink laces */}
+          <RoundedBox args={[0.058, 0.03, 0.09]} radius={0.012} smoothness={2} material={m.bootDark} position={[0, 0.052, 0.02]} rotation={[0.35, 0, 0]} />
+          {[0, 1, 2, 3].map((i) => (
+            <mesh key={i} material={m.lace} position={[0, 0.06 - i * 0.011, -0.004 + i * 0.026]} rotation={[0.35, 0, (i % 2 ? 0.4 : -0.4)]}>
+              <boxGeometry args={[0.07, 0.007, 0.009]} />
             </mesh>
           ))}
         </group>
@@ -558,97 +610,49 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
     <group ref={r.root} scale={scale}>
       <group ref={r.body}>
         <group ref={r.hips} position={[0, 0.535, 0]}>
-          {/* cream shorts */}
-          <mesh material={m.shorts} position={[0, 0.0, 0]}>
-            <cylinderGeometry args={[0.158, 0.178, 0.16, 28]} />
+          {/* corduroy pinafore skirt (flared, ends mid-thigh) with two patch pockets */}
+          <mesh geometry={geo.skirt} material={m.overall} position={[0, -0.04, 0]} />
+          <mesh material={m.overallDark} position={[0, -0.172, 0]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.226, 0.007, 6, 48]} />
           </mesh>
+          {[1, -1].map((s2) => (
+            <group key={s2} position={[0.1 * s2, -0.06, 0.188]} rotation={[-0.2, 0.42 * s2, 0]}>
+              <RoundedBox args={[0.09, 0.09, 0.016]} radius={0.012} smoothness={2} material={m.overall} />
+              <mesh material={m.overallDark} position={[0, 0.045, 0.009]}>
+                <boxGeometry args={[0.09, 0.006, 0.004]} />
+              </mesh>
+            </group>
+          ))}
           <Leg side={1} lref={r.legL} kref={r.kneeL} />
           <Leg side={-1} lref={r.legR} kref={r.kneeR} />
 
           <group ref={r.spine} position={[0, 0.06, 0]}>
-            {/* orange zip jacket */}
-            <mesh geometry={capsule(0.172, 0.14)} material={m.jacket} position={[0, 0.165, 0]} scale={[1, 1, 0.9]} />
-            <mesh geometry={geo.hem} material={m.jacketRib} position={[0, 0.035, 0]} scale={[1, 1, 0.9]} />
-            {/* zipper */}
-            <mesh material={m.zipper} position={[0, 0.17, 0.156]}>
-              <boxGeometry args={[0.012, 0.25, 0.008]} />
+            {/* striped T-shirt */}
+            <mesh geometry={capsule(0.162, 0.14)} material={m.shirt} position={[0, 0.165, 0]} scale={[1, 1, 0.88]} />
+            <mesh geometry={geo.neckTrim} material={m.shirtTrim} position={[0, 0.3, 0.004]} scale={[1, 1, 0.92]} />
+            {/* pinafore: waistband, bib, back panel, straps with metal clips, side buttons */}
+            <mesh material={m.overall} position={[0, 0.03, 0]} scale={[1, 1, 0.9]}>
+              <cylinderGeometry args={[0.17, 0.17, 0.08, 36, 1, true]} />
             </mesh>
-            <mesh material={m.zipper} position={[0.008, 0.27, 0.163]}>
-              <boxGeometry args={[0.012, 0.03, 0.006]} />
-            </mesh>
-            {/* chest pockets with flaps */}
-            {[1, -1].map((s) => (
-              <group key={s} position={[0.085 * s, 0.105, 0.138]} rotation={[0, 0.42 * s, 0]}>
-                <RoundedBox args={[0.085, 0.075, 0.022]} radius={0.01} smoothness={2} material={m.jacket} />
-                <RoundedBox args={[0.09, 0.025, 0.026]} radius={0.01} smoothness={2} material={m.jacketRib} position={[0, 0.036, 0.002]} />
-              </group>
-            ))}
-            {/* hood collar + hood */}
-            <mesh geometry={geo.collar} material={m.jacket} position={[0, 0.305, 0.0]} />
-            <mesh material={m.jacket} position={[0, 0.31, -0.1]} scale={[1.25, 0.7, 0.75]}>
-              <sphereGeometry args={[0.12, 20, 14]} />
-            </mesh>
-            {/* drawstrings */}
-            {[1, -1].map((s) => (
-              <group key={s} position={[0.035 * s, 0.27, 0.15]}>
-                <mesh material={m.drawstring} position={[0, -0.04, 0]}>
-                  <cylinderGeometry args={[0.006, 0.006, 0.08, 6]} />
+            <RoundedBox args={[0.2, 0.17, 0.03]} radius={0.014} smoothness={3} material={m.overall} position={[0, 0.135, 0.136]} rotation={[-0.06, 0, 0]} />
+            <RoundedBox args={[0.08, 0.06, 0.012]} radius={0.01} smoothness={2} material={m.overall} position={[0, 0.13, 0.154]} />
+            <RoundedBox args={[0.2, 0.14, 0.03]} radius={0.014} smoothness={3} material={m.overall} position={[0, 0.115, -0.13]} rotation={[0.06, 0, 0]} />
+            {[1, -1].map((s2) => (
+              <group key={s2}>
+                <mesh material={m.overall} position={[0.075 * s2, 0.2, -0.005]} rotation={[0, Math.PI / 2, 0]} scale={[1.02, 1, 1]}>
+                  <torusGeometry args={[0.15, 0.016, 6, 22, Math.PI * 0.82]} />
                 </mesh>
-                <mesh material={m.drawstring} position={[0, -0.085, 0]} scale={[1, 1.4, 1]}>
-                  <sphereGeometry args={[0.011, 8, 6]} />
+                <mesh material={m.metal} position={[0.075 * s2, 0.215, 0.152]}>
+                  <torusGeometry args={[0.016, 0.005, 6, 14]} />
+                </mesh>
+                <mesh material={m.metal} position={[0.075 * s2, 0.2, 0.156]} rotation={[Math.PI / 2, 0, 0]}>
+                  <cylinderGeometry args={[0.011, 0.011, 0.006, 14]} />
+                </mesh>
+                <mesh material={m.metal} position={[0.168 * s2, 0.04, 0.03]} rotation={[0, 0, Math.PI / 2]}>
+                  <cylinderGeometry args={[0.011, 0.011, 0.006, 14]} />
                 </mesh>
               </group>
             ))}
-
-            {/* big khaki hiking backpack */}
-            <group position={[0, 0.13, -0.235]}>
-              <RoundedBox args={[0.3, 0.4, 0.16]} radius={0.06} smoothness={4} material={m.pack} />
-              <RoundedBox args={[0.31, 0.11, 0.165]} radius={0.05} smoothness={4} material={m.packDark} position={[0, 0.2, 0.012]} />
-              <RoundedBox args={[0.2, 0.17, 0.05]} radius={0.03} smoothness={3} material={m.packLight} position={[0, -0.07, -0.09]} />
-              <mesh material={m.strapDark} position={[0, -0.0, -0.117]}>
-                <boxGeometry args={[0.16, 0.006, 0.004]} />
-              </mesh>
-              {[1, -1].map((s) => (
-                <RoundedBox key={s} args={[0.055, 0.18, 0.1]} radius={0.025} smoothness={3} material={m.packLight} position={[0.165 * s, -0.08, 0.0]} />
-              ))}
-              {[-0.02, -0.12].map((y) => (
-                <mesh key={y} material={m.strap} position={[0, y, -0.12]}>
-                  <boxGeometry args={[0.24, 0.018, 0.008]} />
-                </mesh>
-              ))}
-              {/* little orange loop */}
-              <mesh material={m.jacket} position={[-0.11, 0.25, 0.0]} rotation={[0, Math.PI / 2, 0]}>
-                <torusGeometry args={[0.026, 0.009, 6, 14]} />
-              </mesh>
-            </group>
-            {/* shoulder straps over the shoulders and down the front */}
-            {[1, -1].map((s) => (
-              <group key={s}>
-                <mesh material={m.strap} position={[0.1 * s, 0.205, -0.04]} rotation={[0, Math.PI / 2, 0]} scale={[1.05, 1, 1]}>
-                  <torusGeometry args={[0.16, 0.017, 6, 22, Math.PI * 0.8]} />
-                </mesh>
-                <mesh material={m.strap} position={[0.098 * s, 0.13, 0.158]} rotation={[0.04, 0, 0.1 * s]}>
-                  <boxGeometry args={[0.042, 0.26, 0.014]} />
-                </mesh>
-                <mesh material={m.strapDark} position={[0.104 * s, 0.03, 0.165]}>
-                  <boxGeometry args={[0.044, 0.025, 0.012]} />
-                </mesh>
-                {/* dangling strap end */}
-                <mesh material={m.strap} position={[0.112 * s, -0.06, 0.16]} rotation={[0.05, 0, -0.05 * s]}>
-                  <boxGeometry args={[0.024, 0.17, 0.008]} />
-                </mesh>
-                <mesh material={m.strapDark} position={[0.116 * s, -0.15, 0.16]}>
-                  <boxGeometry args={[0.028, 0.024, 0.012]} />
-                </mesh>
-              </group>
-            ))}
-            {/* sternum strap + buckle */}
-            <mesh material={m.strap} position={[0, 0.205, 0.164]}>
-              <boxGeometry args={[0.19, 0.02, 0.008]} />
-            </mesh>
-            <mesh material={m.strapDark} position={[0, 0.205, 0.17]}>
-              <boxGeometry args={[0.036, 0.03, 0.012]} />
-            </mesh>
 
             <Arm side={1} sref={r.shoulderL} eref={r.elbowL} />
             <Arm side={-1} sref={r.shoulderR} eref={r.elbowR} item={rightHandItem} />
@@ -659,14 +663,14 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
                 <cylinderGeometry args={[0.048, 0.054, 0.07, 14]} />
               </mesh>
               <group ref={headRef} position={[0, 0.06 + 0.22 * 1.1, 0]} scale={1.1}>
-                <mesh geometry={geo.head} material={m.skin} scale={[1.03, 0.97, 0.97]} />
+                <mesh geometry={geo.head} material={m.skin} scale={[1.0, 1.0, 0.97]} />
                 <Eye side={1} eref={r.eyeL} />
                 <Eye side={-1} eref={r.eyeR} />
-                {/* soft brows (mostly hidden by the bangs, like the reference) */}
+                {/* thin, softly arched brows (visible: centre-part hair, no fringe) */}
                 {([1, -1] as const).map((s) => (
                   <group key={s} ref={s === 1 ? r.browL : r.browR}>
-                    <mesh material={m.brow} position={[0.098 * s, 0.072, 0.225]} rotation={[0.25, 0.3 * s, 0.08 * s]}>
-                      <capsuleGeometry args={[0.007, 0.045, 4, 8]} />
+                    <mesh material={m.brow} position={[0.096 * s, 0.078, 0.222]} rotation={[0.25, 0.32 * s, s * (Math.PI / 2 - 0.16)]}>
+                      <capsuleGeometry args={[0.0055, 0.05, 4, 8]} />
                     </mesh>
                   </group>
                 ))}
@@ -686,8 +690,7 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
                 <mesh geometry={geo.cheekL} material={m.cheek} scale={[1.03, 0.97, 0.97]} renderOrder={1} />
                 <mesh geometry={geo.cheekR} material={m.cheek} scale={[1.03, 0.97, 0.97]} renderOrder={1} />
 
-                {/* voluminous wavy dark hair */}
-                {/* hair: one continuous piece (crown + fringe + long hair) */}
+                {/* long straight dark hair with a centre part: one continuous piece */}
                 <group ref={r.hairBack}>
                   <mesh geometry={geo.mantle} material={movingHair.mat} />
                 </group>
