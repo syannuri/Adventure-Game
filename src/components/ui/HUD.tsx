@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGame } from '../../systems/store';
 import { player } from '../../systems/playerState';
-import { COINS, FAIRY_POS, PATHS, POND, STARS, TREASURES } from '../worlds/EnchantedForest/layout';
-import { FOREST_HINTS, forestObjective } from '../gameplay/missions/forestObjective';
 import { cameraState } from '../../systems/playerState';
 import { useT } from '../../i18n/useT';
-import { matchedCount } from '../gameplay/puzzles/FlowerPuzzle';
+import { worldHud, type WorldHud } from '../../data/worldHud';
 import { Icon } from './Icons';
 
 function Counter({ ico, color, value, total }: { ico: string; color: string; value: number; total: number }) {
@@ -32,7 +30,7 @@ function Counter({ ico, color, value, total }: { ico: string; color: string; val
 
 const MAP_R = 42;
 
-function Minimap() {
+function Minimap({ hud }: { hud: WorldHud }) {
   const svg = useRef<SVGSVGElement>(null);
   const playerG = useRef<SVGGElement>(null);
   const target = useRef<SVGCircleElement>(null);
@@ -41,8 +39,7 @@ function Minimap() {
     let raf = 0;
     const tick = () => {
       raf = requestAnimationFrame(tick);
-      const g = useGame.getState();
-      const obj = forestObjective(g.level.stage, g.level.stars, g.level.puzzleSolved, matchedCount(g.level.flowers));
+      const obj = hud.objective();
       // map rotates with the camera so "up" is always forward
       const rot = (cameraState.yaw * 180) / Math.PI;
       world.current?.setAttribute('transform', `rotate(${rot}) translate(${-player.position.x} ${-player.position.z})`);
@@ -57,17 +54,21 @@ function Minimap() {
     };
     tick();
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [hud]);
   return (
     <div className="minimap" aria-label="map">
       <svg ref={svg} viewBox={`${-22} ${-22} 44 44`} width="100%" height="100%">
         <g ref={world}>
-          <circle cx={0} cy={0} r={MAP_R} fill="#bfe6a8" />
-          {PATHS.map((p, i) => (
-            <polyline key={i} points={p.map(([x, z]) => `${x},${z}`).join(' ')} fill="none" stroke="#e7cd98" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx={0} cy={0} r={MAP_R} fill={hud.map.ground} />
+          {hud.map.lines?.map((l, i) => (
+            <polyline key={'l' + i} points={l.pts.map(([x, z]) => `${x},${z}`).join(' ')} fill="none" stroke={l.color} strokeWidth={l.width} strokeLinecap="round" strokeLinejoin="round" />
           ))}
-          <circle cx={POND.x} cy={POND.z} r={POND.r} fill="#7fd0e0" />
-          <circle cx={FAIRY_POS.x} cy={FAIRY_POS.z} r={1.6} fill="#b8a2ff" />
+          {hud.map.paths.map((p, i) => (
+            <polyline key={i} points={p.map(([x, z]) => `${x},${z}`).join(' ')} fill="none" stroke={hud.map.pathColor} strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round" />
+          ))}
+          {hud.map.landmarks.map((m, i) => (
+            <circle key={'m' + i} cx={m.x} cy={m.z} r={m.r} fill={m.fill} />
+          ))}
           <circle ref={target} r={2.2} fill="#ff5fa8" stroke="white" strokeWidth={0.8}>
             <animate attributeName="r" values="1.8;3;1.8" dur="1.2s" repeatCount="indefinite" />
           </circle>
@@ -90,16 +91,18 @@ export function HUD() {
   const setPaused = useGame((s) => s.setPaused);
   const [objText, setObjText] = useState('');
   const [hint, setHint] = useState<string | null>(null);
+  const worldId = useGame((s) => s.worldId);
+  const hud = worldHud(worldId);
 
   useEffect(() => {
     const iv = setInterval(() => {
       const g = useGame.getState();
-      setObjText(forestObjective(g.level.stage, g.level.stars, g.level.puzzleSolved, matchedCount(g.level.flowers)).text);
+      setObjText(hud.objective().text);
       const idle = performance.now() - g.level.lastProgressAt;
-      setHint(!g.dialogue && !g.cinematic && idle > 45000 && g.level.stage !== 'done' ? FOREST_HINTS()[g.level.stage] : null);
+      setHint(!g.dialogue && !g.cinematic && idle > 45000 && g.level.stage !== 'done' ? hud.hint() || null : null);
     }, 300);
     return () => clearInterval(iv);
-  }, []);
+  }, [hud]);
 
   const worldReady = useGame((s) => s.worldReady);
   const showIntroBanner = cinematic?.kind === 'intro';
@@ -119,9 +122,9 @@ export function HUD() {
       {!showIntroBanner && (
         <div className="hud-top">
           <div className="counters">
-            <Counter ico="★" color="#f2a900" value={level.stars.length} total={STARS.length} />
-            <Counter ico="●" color="#c77a10" value={level.coins.length} total={COINS.length} />
-            <Counter ico="◆" color="#3fb7e0" value={level.treasures.length} total={TREASURES.length} />
+            <Counter ico={hud.starIcon} color={hud.starColor} value={level.stars.length} total={hud.stars.length} />
+            <Counter ico={hud.coinIcon} color={hud.coinColor} value={level.coins.length} total={hud.coins.length} />
+            <Counter ico="◆" color="#3fb7e0" value={level.treasures.length} total={hud.treasures.length} />
           </div>
           <div className="objective passthrough">
             <small>{t.hud.mission}</small>
@@ -137,14 +140,14 @@ export function HUD() {
             >
               <Icon name="pause" size={22} />
             </button>
-            <Minimap />
+            <Minimap hud={hud} />
           </div>
         </div>
       )}
       {showIntroBanner && (
         <div className="world-banner passthrough">
-          <small>{t.hud.worldN(1)}</small>
-          <div>{t.worlds['enchanted-forest'].name}</div>
+          <small>{t.hud.worldN(hud.index)}</small>
+          <div>{t.worlds[worldId ?? 'enchanted-forest']?.name}</div>
         </div>
       )}
       {prompt && !dialogue && (

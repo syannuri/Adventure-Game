@@ -6,7 +6,7 @@
  * Replace with recorded assets later by swapping the implementations of `playMusic` / `sfx`.
  */
 
-type SongName = 'menu' | 'forest' | 'victory';
+type SongName = 'menu' | 'forest' | 'candy' | 'victory';
 export type SfxName =
   | 'star'
   | 'coin'
@@ -43,6 +43,31 @@ const degToSemi = (d: number) => MAJOR[((d % 7) + 7) % 7] + 12 * Math.floor(d / 
 const mtof = (m: number) => 440 * Math.pow(2, (m - 69) / 12);
 
 const SONGS: Record<SongName, Song> = {
+  // Candy Village: bouncy and playful (G major, music-box bells + shaker)
+  candy: {
+    bpm: 108,
+    root: 67, // G4
+    chords: [
+      [0, 2, 4],
+      [3, 5, 7],
+      [4, 6, 8],
+      [0, 2, 4],
+      [-2, 0, 2],
+      [3, 5, 7],
+      [1, 3, 5],
+      [4, 6, 8],
+    ],
+    melody: [
+      0, 2, 4, null, 4, 5, 4, null, 2, null, 0, null, 2, 4, null, null,
+      5, null, 5, 4, 3, null, 2, null, 4, 5, 6, null, 7, null, null, null,
+      7, 6, 5, null, 4, null, 2, 4, 5, null, 4, null, 2, null, 0, null,
+      1, null, 2, 3, 4, null, 2, null, 0, 2, 1, null, 0, null, null, null,
+    ],
+    bells: true,
+    shaker: true,
+    melodyOctave: 0,
+    loop: true,
+  },
   forest: {
     bpm: 92,
     root: 65, // F4

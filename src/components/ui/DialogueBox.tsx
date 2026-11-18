@@ -5,7 +5,7 @@ import { useT } from '../../i18n/useT';
 import { audio } from '../audio/audioEngine';
 import { input } from '../../systems/input';
 
-const PITCH: Record<string, number> = { anett: 1.25, lumi: 1.6, pip: 1.05, olli: 0.7 };
+const PITCH: Record<string, number> = { anett: 1.25, lumi: 1.6, pip: 1.05, olli: 0.7, koko: 0.9 };
 
 /** Speech bubble with portrait and typewriter text. Click / tap / Space / E advances. */
 export function DialogueBox() {

@@ -16,7 +16,41 @@ export const SPEAKERS: Record<DialogueLine['speaker'], { name: string; color: st
   lumi: { name: 'Lumi the Fairy', color: '#7b5cff' },
   pip: { name: 'Pip the Rabbit', color: '#2f8ad8' },
   olli: { name: 'Olli the Owl', color: '#9a6b4a' },
+  koko: { name: 'Koko the Chef', color: '#b8692f' },
 };
+
+/** Koko the gingerbread chef: cookie face with icing details and a tall chef's hat. */
+export function KokoPortrait() {
+  return (
+    <svg viewBox="0 0 100 100">
+      <rect width="100" height="100" fill="#ffe1ef" />
+      <circle cx="18" cy="20" r="2.4" fill="#ff8fbf" />
+      <circle cx="84" cy="30" r="2" fill="#5ab8ff" />
+      <circle cx="80" cy="82" r="2.4" fill="#ffd23f" />
+      {/* body + arms */}
+      <path d="M22 100 Q24 76 50 74 Q76 76 78 100Z" fill="#b8692f" />
+      <path d="M30 88 Q35 84 40 88 Q45 92 50 88 Q55 84 60 88 Q65 92 70 88" stroke="#fffaf2" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+      <circle cx="50" cy="94" r="3" fill="#ff5fa2" />
+      {/* head */}
+      <circle cx="50" cy="54" r="24" fill="#b8692f" />
+      <path d="M30 46 Q32 34 42 31" stroke="#c98a4e" strokeWidth="3" fill="none" opacity="0.6" />
+      {/* chef hat */}
+      <rect x="33" y="24" width="34" height="9" rx="3" fill="#ffffff" />
+      <circle cx="40" cy="18" r="9" fill="#ffffff" />
+      <circle cx="52" cy="13" r="10" fill="#ffffff" />
+      <circle cx="62" cy="19" r="8" fill="#ffffff" />
+      {/* face */}
+      <path d="M39 45 Q42 43 45 45 M55 45 Q58 43 61 45" stroke="#fffaf2" strokeWidth="2" fill="none" strokeLinecap="round" />
+      <circle cx="42" cy="52" r="3.6" fill="#2a160c" />
+      <circle cx="58" cy="52" r="3.6" fill="#2a160c" />
+      <circle cx="43.2" cy="50.8" r="1.2" fill="#fff" />
+      <circle cx="59.2" cy="50.8" r="1.2" fill="#fff" />
+      <ellipse cx="35" cy="60" rx="4" ry="2.6" fill="#ff8a9e" opacity="0.8" />
+      <ellipse cx="65" cy="60" rx="4" ry="2.6" fill="#ff8a9e" opacity="0.8" />
+      <path d="M42 62 Q50 69 58 62" stroke="#fffaf2" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 function AnettPortraitSVG() {
   return (
@@ -143,5 +177,7 @@ export function Portrait({ speaker }: { speaker: DialogueLine['speaker'] }) {
       return <PipPortrait />;
     case 'olli':
       return <OlliPortrait />;
+    case 'koko':
+      return <KokoPortrait />;
   }
 }

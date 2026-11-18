@@ -29,6 +29,7 @@ if (typeof Image !== 'undefined') new Image().src = `${import.meta.env.BASE_URL}
 const CAPTURE = typeof location !== 'undefined' && new URLSearchParams(location.search).has('capture');
 
 const EnchantedForest = lazy(() => import('./components/worlds/EnchantedForest/EnchantedForest').then((m) => ({ default: m.EnchantedForest })));
+const CandyVillage = lazy(() => import('./components/worlds/CandyVillage/CandyVillage').then((m) => ({ default: m.CandyVillage })));
 const PostFX = lazy(() => import('./components/effects/PostFX'));
 
 /** Bloom etc. start a moment after the first frame so the world appears immediately. */
@@ -55,6 +56,7 @@ export default function GameView({ review = false }: { review?: boolean }) {
   const dialogue = useGame((s) => s.dialogue);
   const cinematic = useGame((s) => s.cinematic);
   const isTouch = useIsTouch();
+  const worldId = useGame((s) => s.worldId);
   const inWorld = screen === 'playing' || screen === 'complete';
   const playing = screen === 'playing';
 
@@ -78,7 +80,7 @@ export default function GameView({ review = false }: { review?: boolean }) {
         }}
       >
         <Suspense fallback={null}>
-          {review ? <MenuScene /> : inWorld ? <EnchantedForest key={runId} /> : null}
+          {review ? <MenuScene /> : inWorld ? worldId === 'candy-village' ? <CandyVillage key={runId} /> : <EnchantedForest key={runId} /> : null}
           <DeferredPostFX quality={quality} inWorld={inWorld} />
         </Suspense>
       </Canvas>

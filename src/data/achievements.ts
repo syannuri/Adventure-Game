@@ -13,4 +13,8 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
   dancer: { id: 'dancer', title: 'Forest Dancer', description: 'Danced with the woodland friends.', icon: '♪' },
   puzzle_master: { id: 'puzzle_master', title: 'Flower Wizard', description: 'Solved the colour flower puzzle.', icon: '✿' },
   high_jumper: { id: 'high_jumper', title: 'Mushroom Hopper', description: 'Reached the top of the giant mushrooms.', icon: '▲' },
+  candy_helper: { id: 'candy_helper', title: 'Candy Hero', description: 'Helped Koko bake the Rainbow Cake.', icon: '❀' },
+  sorting_star: { id: 'sorting_star', title: 'Sorting Star', description: 'Sorted every candy into the right jar.', icon: '✚' },
+  donut_hopper: { id: 'donut_hopper', title: 'Donut Hopper', description: 'Reached the top of the donut tower.', icon: '◎' },
+  candy_collector: { id: 'candy_collector', title: 'Peppermint Collector', description: 'Collected every peppermint candy in Candy Village.', icon: '✺' },
 };

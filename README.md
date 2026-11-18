@@ -8,8 +8,8 @@ the legendary Crystal Castle.
 
 > **Languages:** Bahasa Indonesia (default) and English. Switch with the **ID / EN** button on the main menu or in Settings.
 >
-> **Current status: playable vertical slice of World 1, the Enchanted Forest.** Worlds 2–5 are shown on the map as
-> "Coming soon" and are not built yet. See [Status](#status) for what's done, what's a placeholder and what's next.
+> **Current status: World 1 (Enchanted Forest) and World 2 (Candy Village) are playable.** Worlds 3–5 are shown on
+> the map as "Coming soon". See [Status](#status) for what's done, what's a placeholder and what's next.
 
 ---
 
@@ -59,7 +59,30 @@ Requirements: Node 18+ (developed on Node 22). Runs in any modern browser with W
 5. Pick up the wand (Anet carries it in her hand) and bring it back to Lumi.
 6. Finale: the forest sparkles, Anet celebrates and the **Level Complete** screen awards the Magic Star.
 
-Optional extras: 22 golden acorns, 3 hidden treasure chests (Olli the owl gives hints), 6 achievements.
+Optional extras: 22 golden acorns, 3 hidden treasure chests (Olli the owl gives hints), and achievements.
+
+## World 2 – Candy Village
+
+**Mission:** help Koko the gingerbread chef find the missing candy ingredients so he can bake the Rainbow Cake.
+
+1. Walk up the cream path to the giant cupcake bakery and talk to Koko.
+2. Find the **5 ingredients** (Pip the rabbit came along and gives hints):
+   - the strawberry, in the strawberry field
+   - the chocolate, on the cookie bridge over the chocolate river
+   - the honey, on top of the donut tower (jump from donut to donut)
+   - the sugar crystals, on the big cake across the river (climb the marshmallows)
+   - the mint leaf, in the candy-cane garden
+
+   The chocolate river is shallow, so Anet can also wade through it.
+3. Bring them back to Koko.
+4. **Candy sorting puzzle:** pick up a candy from the stands (it floats above Anet's head) and put it in the jar with
+   the same colour and shape: pink hearts, yellow stars, blue gumballs.
+   - A wrong jar is never a failure: the candy hops back and Anet says which jar it needs.
+   - The jar that matches the carried candy glows.
+5. The candy machine bakes the **Rainbow Cake**, and the party finale awards the Magic Star.
+
+Optional extras: 20 peppermints, 3 gift boxes, and new achievements (Candy Hero, Sorting Star, Donut Hopper,
+Peppermint Collector). **Play** on the main menu continues with the first world that isn't finished yet.
 Progress (completed worlds, Magic Stars, achievements, best scores, settings) is saved in browser storage.
 
 ## Features in this build
@@ -131,6 +154,8 @@ src/
       npc/                    Fairy (Lumi), Rabbit (Pip), Owl (Olli)
     worlds/
       EnchantedForest/        layout.ts (map data), Terrain, Sky, Trees, Vegetation, Water, Props, Critters
+      CandyVillage/           layout.ts, CandyTerrain (ground + chocolate river), CandyProps, candyTextures
+      shared/Lights.tsx       sun + rim light used by every world
       MenuScene/              3D backdrop for the menus
     gameplay/
       interaction/            interactable registry + proximity/approach system
@@ -148,8 +173,10 @@ src/
   collected items, dialogue. Values that change every frame (player position, camera) live in plain mutable
   objects (`systems/playerState.ts`), so the game doesn't re-render React at 60 fps.
 - **Worlds are data plus components.** Each world has a `layout.ts` (height function, positions, collectibles)
-  and a `build…Physics()` that registers its colliders. To add a world, add a folder under `worlds/`, a mission
-  under `gameplay/missions/`, set `built: true` in `data/worlds.ts` and route to it in `App.tsx`.
+  and a `build…Physics()` that registers its colliders. To add a world:
+  1. Add a folder under `worlds/` and a mission under `gameplay/missions/`.
+  2. Add its HUD entry (counters, minimap, objective, hints) in `data/worldHud.ts`.
+  3. Set `built: true` in `data/worlds.ts` and route to it in `GameView.tsx`.
 - **Swapping in real art.** `AnetModel` exposes the same joint names a Mixamo/Blender rig would use (hips, spine,
   neck, shoulders, elbows, legs, knees). A GLB model can replace it. Map its bones in `applyPose`, or use GLTF
   clips with an `AnimationMixer` and keep the controller and state machine as they are.
@@ -177,15 +204,16 @@ which is far too slow to measure performance.
 | Area | Status |
 | --- | --- |
 | World 1 – Enchanted Forest | ✅ Playable from start to finish |
+| World 2 – Candy Village | ✅ Playable from start to finish (Koko the chef, 5 ingredients, candy sorting puzzle) |
 | Anet character + 13 animations | ✅ Sculpted HD model (GLB, auto-skinned), procedural model as fallback |
 | NPCs (fairy, rabbit, owl) | ✅ Procedural models |
 | Dialogue, quest, collectibles, achievements, saving | ✅ |
 | Menus, HUD, minimap, settings, pause, level complete | ✅ |
 | Keyboard + touch controls | ✅ (touch verified only in device emulation) |
 | Music and SFX | ✅ Original, synthesized at runtime (placeholder for recorded audio) |
-| Puzzles | ✅ Colour flower puzzle in World 1. ⏳ Sorting, memory and crystal-linking puzzles planned for later worlds |
+| Puzzles | ✅ Colour flower puzzle (World 1), candy sorting puzzle (World 2). ⏳ Memory and crystal-linking puzzles planned for later worlds |
 | Baby dragon and cloud creature NPCs | ⏳ Planned for later worlds |
-| Worlds 2–5 (Candy Village, Crystal Cave, Ocean Kingdom, Sky Castle) | ⏳ Not built – shown as "Coming soon" |
+| Worlds 3–5 (Crystal Cave, Ocean Kingdom, Sky Castle) | ⏳ Not built – shown as "Coming soon" |
 | Crystal Castle finale | ⏳ Not built |
 | Cosmetics / unlockable characters | ⏳ Not built (progress tracking is in place) |
 | Native Android / iOS builds | ⏳ Not set up – the web build works in mobile browsers; wrap with Capacitor later |
@@ -193,7 +221,6 @@ which is far too slow to measure performance.
 ## Roadmap
 
 2. Real blend-shape facial animation for the HD model (it now has blinking/squinting eyelids and an opening mouth).
-3. World 2 – Candy Village (ingredient-collecting mission, sorting puzzle).
 4. World 3 – Crystal Cave (crystal collecting, light-beam puzzle).
 5. World 4 – Ocean Kingdom (swimming movement, rescue the baby sea turtle).
 6. World 5 – Sky Castle (floating islands, rainbow bridges, Crystal Castle finale).
