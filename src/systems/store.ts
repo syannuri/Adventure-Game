@@ -30,6 +30,9 @@ interface LevelState {
   treasures: string[];
   stage: ForestStage;
   hasWand: boolean;
+  /** colour flower puzzle in front of the wand log: current colour index of each flower */
+  flowers: number[];
+  puzzleSolved: boolean;
   startedAt: number;
   lastProgressAt: number;
 }
@@ -48,7 +51,7 @@ interface GameState {
   dialogue: { lines: DialogueLine[]; index: number; onComplete?: () => void } | null;
   prompt: string | null;
   /** what the action button does right now (label on the touch button) */
-  promptVerb: 'talk' | 'take' | 'open' | null;
+  promptVerb: 'talk' | 'take' | 'open' | 'touch' | null;
   cinematic: Cinematic | null;
   emote: { name: AnettEmote; id: number; duration: number } | null;
   toasts: { id: number; title: string; text: string; icon: string }[];
@@ -63,7 +66,7 @@ interface GameState {
   setHasWand: (v: boolean) => void;
   openDialogue: (lines: DialogueLine[], onComplete?: () => void) => void;
   advanceDialogue: () => void;
-  setPrompt: (p: string | null, verb?: 'talk' | 'take' | 'open' | null) => void;
+  setPrompt: (p: string | null, verb?: 'talk' | 'take' | 'open' | 'touch' | null) => void;
   playCinematic: (c: Omit<Cinematic, 'start'>) => void;
   endCinematic: () => void;
   playEmote: (name: AnettEmote, duration?: number) => void;
@@ -81,6 +84,8 @@ const freshLevel = (): LevelState => ({
   treasures: [],
   stage: 'meetFairy',
   hasWand: false,
+  flowers: [0, 0, 1],
+  puzzleSolved: false,
   startedAt: performance.now(),
   lastProgressAt: performance.now(),
 });

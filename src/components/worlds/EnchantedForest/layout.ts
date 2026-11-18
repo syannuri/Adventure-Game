@@ -16,6 +16,15 @@ export const OWL_POS = { x: -13.2, z: -9.2 };
 export const WAND_POS = { x: 26.2, z: -15.5 };
 export const HOUSE = { x: -5.6, z: 1.2 };
 
+/**
+ * Colour flower puzzle guarding the wand: a stone tablet with three gems, and three magic flowers in
+ * front of it. Each flower cycles red -> yellow -> blue when touched; match all three to the gems.
+ */
+export const PUZZLE_COLORS = ['#ff5a6e', '#ffd23f', '#4aa8ff'];
+export const PUZZLE_TARGET = [2, 1, 0]; // blue, yellow, red (start is [red, red, yellow]: nothing matches yet)
+export const PUZZLE_TABLET = { x: 24.9, z: -13.75, rot: -0.75 };
+export const PUZZLE_FLOWERS = [-1, 0, 1].map((i) => ({ x: 24.05 + i * 1.25 * 0.68, z: -12.9 + i * 1.25 * 0.73 }));
+
 /** Main path polyline (with branches) used for terrain colouring and keeping it free of props. */
 export const PATHS: [number, number][][] = [
   [
@@ -227,6 +236,7 @@ function scatter(seed: number, count: number, rMin: number, rMax: number, gap = 
     const z = Math.sin(a) * r;
     if (distToPath(x, z) < 1.4 + gap) continue;
     if (Math.hypot(x - POND.x, z - POND.z) < POND.r + 0.5) continue;
+    if (Math.hypot(x - PUZZLE_TABLET.x, z - PUZZLE_TABLET.z) < 2.6) continue; // keep the flower puzzle clear
     if (TREES.some((t) => Math.hypot(t.x - x, t.z - z) < 0.9 * t.s)) continue;
     out.push({ x, z, s: 0.6 + rnd() * 0.8, r: rnd() * Math.PI * 2, c: rnd() });
   }
@@ -267,6 +277,8 @@ export function buildForestPhysics(): WorldPhysics {
     { x: WATERFALL.x - 4.2, z: WATERFALL.z - 0.6, r: 2.2 },
     { x: WATERFALL.x + 4.2, z: WATERFALL.z - 0.4, r: 2.2 },
     { x: LOG.x, z: LOG.z, r: 0.8 },
+    // stone tablet of the flower puzzle (three circles along its length)
+    ...[-0.6, 0, 0.6].map((f) => ({ x: PUZZLE_TABLET.x + Math.cos(PUZZLE_TABLET.rot) * f, z: PUZZLE_TABLET.z - Math.sin(PUZZLE_TABLET.rot) * f, r: 0.35 })),
     ...LOGS.flatMap((l) => [-0.3, 0.3].map((f) => ({ x: l.x + Math.cos(l.rot) * l.len * f, z: l.z - Math.sin(l.rot) * l.len * f, r: 0.55 }))),
     ...BUSHES.filter((b) => b.s > 1.1).map((b) => ({ x: b.x, z: b.z, r: 0.45 * b.s })),
     ...TREASURES.map((t) => ({ x: t.x, z: t.z, r: 0.55 })),

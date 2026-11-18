@@ -6,6 +6,7 @@ import { FOREST_HINTS, forestObjective } from '../gameplay/missions/forestObject
 import { audio } from '../audio/audioEngine';
 import { cameraState } from '../../systems/playerState';
 import { useT } from '../../i18n/useT';
+import { matchedCount } from '../gameplay/puzzles/FlowerPuzzle';
 import { Icon } from './Icons';
 
 function Counter({ ico, color, value, total }: { ico: string; color: string; value: number; total: number }) {
@@ -42,7 +43,7 @@ function Minimap() {
     const tick = () => {
       raf = requestAnimationFrame(tick);
       const g = useGame.getState();
-      const obj = forestObjective(g.level.stage, g.level.stars);
+      const obj = forestObjective(g.level.stage, g.level.stars, g.level.puzzleSolved, matchedCount(g.level.flowers));
       // map rotates with the camera so "up" is always forward
       const rot = (cameraState.yaw * 180) / Math.PI;
       world.current?.setAttribute('transform', `rotate(${rot}) translate(${-player.position.x} ${-player.position.z})`);
@@ -94,7 +95,7 @@ export function HUD() {
   useEffect(() => {
     const iv = setInterval(() => {
       const g = useGame.getState();
-      setObjText(forestObjective(g.level.stage, g.level.stars).text);
+      setObjText(forestObjective(g.level.stage, g.level.stars, g.level.puzzleSolved, matchedCount(g.level.flowers)).text);
       const idle = performance.now() - g.level.lastProgressAt;
       setHint(!g.dialogue && !g.cinematic && idle > 45000 && g.level.stage !== 'done' ? FOREST_HINTS()[g.level.stage] : null);
     }, 300);
