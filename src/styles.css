@@ -395,6 +395,8 @@ canvas { display: block; touch-action: none; }
 
 /* very short (iPhone SE sideways, ~320 px) */
 @media (orientation: landscape) and (max-height: 340px) {
+  .about-modal > .about-portrait, .about-modal > p:nth-of-type(2) { display: none; }
+  .about-modal > h2 { font-size: 21px; }
   .logo-word { font-size: 40px; }
   .logo-ribbon { width: 170px; }
   .menu .btn.big { min-height: 42px; font-size: 19px; }
