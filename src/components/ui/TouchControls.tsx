@@ -19,6 +19,7 @@ export function TouchControls() {
   const knob = useRef<HTMLDivElement>(null);
   const active = useRef<number | null>(null);
   const prompt = useGame((s) => s.prompt);
+  const verb = useGame((s) => s.promptVerb);
   const [running, setRunning] = useState(false);
   const t = useT();
 
@@ -83,7 +84,7 @@ export function TouchControls() {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center' }}>
           <button className={'tbtn act' + (prompt ? ' ready' : '')} onPointerDown={press(() => (input.interactPressed = true))}>
-            {prompt ? t.touch.talk : t.touch.action}
+            {prompt ? (verb === 'take' ? t.touch.take : verb === 'open' ? t.touch.open : t.touch.talk) : t.touch.action}
           </button>
           <button className="tbtn jump" onPointerDown={press(() => (input.jumpPressed = true))}>
             {t.touch.jump}

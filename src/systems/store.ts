@@ -47,6 +47,8 @@ interface GameState {
   level: LevelState;
   dialogue: { lines: DialogueLine[]; index: number; onComplete?: () => void } | null;
   prompt: string | null;
+  /** what the action button does right now (label on the touch button) */
+  promptVerb: 'talk' | 'take' | 'open' | null;
   cinematic: Cinematic | null;
   emote: { name: AnettEmote; id: number; duration: number } | null;
   toasts: { id: number; title: string; text: string; icon: string }[];
@@ -61,7 +63,7 @@ interface GameState {
   setHasWand: (v: boolean) => void;
   openDialogue: (lines: DialogueLine[], onComplete?: () => void) => void;
   advanceDialogue: () => void;
-  setPrompt: (p: string | null) => void;
+  setPrompt: (p: string | null, verb?: 'talk' | 'take' | 'open' | null) => void;
   playCinematic: (c: Omit<Cinematic, 'start'>) => void;
   endCinematic: () => void;
   playEmote: (name: AnettEmote, duration?: number) => void;
@@ -100,6 +102,7 @@ export const useGame = create<GameState>((set, get) => ({
   level: freshLevel(),
   dialogue: null,
   prompt: null,
+  promptVerb: null,
   cinematic: null,
   emote: null,
   toasts: [],
@@ -150,8 +153,8 @@ export const useGame = create<GameState>((set, get) => ({
       d.onComplete?.();
     }
   },
-  setPrompt: (prompt) => {
-    if (get().prompt !== prompt) set({ prompt });
+  setPrompt: (prompt, verb = null) => {
+    if (get().prompt !== prompt || get().promptVerb !== verb) set({ prompt, promptVerb: prompt ? verb : null });
   },
   playCinematic: (c) => set({ cinematic: { ...c, start: performance.now() } }),
   endCinematic: () => set({ cinematic: null }),

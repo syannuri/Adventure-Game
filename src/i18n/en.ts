@@ -66,6 +66,7 @@ export const en = {
     meetFairy: 'Find Lumi the fairy in the middle of the forest',
     collectStars: (n: number, t: number) => `Collect the Wishing Stars  ${n} / ${t}`,
     findWand: "Follow the light to find Lumi's wand",
+    takeWand: 'Walk into the wand to pick it up!',
     returnWand: 'Bring the magic wand back to Lumi',
     done: 'Hooray! You helped Lumi!',
   },
@@ -104,7 +105,7 @@ export const en = {
     ok: 'OK ✓',
     speakers: { anett: 'Anet', lumi: 'Lumi the Fairy', pip: 'Pip the Rabbit', olli: 'Olli the Owl' },
   },
-  touch: { action: 'Action', talk: 'Talk', jump: 'Jump', wave: 'Wave', dance: 'Dance', run: '🏃 Run', runOn: '🏃 Running' },
+  touch: { action: 'Action', talk: 'Talk', take: 'Take', open: 'Open', jump: 'Jump', wave: 'Wave', dance: 'Dance', run: '🏃 Run', runOn: '🏃 Running' },
   controls: {
     title: 'How to move',
     close: 'Got it!',

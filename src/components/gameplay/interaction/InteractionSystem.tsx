@@ -31,7 +31,7 @@ export function InteractionSystem() {
       }
     }
     current.current = best;
-    g.setPrompt(best ? best.label() : null);
+    g.setPrompt(best ? best.label() : null, best?.verb ?? 'talk');
     if (input.interactPressed) {
       input.interactPressed = false;
       if (!best) return;
@@ -41,8 +41,9 @@ export function InteractionSystem() {
         audio.sfx('pop');
         target.onInteract();
       };
-      if (bestD > target.approach) player.autoTarget = { x: target.x, z: target.z, stopDist: target.approach, onArrive: go };
-      else go();
+      // act right away whenever the prompt is showing (no auto-walk that a held joystick could cancel)
+      player.autoTarget = null;
+      go();
     }
   });
   return null;
