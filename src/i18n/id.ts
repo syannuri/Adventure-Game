@@ -69,7 +69,7 @@ export const id: Dict = {
     collectStars: (n, t) => `Kumpulkan Bintang Harapan  ${n} / ${t}`,
     findWand: 'Ikuti cahaya untuk menemukan tongkat Lumi',
     takeWand: 'Sentuh tongkatnya untuk mengambil!',
-    returnWand: 'Bawa tongkat ajaib kembali ke Lumi',
+    returnWand: 'Bawa tongkat ajaib kembali ke Lumi di tengah hutan',
     done: 'Hore! Kamu sudah menolong Lumi!',
   },
   hints: {

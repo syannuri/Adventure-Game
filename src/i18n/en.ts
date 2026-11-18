@@ -67,7 +67,7 @@ export const en = {
     collectStars: (n: number, t: number) => `Collect the Wishing Stars  ${n} / ${t}`,
     findWand: "Follow the light to find Lumi's wand",
     takeWand: 'Walk into the wand to pick it up!',
-    returnWand: 'Bring the magic wand back to Lumi',
+    returnWand: 'Bring the magic wand back to Lumi in the middle of the forest',
     done: 'Hooray! You helped Lumi!',
   },
   hints: {

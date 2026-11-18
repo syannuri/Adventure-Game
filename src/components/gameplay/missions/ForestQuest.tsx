@@ -162,6 +162,12 @@ export function ForestQuest() {
       pickUpWand();
       return;
     }
+    // walking up to Lumi with the wand hands it over automatically
+    if (g.level.stage === 'returnWand' && Math.hypot(player.position.x - FAIRY_POS.x, player.position.z - FAIRY_POS.z) < 2.6) {
+      player.lookAt = { x: FAIRY_POS.x, z: FAIRY_POS.z };
+      talkLumi();
+      return;
+    }
     if (!triggered.current && g.level.stage === 'collectStars' && g.level.stars.length >= STARS.length) {
       triggered.current = true;
       g.openDialogue(D().allStars, revealWand);
