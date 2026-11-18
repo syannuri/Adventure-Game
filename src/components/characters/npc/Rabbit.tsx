@@ -78,6 +78,15 @@ export function Rabbit({ x, y, z, npc = true, scale = 1, wander = 0 }: { x: numb
             <sphereGeometry args={[0.022, 10, 8]} />
             <meshStandardMaterial color="#ff8fa8" />
           </mesh>
+          {/* whiskers */}
+          {[1, -1].flatMap((s) =>
+            [-0.12, 0, 0.12].map((tilt) => (
+              <mesh key={`${s}${tilt}`} position={[0.075 * s, -0.025 + tilt * 0.08, 0.16]} rotation={[0, -0.35 * s, tilt * s]}>
+                <boxGeometry args={[0.11, 0.0035, 0.0035]} />
+                <meshBasicMaterial color="#7a6150" />
+              </mesh>
+            )),
+          )}
           {[1, -1].map((s) => (
             <group key={s} position={[0.075 * s, 0.04, 0.14]}>
               <mesh scale={[1, 1.15, 0.6]}>

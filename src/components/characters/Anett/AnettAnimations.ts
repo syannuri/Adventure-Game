@@ -34,6 +34,10 @@ export interface Pose {
   bodyY: number;
   /** 0 = smile, 1 = open mouth */
   mouth: number;
+  /** 0 = relaxed brows, 1 = brows raised high (surprise / excitement) */
+  brow: number;
+  /** 0 = open eyes, 1 = happy squint (laughing) */
+  squint: number;
 }
 
 export type AnimState =
@@ -57,7 +61,7 @@ const C = Math.cos;
 export function emptyPose(): Pose {
   const joints = {} as Record<JointName, Vec3>;
   for (const j of JOINTS) joints[j] = [0, 0, 0];
-  return { joints, bodyY: 0, mouth: 0 };
+  return { joints, bodyY: 0, mouth: 0, brow: 0, squint: 0 };
 }
 
 function base(t: number): Pose {
@@ -139,6 +143,7 @@ export const POSES: Record<AnimState, (t: number, phase: number) => Pose> = {
     p.joints.spine = [-0.05, 0, 0];
     p.joints.neck = [-0.12, 0, S(t * 3) * 0.03];
     p.mouth = 0.55;
+    p.brow = 0.55;
     return p;
   },
 
@@ -155,6 +160,7 @@ export const POSES: Record<AnimState, (t: number, phase: number) => Pose> = {
     p.joints.elbowR = [-0.3, 0, 0];
     p.joints.neck = [0.1, 0, 0];
     p.mouth = 0.35;
+    p.brow = 0.35;
     return p;
   },
 
@@ -175,6 +181,8 @@ export const POSES: Record<AnimState, (t: number, phase: number) => Pose> = {
   wave: (t) => {
     const p = base(t);
     p.joints.shoulderR = [-0.2, 0, -2.55];
+    p.squint = 0.35;
+    p.brow = 0.3;
     p.joints.elbowR = [0, 0, S(t * 11) * 0.45 - 0.2];
     p.joints.neck = [0.02, -0.12, -0.12];
     p.joints.spine[2] = 0.05;
@@ -199,6 +207,8 @@ export const POSES: Record<AnimState, (t: number, phase: number) => Pose> = {
     p.joints.legR = [-Math.max(0, -sw) * 0.4, 0, -0.08];
     p.joints.kneeR = [Math.max(0, -sw) * 0.7 + 0.1, 0, 0];
     p.mouth = 0.4;
+    p.squint = 0.45;
+    p.brow = 0.2;
     return p;
   },
 
@@ -217,6 +227,8 @@ export const POSES: Record<AnimState, (t: number, phase: number) => Pose> = {
     p.joints.spine = [-0.1, 0, 0];
     p.joints.neck = [-0.22, 0, S(t * 4) * 0.1];
     p.mouth = 1;
+    p.squint = 0.75;
+    p.brow = 0.4;
     return p;
   },
 
@@ -233,6 +245,7 @@ export const POSES: Record<AnimState, (t: number, phase: number) => Pose> = {
     p.joints.kneeR = [0.25, 0, 0];
     p.bodyY = 0.02;
     p.mouth = 1;
+    p.brow = 1;
     return p;
   },
 
@@ -246,6 +259,8 @@ export const POSES: Record<AnimState, (t: number, phase: number) => Pose> = {
     p.joints.spine = [-0.08, 0, 0];
     p.bodyY = 0.03;
     p.mouth = 0.8;
+    p.brow = 0.6;
+    p.squint = 0.25;
     return p;
   },
 
@@ -256,6 +271,7 @@ export const POSES: Record<AnimState, (t: number, phase: number) => Pose> = {
     p.joints.shoulderL = [-0.15, 0, 0.18 + S(t * 2) * 0.05];
     p.joints.neck = [S(t * 4.5) * 0.06, S(t * 1.3) * 0.08, 0.08];
     p.mouth = S(t * 15) > 0.1 ? 0.45 : 0;
+    p.brow = 0.25 + S(t * 2.2) * 0.25;
     return p;
   },
 };
@@ -276,6 +292,8 @@ export function mixPose(out: Pose, a: Pose, b: Pose, w: number): Pose {
   }
   out.bodyY = a.bodyY + (b.bodyY - a.bodyY) * w;
   out.mouth = a.mouth + (b.mouth - a.mouth) * w;
+  out.brow = a.brow + (b.brow - a.brow) * w;
+  out.squint = a.squint + (b.squint - a.squint) * w;
   return out;
 }
 
@@ -287,6 +305,8 @@ export function copyPose(out: Pose, a: Pose) {
   }
   out.bodyY = a.bodyY;
   out.mouth = a.mouth;
+  out.brow = a.brow;
+  out.squint = a.squint;
 }
 
 /** Upper-body joints used for layered (overlay) animations such as "collect" while running. */

@@ -24,6 +24,7 @@ repository also contains one design reference image, which the game does not loa
 | Lumi (fairy), Pip (rabbit), Olli (owl), ambient bunnies, ducks, butterflies, birds | `src/components/characters/npc/*`, `worlds/EnchantedForest/Critters.tsx` | **Placeholder** procedural models |
 | Terrain, trees, hero trees, grass, flowers, mushrooms, rocks, mushroom house, platforms, hollow log, chests, wand, stars, acorns | `src/components/worlds/EnchantedForest/*`, `gameplay/collectibles/*` | Procedural (stylized). Can stay, or be swapped for modeled props. |
 | Sky dome, clouds, water and waterfall shaders, wind shader | `Sky.tsx`, `Water.tsx`, `effects/wind.ts` | Procedural |
+| Hair strand normal map, ground noise shader, world-card and story illustrations (`ui/WorldArt.tsx`) | `AnettModel.tsx`, `Terrain.tsx`, `ui/WorldArt.tsx` | Procedural / hand-written SVG |
 | Particle sprites (glow, twinkle) and the menu's magic-map texture | `effects/textures.ts`, `MenuScene.tsx` (canvas-drawn) | Procedural |
 | Dialogue portraits (Anett, Lumi, Pip, Olli) | `src/components/ui/Portraits.tsx` (inline SVG) | **Placeholder** illustrations |
 | Story intro illustrations | `src/components/ui/StoryIntro.tsx` (inline SVG + emoji) | **Placeholder** illustrations |

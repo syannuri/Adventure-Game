@@ -1,4 +1,5 @@
 import { useT } from '../../i18n/useT';
+import { WorldArtGroup } from './WorldArt';
 /** Opening storybook cinematic: Anet discovers the magical map in Grandma's treasure box. */
 import { useState } from 'react';
 import { useGame } from '../../systems/store';
@@ -30,11 +31,17 @@ const MapArt = () => (
   <g>
     <rect x="50" y="30" width="260" height="170" rx="12" fill="#f6e3b4" stroke="#c99a5a" strokeWidth="4" />
     <path d="M70 170 C110 120 120 160 160 120 S230 90 290 60" stroke="#c99a5a" strokeWidth="4" strokeDasharray="8 8" fill="none" />
-    <text x="88" y="178" fontSize="36">🌳</text>
-    <text x="140" y="140" fontSize="32">🍭</text>
-    <text x="190" y="118" fontSize="32">💎</text>
-    <text x="236" y="98" fontSize="32">🐢</text>
-    <text x="262" y="66" fontSize="32">🏰</text>
+    {[
+      ['enchanted-forest', 62, 128],
+      ['candy-village', 118, 96],
+      ['crystal-cave', 168, 74],
+      ['ocean-kingdom', 214, 58],
+      ['sky-castle', 254, 26],
+    ].map(([id, x, y]) => (
+      <g key={id as string} transform={`translate(${x} ${y}) scale(0.44)`}>
+        <WorldArtGroup id={id as string} />
+      </g>
+    ))}
     <circle cx="180" cy="115" r="96" fill="none" stroke="#ffd23f" strokeWidth="3" opacity="0.6">
       <animate attributeName="r" values="80;105;80" dur="2.4s" repeatCount="indefinite" />
     </circle>

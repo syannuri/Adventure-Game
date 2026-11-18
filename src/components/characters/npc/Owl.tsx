@@ -51,6 +51,24 @@ export function Owl({ x, y, z }: { x: number; y: number; z: number }) {
           <sphereGeometry args={[0.26, 16, 12]} />
           <meshStandardMaterial color={belly} roughness={0.9} />
         </mesh>
+        {/* little feather chevrons on the chest */}
+        {[
+          [0, 0.36],
+          [-0.07, 0.27],
+          [0.07, 0.27],
+          [0, 0.18],
+          [-0.07, 0.1],
+          [0.07, 0.1],
+        ].map(([fx, fy], i) => (
+          <group key={i} position={[fx, fy, 0.296 - Math.abs(fx) * 0.25 - Math.abs(fy - 0.25) * 0.15]}>
+            {[1, -1].map((s) => (
+              <mesh key={s} position={[0.011 * s, 0, 0]} rotation={[0, 0, 0.6 * s]}>
+                <boxGeometry args={[0.03, 0.007, 0.006]} />
+                <meshStandardMaterial color="#c9a27e" />
+              </mesh>
+            ))}
+          </group>
+        ))}
         <mesh ref={wingL} position={[0.27, 0.3, -0.02]} scale={[0.35, 0.9, 0.7]}>
           <sphereGeometry args={[0.25, 12, 10]} />
           <meshStandardMaterial color="#86593b" />
@@ -60,10 +78,19 @@ export function Owl({ x, y, z }: { x: number; y: number; z: number }) {
           <meshStandardMaterial color="#86593b" />
         </mesh>
         {[1, -1].map((s) => (
-          <mesh key={s} position={[0.08 * s, 0.0, 0.1]} scale={[1, 0.4, 1.3]}>
-            <sphereGeometry args={[0.05, 10, 8]} />
-            <meshStandardMaterial color="#f5a742" />
-          </mesh>
+          <group key={s} position={[0.08 * s, 0.0, 0.1]}>
+            <mesh scale={[1, 0.4, 1.3]}>
+              <sphereGeometry args={[0.05, 10, 8]} />
+              <meshStandardMaterial color="#f5a742" />
+            </mesh>
+            {/* talons */}
+            {[-0.025, 0, 0.025].map((tx) => (
+              <mesh key={tx} position={[tx, -0.005, 0.065]} rotation={[Math.PI / 2.4, 0, 0]}>
+                <coneGeometry args={[0.009, 0.03, 6]} />
+                <meshStandardMaterial color="#4a3a30" />
+              </mesh>
+            ))}
+          </group>
         ))}
         <group ref={head} position={[0, 0.66, 0]}>
           <mesh castShadow scale={[1.1, 0.95, 1]}>

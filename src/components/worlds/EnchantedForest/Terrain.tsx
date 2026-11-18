@@ -3,6 +3,37 @@ import * as THREE from 'three';
 import { distToPath, MEADOW, POND, terrainHeight } from './layout';
 import { mulberry32, smoothstep } from '../../../utils/math';
 
+/** Adds natural variation to the ground colour: soft grass patches, mossy spots and fine speckle. */
+function groundDetailShader(shader: { vertexShader: string; fragmentShader: string }) {
+  shader.vertexShader = shader.vertexShader
+    .replace('#include <common>', '#include <common>\nvarying vec3 vGroundPos;')
+    .replace('#include <begin_vertex>', '#include <begin_vertex>\nvGroundPos = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+  shader.fragmentShader = shader.fragmentShader
+    .replace(
+      '#include <common>',
+      `#include <common>
+      varying vec3 vGroundPos;
+      float gHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      float gNoise(vec2 p) {
+        vec2 i = floor(p); vec2 f = fract(p); f = f * f * (3.0 - 2.0 * f);
+        return mix(mix(gHash(i), gHash(i + vec2(1.0, 0.0)), f.x), mix(gHash(i + vec2(0.0, 1.0)), gHash(i + vec2(1.0, 1.0)), f.x), f.y);
+      }`,
+    )
+    .replace(
+      '#include <color_fragment>',
+      `#include <color_fragment>
+      vec2 gp = vGroundPos.xz;
+      float big = gNoise(gp * 0.12) * 0.6 + gNoise(gp * 0.35) * 0.4;
+      float fine = gNoise(gp * 3.1) * 0.5 + gNoise(gp * 7.3) * 0.5;
+      float green = diffuseColor.g - max(diffuseColor.r, diffuseColor.b); // only modulate grassy areas
+      float grassy = smoothstep(0.02, 0.15, green);
+      vec3 moss = vec3(0.24, 0.42, 0.2);
+      vec3 sun = vec3(0.62, 0.74, 0.32);
+      diffuseColor.rgb = mix(diffuseColor.rgb, mix(moss, sun, big), 0.18 * grassy);
+      diffuseColor.rgb *= 0.92 + fine * 0.14;`,
+    );
+}
+
 /** Height-mapped ground with painted vertex colours: grass variation, dirt path, shore, meadow. */
 export function Terrain() {
   const geo = useMemo(() => {
@@ -54,7 +85,7 @@ export function Terrain() {
 
   return (
     <mesh geometry={geo} receiveShadow>
-      <meshStandardMaterial vertexColors roughness={0.95} metalness={0} />
+      <meshStandardMaterial vertexColors roughness={0.95} metalness={0} onBeforeCompile={groundDetailShader} />
     </mesh>
   );
 }

@@ -81,6 +81,7 @@ export class AnettAnimator {
         for (let i = 0; i < 3; i++) a[i] += (b[i] - a[i]) * inp.overlay;
       }
       this.target.mouth = Math.max(this.target.mouth, ov.mouth * inp.overlay);
+      this.target.brow = Math.max(this.target.brow, ov.brow * inp.overlay);
     }
 
     // ---- damp current toward target
@@ -120,6 +121,8 @@ function dampPose(cur: Pose, target: Pose, k: number) {
   }
   cur.bodyY += (target.bodyY - cur.bodyY) * k;
   cur.mouth += (target.mouth - cur.mouth) * k;
+  cur.brow += (target.brow - cur.brow) * k;
+  cur.squint += (target.squint - cur.squint) * k;
 }
 
 function applyPose(rig: AnettRig, p: Pose, eyeScale: number) {
@@ -132,10 +135,23 @@ function applyPose(rig: AnettRig, p: Pose, eyeScale: number) {
   rig.body.position.y = p.bodyY;
   // secondary motion: hair lags behind head pitch slightly
   rig.hairBack.rotation.x = 0; // hair motion is simulated in AnettModel (spring + shader)
-  rig.eyeL.scale.y = eyeScale;
-  rig.eyeR.scale.y = eyeScale;
+  // happy squint narrows the eyes; raised brows open them a touch wider
+  const eyeY = eyeScale * (1 - p.squint * 0.62) * (1 + p.brow * 0.08);
+  rig.eyeL.scale.y = eyeY;
+  rig.eyeR.scale.y = eyeY;
+  for (const [b, side] of [
+    [rig.browL, 1],
+    [rig.browR, -1],
+  ] as const) {
+    if (!b) continue;
+    // brows sit just under the fringe: lift only a little, the tilt sells the expression
+    b.position.y = p.brow * 0.008 - p.squint * 0.006;
+    b.rotation.z = side * (p.brow * 0.22 - p.squint * 0.1);
+  }
   const open = p.mouth;
   rig.mouthOpen.visible = open > 0.25;
-  rig.mouthOpen.scale.set(0.8 + open * 0.3, 0.45 + open * 0.55, 0.45);
+  // surprise (high brows) makes a round "O" mouth, laughing makes a wide one
+  const o = p.brow > 0.7 ? 1 : 0;
+  rig.mouthOpen.scale.set((0.8 + open * 0.3) * (o ? 0.68 : 1 + p.squint * 0.25), (0.45 + open * 0.55) * (o ? 1.15 : 1), 0.45);
   rig.mouthSmile.visible = open <= 0.25;
 }

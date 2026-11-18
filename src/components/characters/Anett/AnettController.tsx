@@ -17,6 +17,7 @@ import { angleDelta, damp } from '../../../utils/math';
 import { audio } from '../../audio/audioEngine';
 import { ACHIEVEMENTS } from '../../../data/achievements';
 import { Wand } from '../../gameplay/collectibles/Wand';
+import { spawnDust } from '../../effects/Bursts';
 
 const WALK_SPEED = 3.3;
 const RUN_SPEED = 6.4;
@@ -164,6 +165,7 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
       if (!s.grounded && s.airTime > 0.18) {
         s.land = Math.min(1, 0.35 + -s.vy * 0.06);
         audio.sfx('land', { volume: Math.min(1, -s.vy / 12) });
+        spawnDust(pos.x, pos.y, pos.z, 10, Math.min(1.6, -s.vy / 8));
       }
       pos.y = ground;
       s.vy = 0;
@@ -225,7 +227,10 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
     if (s.grounded && hs > 0.6) {
       const a = Math.floor(prevPhase / Math.PI);
       const b = Math.floor(animator.phase / Math.PI);
-      if (a !== b) audio.sfx('step', { volume: hs > 4.5 ? 1 : 0.7 });
+      if (a !== b) {
+        audio.sfx('step', { volume: hs > 4.5 ? 1 : 0.7 });
+        if (hs > 4.5) spawnDust(pos.x, pos.y, pos.z, 3, 0.7); // little puffs when running
+      }
     }
 
     // ------------------------------------------------ write transforms
