@@ -28,6 +28,11 @@ const EN = {
   ],
   lumiFindWand: [L('lumi', 'Follow the beam of light near the waterfall. You are so close!')],
   foundWand: [L('anett', 'I found it! The magic wand! Let me bring it back to Lumi!')],
+  wandLocked: [
+    L('anett', 'Oh! The wand is wrapped in magic vines!'),
+    L('anett', 'Look at the stone: three gems. Maybe each flower must be the same colour as the gem above it!'),
+    L('anett', 'I will touch the flowers to change their colour.'),
+  ],
   lumiReturn: [
     L('anett', 'Lumi! Here is your magic wand!'),
     L('lumi', 'My wand! Oh thank you, thank you, Anet! You are so brave and kind!'),
@@ -35,7 +40,7 @@ const EN = {
   ],
   pip: {
     meetFairy: [L('pip', "Hi there! I'm Pip. Lumi the fairy lives in the middle of the forest."), L('pip', 'She looks sad today. Maybe you can help her?')],
-    findWand: [L('pip', 'Did you see that light by the waterfall? Hop hop, go and look!')],
+    findWand: [L('pip', 'Did you see that light by the waterfall? Hop hop, go and look!'), L('pip', 'Lumi once told me: the flowers must match the gems on the old stone!')],
     returnWand: [L('pip', 'Wow, a real magic wand! Lumi will be so happy!')],
     done: [L('pip', "Yay! The forest is sparkling again! Let's dance!")],
   } as Record<string, DialogueLine[]>,
@@ -80,6 +85,11 @@ const ID: typeof EN = {
   ],
   lumiFindWand: [L('lumi', 'Ikuti pancaran cahaya di dekat air terjun. Sedikit lagi!')],
   foundWand: [L('anett', 'Ketemu! Tongkat ajaibnya! Ayo kukembalikan ke Lumi!')],
+  wandLocked: [
+    L('anett', 'Oh! Tongkatnya dililit sulur ajaib!'),
+    L('anett', 'Lihat batu itu: ada tiga permata. Mungkin setiap bunga harus sama warnanya dengan permata di atasnya!'),
+    L('anett', 'Aku akan menyentuh bunga-bunga itu untuk mengganti warnanya.'),
+  ],
   lumiReturn: [
     L('anett', 'Lumi! Ini tongkat ajaibmu!'),
     L('lumi', 'Tongkatku! Terima kasih, terima kasih, Anet! Kamu berani dan baik hati sekali!'),
@@ -87,7 +97,7 @@ const ID: typeof EN = {
   ],
   pip: {
     meetFairy: [L('pip', 'Hai! Aku Pip. Peri Lumi tinggal di tengah hutan.'), L('pip', 'Hari ini dia kelihatan sedih. Mungkin kamu bisa menolongnya?')],
-    findWand: [L('pip', 'Kamu lihat cahaya di dekat air terjun itu? Hop hop, ayo lihat ke sana!')],
+    findWand: [L('pip', 'Kamu lihat cahaya di dekat air terjun itu? Hop hop, ayo lihat ke sana!'), L('pip', 'Kata Lumi: warna bunga harus sama dengan permata di batu tua!')],
     returnWand: [L('pip', 'Wah, tongkat ajaib sungguhan! Lumi pasti senang sekali!')],
     done: [L('pip', 'Hore! Hutan berkilau lagi! Ayo kita menari!')],
   },

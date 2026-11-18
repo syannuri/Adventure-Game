@@ -21,6 +21,7 @@ import { spawnBurst } from '../../effects/Bursts';
 import { Wand } from '../collectibles/Wand';
 import { ACHIEVEMENTS } from '../../../data/achievements';
 import { player } from '../../../systems/playerState';
+import { FlowerPuzzle } from '../puzzles/FlowerPuzzle';
 
 const WORLD_ID = 'enchanted-forest';
 const wandY = () => terrainHeight(WAND_POS.x, WAND_POS.z);
@@ -103,6 +104,7 @@ function pickUpWand() {
 
 export function ForestQuest() {
   const triggered = useRef(false);
+  const lockedSeen = useRef(false);
 
   useEffect(() => {
     const st = () => useGame.getState().level.stage;
@@ -146,7 +148,7 @@ export function ForestQuest() {
         approach: 1.2,
         label: () => tr().prompts.pickWand,
         verb: 'take',
-        enabled: () => st() === 'findWand',
+        enabled: () => st() === 'findWand' && useGame.getState().level.puzzleSolved,
         onInteract: pickUpWand,
       }),
     ];
@@ -157,7 +159,14 @@ export function ForestQuest() {
     const g = useGame.getState();
     if (g.paused || g.dialogue || g.cinematic) return;
     // touching the wand picks it up, just like the Wishing Stars
-    if (g.level.stage === 'findWand' && Math.hypot(player.position.x - WAND_POS.x, player.position.z - WAND_POS.z) < 1.5) {
+    const nearWand = Math.hypot(player.position.x - WAND_POS.x, player.position.z - WAND_POS.z);
+    // first time Anet reaches the locked wand: she notices the vines and the puzzle
+    if (g.level.stage === 'findWand' && !g.level.puzzleSolved && !lockedSeen.current && nearWand < 5.5) {
+      lockedSeen.current = true;
+      g.openDialogue(D().wandLocked);
+      return;
+    }
+    if (g.level.stage === 'findWand' && g.level.puzzleSolved && nearWand < 1.5) {
       player.lookAt = { x: WAND_POS.x, z: WAND_POS.z };
       pickUpWand();
       return;
@@ -174,7 +183,12 @@ export function ForestQuest() {
     }
   });
 
-  return <WandSpot />;
+  return (
+    <>
+      <WandSpot />
+      <FlowerPuzzle />
+    </>
+  );
 }
 
 /** Hollow log, the wand and the beam of light that reveals it. */

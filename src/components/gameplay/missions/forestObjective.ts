@@ -8,7 +8,7 @@ export interface Objective {
   target: { x: number; z: number } | null;
 }
 
-export function forestObjective(stage: ForestStage, stars: string[]): Objective {
+export function forestObjective(stage: ForestStage, stars: string[], solved = false, matched = 0): Objective {
   switch (stage) {
     case 'meetFairy':
       return { text: tr().objectives.meetFairy, target: FAIRY_POS };
@@ -27,7 +27,15 @@ export function forestObjective(stage: ForestStage, stars: string[]): Objective 
       return { text: tr().objectives.collectStars(stars.length, STARS.length), target: best };
     }
     case 'findWand':
-      return { text: Math.hypot(player.position.x - WAND_POS.x, player.position.z - WAND_POS.z) < 6 ? tr().objectives.takeWand : tr().objectives.findWand, target: WAND_POS };
+      return {
+        text:
+          Math.hypot(player.position.x - WAND_POS.x, player.position.z - WAND_POS.z) < 7
+            ? solved
+              ? tr().objectives.takeWand
+              : tr().objectives.flowerPuzzle(matched)
+            : tr().objectives.findWand,
+        target: WAND_POS,
+      };
     case 'returnWand':
       return { text: tr().objectives.returnWand, target: FAIRY_POS };
     case 'done':

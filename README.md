@@ -52,9 +52,12 @@ Requirements: Node 18+ (developed on Node 22). Runs in any modern browser with W
 1. Follow the glowing path stones to Lumi in the middle of the forest and talk to her.
 2. Find the **5 Wishing Stars**. They're hidden on top of giant mushrooms (jump from one to the next), on tall
    tree stumps, by the duck pond, in the flower meadow and on the stepping rocks. Pip the rabbit gives hints.
-3. When all five are found, a cinematic shows a beam of light near the waterfall. The wand is there.
-4. Pick up the wand (Anet carries it in her hand) and bring it back to Lumi.
-5. Finale: the forest sparkles, Anet celebrates and the **Level Complete** screen awards the Magic Star.
+3. When all five are found, a cinematic shows a beam of light near the waterfall. The wand is there, locked
+   in magic vines.
+4. **Colour flower puzzle:** touch the three magic flowers to change their colour (red → yellow → blue) until
+   each matches the gem above it on the old stone. Matching flowers glow; when all three match, the vines melt away.
+5. Pick up the wand (Anet carries it in her hand) and bring it back to Lumi.
+6. Finale: the forest sparkles, Anet celebrates and the **Level Complete** screen awards the Magic Star.
 
 Optional extras: 22 golden acorns, 3 hidden treasure chests (Olli the owl gives hints), 6 achievements.
 Progress (completed worlds, Magic Stars, achievements, best scores, settings) is saved in browser storage.
@@ -172,7 +175,7 @@ which is far too slow to measure performance.
 | Menus, HUD, minimap, settings, pause, level complete | ✅ |
 | Keyboard + touch controls | ✅ (touch verified only in device emulation) |
 | Music and SFX | ✅ Original, synthesized at runtime (placeholder for recorded audio) |
-| Puzzles (color matching, sorting, memory, crystal linking) | ⏳ Not built yet. World 1's mission is exploration + platforming + hidden objects |
+| Puzzles | ✅ Colour flower puzzle in World 1. ⏳ Sorting, memory and crystal-linking puzzles planned for later worlds |
 | Baby dragon and cloud creature NPCs | ⏳ Planned for later worlds |
 | Worlds 2–5 (Candy Village, Crystal Cave, Ocean Kingdom, Sky Castle) | ⏳ Not built – shown as "Coming soon" |
 | Crystal Castle finale | ⏳ Not built |
@@ -181,7 +184,6 @@ which is far too slow to measure performance.
 
 ## Roadmap
 
-1. Add a simple color-matching puzzle to the Enchanted Forest (glowing flowers that open the hollow log).
 2. Replace the procedural Anet with a sculpted, rigged GLB (Blender, Tripo AI or Meshy, plus Mixamo
    animations), keeping the same palette and proportions.
 3. World 2 – Candy Village (ingredient-collecting mission, sorting puzzle).

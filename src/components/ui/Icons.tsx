@@ -25,7 +25,8 @@ export type IconName =
   | 'help'
   | 'check'
   | 'next'
-  | 'lock';
+  | 'lock'
+  | 'flower';
 
 const PATHS: Record<IconName, ReactNode> = {
   play: <path d="M8 5.5v13a1 1 0 0 0 1.5.87l10.5-6.5a1 1 0 0 0 0-1.74L9.5 4.63A1 1 0 0 0 8 5.5Z" fill="currentColor" stroke="none" />,
@@ -139,6 +140,13 @@ const PATHS: Record<IconName, ReactNode> = {
     </>
   ),
   check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
+  flower: (
+    <>
+      <circle cx="12" cy="9" r="2.3" fill="currentColor" stroke="none" />
+      <path d="M12 6.7a2.6 2.6 0 1 1 2.4 1.6M14.4 8.3a2.6 2.6 0 1 1-.8 2.9M13.6 11.2a2.6 2.6 0 1 1-3.2 0M10.4 11.2a2.6 2.6 0 1 1-.8-2.9M9.6 8.3A2.6 2.6 0 1 1 12 6.7" />
+      <path d="M12 12v8.5M12 17c-1.6-1.8-3.6-2.1-5-1.4 1 1.8 3 2.3 5 1.4ZM12 15.6c1.5-1.6 3.4-1.9 4.8-1.2-1 1.7-2.9 2.1-4.8 1.2Z" />
+    </>
+  ),
   lock: (
     <>
       <rect x="5" y="10.5" width="14" height="10" rx="2.5" />

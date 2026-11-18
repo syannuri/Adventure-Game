@@ -87,10 +87,10 @@ export function TouchControls() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center' }}>
           <button
             className={'tbtn act' + (prompt ? ' ready' : '')}
-            aria-label={prompt ? (verb === 'take' ? t.touch.take : verb === 'open' ? t.touch.open : t.touch.talk) : t.touch.action}
+            aria-label={prompt ? (verb === 'take' ? t.touch.take : verb === 'open' ? t.touch.open : verb === 'touch' ? t.touch.touchFlower : t.touch.talk) : t.touch.action}
             onPointerDown={press(() => (input.interactPressed = true))}
           >
-            <Icon name={prompt ? (verb === 'take' ? 'take' : verb === 'open' ? 'open' : 'talk') : 'sparkle'} size={30} />
+            <Icon name={prompt ? (verb === 'take' ? 'take' : verb === 'open' ? 'open' : verb === 'touch' ? 'flower' : 'talk') : 'sparkle'} size={30} />
           </button>
           <button className="tbtn jump" aria-label={t.touch.jump} onPointerDown={press(() => (input.jumpPressed = true))}>
             <Icon name="jump" size={42} />

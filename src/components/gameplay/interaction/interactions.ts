@@ -12,7 +12,7 @@ export interface Interactable {
   approach: number;
   label: () => string;
   /** label for the touch action button */
-  verb?: 'talk' | 'take' | 'open';
+  verb?: 'talk' | 'take' | 'open' | 'touch';
   enabled: () => boolean;
   onInteract: () => void;
 }
