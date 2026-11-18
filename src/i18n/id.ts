@@ -5,11 +5,11 @@ export const id: Dict = {
   title: 'Anet: Petualangan Ajaib',
   logo: { subtitle: 'Petualangan Ajaib' },
   menu: {
-    play: '▶ Main',
-    worlds: '🗺 Peta Dunia',
+    play: 'Main',
+    worlds: 'Peta Dunia',
     meet: 'Kenalan dengan Anet',
-    story: '📖 Cerita',
-    settings: '⚙ Pengaturan',
+    story: 'Cerita',
+    settings: 'Pengaturan',
     magicStars: 'Bintang Ajaib',
   },
   worldsScreen: {
@@ -19,7 +19,7 @@ export const id: Dict = {
     comingSoon: '🔒 Segera hadir',
     play: 'Main ▶',
     playAgain: 'Main lagi ▶',
-    back: '◀ Kembali',
+    back: 'Kembali',
   },
   worlds: {
     'enchanted-forest': { name: 'Hutan Ajaib', mission: 'Bantu peri Lumi menemukan tongkat ajaibnya.' },
@@ -53,10 +53,10 @@ export const id: Dict = {
   pause: {
     title: 'Istirahat dulu',
     waiting: 'Anet menunggumu!',
-    keep: '▶ Lanjut main',
-    settings: '⚙ Pengaturan',
-    restart: '↺ Ulangi',
-    menu: '⌂ Menu',
+    keep: 'Lanjut main',
+    settings: 'Pengaturan',
+    restart: 'Ulangi',
+    menu: 'Menu',
   },
   hud: {
     mission: 'Misi',
@@ -125,9 +125,10 @@ export const id: Dict = {
     touchKeys: [
       ['Joystick (sedikit)', 'Berjalan'],
       ['Joystick (dorong jauh)', 'Berlari 🏃'],
-      ['Lompat', 'Melompat'],
-      ['Aksi', 'Bicara / buka'],
-      ['👋 ♪', 'Melambai / menari'],
+      ['jump', 'Melompat'],
+      ['action', 'Ambil / buka / bicara'],
+      ['wave', 'Melambai'],
+      ['music', 'Menari'],
       ['Geser layar', 'Melihat sekitar'],
     ],
   },

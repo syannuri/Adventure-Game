@@ -3,11 +3,11 @@ export const en = {
   title: 'Anet: The Magical Adventure',
   logo: { subtitle: 'The Magical Adventure' },
   menu: {
-    play: '▶ Play',
-    worlds: '🗺 Worlds',
+    play: 'Play',
+    worlds: 'Worlds',
     meet: 'Meet Anet',
-    story: '📖 Story',
-    settings: '⚙ Settings',
+    story: 'Story',
+    settings: 'Settings',
     magicStars: 'Magic Stars',
   },
   worldsScreen: {
@@ -17,7 +17,7 @@ export const en = {
     comingSoon: '🔒 Coming soon',
     play: 'Play ▶',
     playAgain: 'Play again ▶',
-    back: '◀ Back',
+    back: 'Back',
   },
   worlds: {
     'enchanted-forest': { name: 'Enchanted Forest', mission: 'Help Lumi the fairy find her magic wand.' },
@@ -51,10 +51,10 @@ export const en = {
   pause: {
     title: 'Taking a break',
     waiting: 'Anet is waiting for you!',
-    keep: '▶ Keep playing',
-    settings: '⚙ Settings',
-    restart: '↺ Restart',
-    menu: '⌂ Menu',
+    keep: 'Keep playing',
+    settings: 'Settings',
+    restart: 'Restart',
+    menu: 'Menu',
   },
   hud: {
     mission: 'Mission',
@@ -123,9 +123,10 @@ export const en = {
     touchKeys: [
       ['Joystick (a little)', 'Walk'],
       ['Joystick (push far)', 'Run 🏃'],
-      ['Jump', 'Jump'],
-      ['Action', 'Talk / open'],
-      ['👋 ♪', 'Wave / dance'],
+      ['jump', 'Jump'],
+      ['action', 'Take / open / talk'],
+      ['wave', 'Wave'],
+      ['music', 'Dance'],
       ['Drag the screen', 'Look around'],
     ] as [string, string][],
   },

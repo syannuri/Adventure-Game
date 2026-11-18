@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { input, JOY_RUN, setTouchMove } from '../../systems/input';
 import { useGame } from '../../systems/store';
 import { useT } from '../../i18n/useT';
+import { Icon } from './Icons';
 
 export function useIsTouch() {
   const [touch, setTouch] = useState(() => typeof window !== 'undefined' && (window.matchMedia?.('(pointer: coarse)').matches || 'ontouchstart' in window));
@@ -70,24 +71,29 @@ export function TouchControls() {
         onPointerCancel={end}
       >
         <div className="joy-run-zone" />
-        <div ref={knob} className="knob" />
-        {running && <div className="joy-run-label">🏃</div>}
+        <div ref={knob} className="knob">
+          <Icon name="run" size={26} className={'knob-run' + (running ? ' on' : '')} />
+        </div>
       </div>
       <div className="touch-buttons">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-          <button className="tbtn small" aria-label={t.touch.wave} onPointerDown={press(() => (input.emote = 'wave'))}>
-            👋
+          <button className="tbtn small wave" aria-label={t.touch.wave} onPointerDown={press(() => (input.emote = 'wave'))}>
+            <Icon name="wave" size={24} />
           </button>
-          <button className="tbtn small" aria-label={t.touch.dance} onPointerDown={press(() => (input.emote = 'dance'))}>
-            ♪
+          <button className="tbtn small dance" aria-label={t.touch.dance} onPointerDown={press(() => (input.emote = 'dance'))}>
+            <Icon name="music" size={22} />
           </button>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center' }}>
-          <button className={'tbtn act' + (prompt ? ' ready' : '')} onPointerDown={press(() => (input.interactPressed = true))}>
-            {prompt ? (verb === 'take' ? t.touch.take : verb === 'open' ? t.touch.open : t.touch.talk) : t.touch.action}
+          <button
+            className={'tbtn act' + (prompt ? ' ready' : '')}
+            aria-label={prompt ? (verb === 'take' ? t.touch.take : verb === 'open' ? t.touch.open : t.touch.talk) : t.touch.action}
+            onPointerDown={press(() => (input.interactPressed = true))}
+          >
+            <Icon name={prompt ? (verb === 'take' ? 'take' : verb === 'open' ? 'open' : 'talk') : 'sparkle'} size={30} />
           </button>
-          <button className="tbtn jump" onPointerDown={press(() => (input.jumpPressed = true))}>
-            {t.touch.jump}
+          <button className="tbtn jump" aria-label={t.touch.jump} onPointerDown={press(() => (input.jumpPressed = true))}>
+            <Icon name="jump" size={42} />
           </button>
         </div>
       </div>
