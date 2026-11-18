@@ -1,11 +1,9 @@
-import { Suspense, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useGame } from './systems/store';
 import { installKeyboard, resetEdges } from './systems/input';
-import { EnchantedForest } from './components/worlds/EnchantedForest/EnchantedForest';
 import { MenuScene, REVIEW_VIEW } from './components/worlds/MenuScene/MenuScene';
-import { PostFX } from './components/effects/PostFX';
 import { HUD } from './components/ui/HUD';
 import { DialogueBox } from './components/ui/DialogueBox';
 import { TouchControls, useIsTouch } from './components/ui/TouchControls';
@@ -22,11 +20,31 @@ import { groundHeightAt } from './systems/physics';
 /** `?capture` keeps the drawing buffer so automated screenshots never catch an empty frame. */
 const CAPTURE = typeof location !== 'undefined' && new URLSearchParams(location.search).has('capture');
 
+// Loaded on demand: the menu shows first, the forest and post-processing download in the background.
+const loadForest = () => import('./components/worlds/EnchantedForest/EnchantedForest').then((m) => ({ default: m.EnchantedForest }));
+const EnchantedForest = lazy(loadForest);
+const PostFX = lazy(() => import('./components/effects/PostFX'));
+
 function Scene() {
   const screen = useGame((s) => s.screen);
   const runId = useGame((s) => s.runId);
   const inWorld = screen === 'playing' || screen === 'complete';
   return inWorld ? <EnchantedForest key={runId} /> : <MenuScene />;
+}
+
+/** Bloom etc. start a moment after the first frame so the menu appears immediately. */
+function DeferredPostFX({ quality, inWorld }: { quality: 'high' | 'low'; inWorld: boolean }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setReady(true), 900);
+    return () => window.clearTimeout(id);
+  }, []);
+  if (!ready) return null;
+  return (
+    <Suspense fallback={null}>
+      <PostFX quality={quality} ao={inWorld} />
+    </Suspense>
+  );
 }
 
 export default function App() {
@@ -40,6 +58,10 @@ export default function App() {
   const cinematic = useGame((s) => s.cinematic);
 
   useEffect(() => {
+    // hide the instant HTML splash, then fetch the forest quietly in the background
+    document.getElementById('splash')?.classList.add('gone');
+    window.setTimeout(() => document.getElementById('splash')?.remove(), 600);
+    const idle = window.setTimeout(() => void loadForest(), 2500);
     installKeyboard();
     const s = useGame.getState().save.settings;
     audio.setVolumes(s.musicVolume, s.sfxVolume);
@@ -62,6 +84,7 @@ export default function App() {
     };
     document.addEventListener('visibilitychange', onVis);
     return () => {
+      window.clearTimeout(idle);
       window.removeEventListener('pointerdown', unlock);
       window.removeEventListener('keydown', unlock);
       window.removeEventListener('keydown', onKey);
@@ -89,7 +112,7 @@ export default function App() {
     <>
       <Canvas
         shadows={{ type: THREE.PCFShadowMap }}
-        dpr={quality === 'high' ? [1, 1.75] : [0.75, 1.25]}
+        dpr={screen === 'playing' || screen === 'complete' ? (quality === 'high' ? [1, 1.75] : [0.75, 1.25]) : [0.75, 1.5]}
         gl={{ antialias: quality === 'low', powerPreference: 'high-performance', preserveDrawingBuffer: CAPTURE }}
         camera={{ fov: 55, near: 0.1, far: 900, position: [0, 3, 8] }}
         style={{ position: 'fixed', inset: 0 }}
@@ -100,7 +123,7 @@ export default function App() {
       >
         <Suspense fallback={null}>
           <Scene />
-          <PostFX quality={quality} />
+          <DeferredPostFX quality={quality} inWorld={screen === 'playing' || screen === 'complete'} />
         </Suspense>
       </Canvas>
 

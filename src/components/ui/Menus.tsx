@@ -6,6 +6,7 @@ import { audio } from '../audio/audioEngine';
 import { AnettPortrait } from './Portraits';
 import { GameLogo } from './GameLogo';
 import { WorldArt } from './WorldArt';
+import { Icon } from './Icons';
 import { useT } from '../../i18n/useT';
 import { LANGS } from '../../i18n';
 
@@ -58,19 +59,24 @@ export function MainMenu() {
             else startWorld('enchanted-forest');
           }}
         >
+          <Icon name="play" size={30} />
           {t.menu.play}
         </button>
         <div className="menu-row">
           <button className="btn" onClick={() => (click(), setScreen('worlds'))}>
+            <Icon name="map" size={20} />
             {t.menu.worlds}
           </button>
           <button className="btn pink" onClick={() => (click(), setOverlay('about'))}>
+            <Icon name="heart" size={20} />
             {t.menu.meet}
           </button>
           <button className="btn teal" onClick={() => (click(), setScreen('story'))}>
+            <Icon name="book" size={20} />
             {t.menu.story}
           </button>
           <button className="btn ghost" onClick={() => (click(), setOverlay('settings'))}>
+            <Icon name="gear" size={20} />
             {t.menu.settings}
           </button>
         </div>
@@ -125,6 +131,7 @@ export function WorldSelect() {
         })}
       </div>
       <button className="btn ghost" onClick={() => (click(), setScreen('menu'))}>
+        <Icon name="back" size={20} />
         {t.worldsScreen.back}
       </button>
     </div>
@@ -253,16 +260,20 @@ export function PauseMenu() {
         <p>{t.pause.waiting}</p>
         <div className="menu-buttons" style={{ marginTop: 16 }}>
           <button className="btn big yellow" onClick={() => (click(), setPaused(false))}>
+            <Icon name="play" size={26} />
             {t.pause.keep}
           </button>
           <div className="menu-row">
             <button className="btn ghost" onClick={() => (click(), setOverlay('settings'))}>
+              <Icon name="gear" size={18} />
               {t.pause.settings}
             </button>
             <button className="btn teal" onClick={() => (click(), worldId && startWorld(worldId))}>
+              <Icon name="restart" size={18} />
               {t.pause.restart}
             </button>
             <button className="btn pink" onClick={() => (click(), setScreen('menu'))}>
+              <Icon name="home" size={18} />
               {t.pause.menu}
             </button>
           </div>

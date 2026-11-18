@@ -6,6 +6,9 @@ import { useEffect, useState } from 'react';
 import { useT } from '../../i18n/useT';
 import { input, onRunToggle } from '../../systems/input';
 import { audio } from '../audio/audioEngine';
+import { Icon, type IconName } from './Icons';
+
+const KEY_ICONS: Record<string, IconName> = { jump: 'jump', action: 'sparkle', wave: 'wave', music: 'music' };
 
 const SEEN_KEY = 'anet-controls-seen';
 const seen = () => {
@@ -35,7 +38,7 @@ export function ControlsCard({ isTouch }: { isTouch: boolean }) {
     <>
       {running && !isTouch && <div className="run-badge passthrough">🏃 {t.controls.runningOn}</div>}
       <button className="help-btn" aria-label={t.controls.help} onClick={() => (audio.sfx('click'), setOpen(!open))}>
-        ?
+        <Icon name="help" size={24} />
       </button>
       {open && (
         <div className="controls-card panel" role="dialog" aria-label={t.controls.title}>
@@ -43,7 +46,7 @@ export function ControlsCard({ isTouch }: { isTouch: boolean }) {
           <div className="controls-grid">
             {rows.map(([k, v]) => (
               <div key={k} className="controls-row">
-                <span className="kbd">{k}</span>
+                <span className="kbd">{KEY_ICONS[k] ? <Icon name={KEY_ICONS[k]} size={18} /> : k}</span>
                 <span>{v}</span>
               </div>
             ))}

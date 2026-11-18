@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { mulberry32 } from '../../../utils/math';
@@ -45,35 +45,44 @@ export function Sky({ top = '#4f9fe0', horizon = '#ffe6c4', sunDir = SUN_DIR }) 
 
 function Clouds() {
   const group = useRef<THREE.Group>(null!);
-  const clouds = useMemo(() => {
+  const ref = useRef<THREE.InstancedMesh>(null!);
+  const puffs = useMemo(() => {
     const rnd = mulberry32(99);
-    return Array.from({ length: 14 }, () => {
+    const out: THREE.Matrix4[] = [];
+    const q = new THREE.Quaternion();
+    for (let c = 0; c < 14; c++) {
       const a = rnd() * Math.PI * 2;
       const r = 150 + rnd() * 90;
-      const puffs = Array.from({ length: 5 + Math.floor(rnd() * 4) }, (_, i) => ({
-        x: (i - 3) * 6 + rnd() * 4,
-        y: rnd() * 3,
-        z: rnd() * 5,
-        s: 5 + rnd() * 5,
-      }));
-      return { x: Math.cos(a) * r, y: 45 + rnd() * 35, z: Math.sin(a) * r, rot: rnd() * Math.PI, puffs };
-    });
+      const cx = Math.cos(a) * r;
+      const cy = 45 + rnd() * 35;
+      const cz = Math.sin(a) * r;
+      const rot = rnd() * Math.PI;
+      const n = 5 + Math.floor(rnd() * 4);
+      for (let i = 0; i < n; i++) {
+        const px = (i - 3) * 6 + rnd() * 4;
+        const py = rnd() * 3;
+        const pz = rnd() * 5;
+        const sc = 5 + rnd() * 5;
+        const x = cx + Math.cos(rot) * px + Math.sin(rot) * pz;
+        const z = cz - Math.sin(rot) * px + Math.cos(rot) * pz;
+        out.push(new THREE.Matrix4().compose(new THREE.Vector3(x, cy + py, z), q, new THREE.Vector3(sc, sc * 0.62, sc)));
+      }
+    }
+    return out;
   }, []);
   const mat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#ffffff', emissive: '#e9f1ff', emissiveIntensity: 0.55, roughness: 1, fog: false }), []);
+  const geo = useMemo(() => new THREE.SphereGeometry(1, 14, 10), []);
+  useLayoutEffect(() => {
+    puffs.forEach((m, i) => ref.current.setMatrixAt(i, m));
+    ref.current.instanceMatrix.needsUpdate = true;
+    ref.current.computeBoundingSphere();
+  }, [puffs]);
   useFrame((_, dt) => {
     group.current.rotation.y += dt * 0.004;
   });
   return (
     <group ref={group}>
-      {clouds.map((c, i) => (
-        <group key={i} position={[c.x, c.y, c.z]} rotation={[0, c.rot, 0]}>
-          {c.puffs.map((p, j) => (
-            <mesh key={j} material={mat} position={[p.x, p.y, p.z]} scale={[p.s, p.s * 0.62, p.s]}>
-              <sphereGeometry args={[1, 16, 12]} />
-            </mesh>
-          ))}
-        </group>
-      ))}
+      <instancedMesh ref={ref} args={[geo, mat, puffs.length]} frustumCulled={false} />
     </group>
   );
 }

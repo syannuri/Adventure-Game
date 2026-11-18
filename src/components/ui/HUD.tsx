@@ -6,6 +6,7 @@ import { FOREST_HINTS, forestObjective } from '../gameplay/missions/forestObject
 import { audio } from '../audio/audioEngine';
 import { cameraState } from '../../systems/playerState';
 import { useT } from '../../i18n/useT';
+import { Icon } from './Icons';
 
 function Counter({ ico, color, value, total }: { ico: string; color: string; value: number; total: number }) {
   const [bump, setBump] = useState(false);
@@ -135,7 +136,7 @@ export function HUD() {
                 setPaused(true);
               }}
             >
-              ❚❚
+              <Icon name="pause" size={22} />
             </button>
             <Minimap />
           </div>
