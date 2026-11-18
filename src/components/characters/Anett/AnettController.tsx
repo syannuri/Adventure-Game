@@ -18,6 +18,7 @@ import { audio } from '../../audio/audioEngine';
 import { ACHIEVEMENTS } from '../../../data/achievements';
 import { Wand } from '../../gameplay/collectibles/Wand';
 import { spawnDust } from '../../effects/Bursts';
+import { contactShadowTexture } from '../../effects/textures';
 
 const WALK_SPEED = 3.3;
 const RUN_SPEED = 6.4;
@@ -33,6 +34,8 @@ export interface AnettControllerProps {
 
 export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
   const group = useRef<THREE.Group>(null!);
+  const blob = useRef<THREE.Mesh>(null!);
+  const blobTex = useMemo(() => contactShadowTexture(), []);
   const rig = useRef<AnettRig>(null);
   const animator = useMemo(() => new AnettAnimator(), []);
   const hasWand = useGame((s) => s.level.hasWand);
@@ -252,6 +255,12 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
     player.speed = hs;
     group.current.position.copy(pos);
     group.current.rotation.y = player.facing;
+    // contact shadow stays on the ground under her feet, shrinking and fading as she jumps up
+    const gy = groundHeightAt(pos.x, pos.z, pos.y + 0.05);
+    const air = Math.max(0, pos.y - gy);
+    blob.current.position.y = gy - pos.y + 0.03;
+    blob.current.scale.setScalar(Math.max(0.45, 1 - air * 0.35));
+    (blob.current.material as THREE.MeshBasicMaterial).opacity = 0.32 * Math.max(0.15, 1 - air * 0.6);
 
     onAfterMove?.(dt);
   });
@@ -268,10 +277,10 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
           ) : null
         }
       />
-      {/* soft contact shadow blob – keeps her grounded visually on any device */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]} renderOrder={-1}>
-        <circleGeometry args={[0.32, 24]} />
-        <meshBasicMaterial color="#000" transparent opacity={0.18} depthWrite={false} />
+      {/* small soft contact shadow under the feet (the sun casts the real shadow) */}
+      <mesh ref={blob} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]} renderOrder={-1}>
+        <planeGeometry args={[0.62, 0.5]} />
+        <meshBasicMaterial map={blobTex} color="#2a1a30" transparent opacity={0.32} depthWrite={false} />
       </mesh>
     </group>
   );

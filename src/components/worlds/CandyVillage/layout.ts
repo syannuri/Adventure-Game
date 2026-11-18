@@ -285,8 +285,8 @@ export function buildCandyPhysics(): WorldPhysics {
     ...CANES.map((c) => ({ x: c.x, z: c.z, r: 0.14 * c.s + 0.1 })),
     ...STRAWBERRIES.map((s) => ({ x: s.x, z: s.z, r: 0.38 * s.s })),
     ...ICE_CREAMS.map((i) => ({ x: i.x, z: i.z, r: 0.9 * i.s })),
-    ...HOUSES.map((h) => ({ x: h.x, z: h.z, r: 1.6 * h.s })),
-    { x: BAKERY.x, z: BAKERY.z, r: 3.4 },
+    ...HOUSES.map((h) => ({ x: h.x, z: h.z, r: 1.85 * h.s })),
+    { x: BAKERY.x, z: BAKERY.z, r: 3.9 }, // includes the overhanging frosting so the camera never clips inside
     { x: KOKO_POS.x, z: KOKO_POS.z, r: 0.55 },
     { x: PIP_POS.x, z: PIP_POS.z, r: 0.4 },
     // sorting machine counter and the candy machine behind it
