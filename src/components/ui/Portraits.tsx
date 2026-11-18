@@ -1,5 +1,15 @@
-/** Hand-authored SVG character portraits for the dialogue system (consistent with the 3D designs). */
+/** Character portraits for the dialogue system. Anet uses her 3D render; the others are hand-authored SVG. */
+import { useState } from 'react';
 import type { DialogueLine } from '../../systems/store';
+
+const ANET_AVATAR = `${import.meta.env.BASE_URL}portraits/anet.webp`;
+
+/** Anet's avatar: the 3D render (public/portraits/anet.webp), with the SVG drawing as a fallback. */
+export function AnettPortrait() {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <AnettPortraitSVG />;
+  return <img className="portrait-img" src={ANET_AVATAR} alt="Anet" draggable={false} onError={() => setFailed(true)} />;
+}
 
 export const SPEAKERS: Record<DialogueLine['speaker'], { name: string; color: string }> = {
   anett: { name: 'Anet', color: '#d9661f' },
@@ -8,7 +18,7 @@ export const SPEAKERS: Record<DialogueLine['speaker'], { name: string; color: st
   olli: { name: 'Olli the Owl', color: '#9a6b4a' },
 };
 
-export function AnettPortrait() {
+function AnettPortraitSVG() {
   return (
     <svg viewBox="0 0 100 100">
       <rect width="100" height="100" fill="#ffe8c8" />

@@ -22,7 +22,7 @@ repository also contains the design reference images in `docs/`.
 | Asset | File | Status |
 | --- | --- | --- |
 | Anet HD 3D model (sculpted, textured, skinned) | `public/models/anet.glb` (~1 MB), rig data `src/components/characters/Anett/anetRig.json`, loader `AnettHD.tsx` | **Final for now.** Generated from the cover illustration with Krea: an A-pose turnaround image (Nano Banana Pro, `docs/anet-apose.jpg`), then image-to-3D (Tripo H3.1). Simplified to ~67k triangles and auto-skinned to the game rig with `tools/anet-rig/` (see its README). Generated for this project; check Krea's terms before commercial release. |
-| App / bookmark icons (`apple-touch-icon.png`, `icon-192/512.png`, `icon-maskable-512.png`, `favicon-32/64.png`) | `public/`, source `docs/anet-icon-3d.jpg` | 3D render of Anet made with Krea (Nano Banana Pro, using the cover and A-pose art as reference). Sizes are generated with `node tools/make-icons.mjs docs/anet-icon-3d.jpg public`. |
+| App / bookmark icons (`apple-touch-icon.png`, `icon-192/512.png`, `icon-maskable-512.png`, `favicon-32/64.png`) and Anet's dialogue avatar (`portraits/anet.webp`) | `public/`, sources `docs/anet-icon-3d.jpg` (art) and `docs/anet-icon-3d-logo.jpg` (art + ANET title logo, composed with `tools/icon-logo.html`) | 3D render of Anet made with Krea (Nano Banana Pro, using the cover and A-pose art as reference). Generated with `node tools/make-icons.mjs docs/anet-icon-3d-logo.jpg public docs/anet-icon-3d.jpg`. |
 | Anet procedural model + joint rig | `src/components/characters/Anett/AnettModel.tsx` | Fallback. Shown while the HD model downloads, if it can't load, or with `?procedural`. Its joint groups drive the HD skeleton. |
 | Anet animations (13) | `src/components/characters/Anett/AnettAnimations.ts` | Procedural poses, which drive both the HD model and the fallback model. Could later be swapped for or augmented with mocap/Mixamo clips. |
 | Lumi (fairy), Pip (rabbit), Olli (owl), ambient bunnies, ducks, butterflies, birds | `src/components/characters/npc/*`, `worlds/EnchantedForest/Critters.tsx` | **Placeholder** procedural models |
@@ -30,7 +30,7 @@ repository also contains the design reference images in `docs/`.
 | Sky dome, clouds, water and waterfall shaders, wind shader | `Sky.tsx`, `Water.tsx`, `effects/wind.ts` | Procedural |
 | Hair strand normal map, ground noise shader, world-card and story illustrations (`ui/WorldArt.tsx`) | `AnettModel.tsx`, `Terrain.tsx`, `ui/WorldArt.tsx` | Procedural / hand-written SVG |
 | Particle sprites (glow, twinkle) and the menu's magic-map texture | `effects/textures.ts`, `MenuScene.tsx` (canvas-drawn) | Procedural |
-| Dialogue portraits (Anett, Lumi, Pip, Olli) | `src/components/ui/Portraits.tsx` (inline SVG) | **Placeholder** illustrations |
+| Dialogue portraits (Anett, Lumi, Pip, Olli) | `src/components/ui/Portraits.tsx` | Anet: 3D render (`public/portraits/anet.webp`, SVG fallback). Lumi, Pip, Olli: **placeholder** SVG illustrations |
 | Story intro illustrations | `src/components/ui/StoryIntro.tsx` (inline SVG + emoji) | **Placeholder** illustrations |
 | Music: menu, forest, victory | `src/components/audio/audioEngine.ts` (Web Audio synthesis) | Original. **Placeholder** for recorded music. |
 | Sound effects: star, coin, jump, land, footstep, talk, pop, click, achievement, magic, chest, whoosh | `audioEngine.ts` | Original synthesized. **Placeholder** for recorded SFX. |
