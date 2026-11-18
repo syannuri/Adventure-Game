@@ -64,11 +64,15 @@ Progress (completed worlds, Magic Stars, achievements, best scores, settings) is
 
 ## Features in this build
 
-- **Anet:** a procedural, rigged, stylized 3D character built to match the main-menu cover illustration
+- **Anet (HD):** a sculpted, fully textured 3D model made from the main-menu cover illustration
   [`docs/anet-cover-source.png`](docs/anet-cover-source.png): long straight dark hair with a centre part, fair skin,
-  big dark-brown eyes, a yellow-and-white striped T-shirt, a mustard corduroy pinafore (overall) dress with
-  metal clips and pockets, pink socks, tan hiking boots with pink laces and her khaki adventure backpack. One shared model and palette, so she
-  looks the same in every scene.
+  big dark-brown eyes, a yellow-and-white striped T-shirt, a mustard corduroy pinafore dress with
+  metal clips and pockets, pink socks, tan hiking boots with pink laces, plus her khaki adventure backpack.
+  - Pipeline: an A-pose turnaround image (Krea, Nano Banana Pro) → image-to-3D (Krea, Tripo H3.1) →
+    simplify and auto-skin to the game's joint rig ([`tools/anet-rig`](tools/anet-rig/README.md)).
+  - The file `public/models/anet.glb` is about 1 MB (meshopt + WebP).
+  - The procedural model is the fallback: it shows while the HD model loads, if loading fails, or
+    with `?procedural` in the URL. One shared rig, so she moves the same way in every scene.
 - **Animation system:** an animation state machine with a blend tree (idle ↔ walk ↔ run, by speed), jump/fall
   blending by vertical velocity, landing squash, and damped joint blending between all states. It also has an
   upper-body overlay layer for collecting. All 13 required animations are in: idle breathing, eye blinking,
@@ -116,7 +120,8 @@ src/
   components/
     characters/
       Anet/
-        AnetModel.tsx        procedural rigged character (joint hierarchy)
+        AnetModel.tsx        procedural rigged character (joint hierarchy; fallback model)
+        AnettHD.tsx           sculpted GLB model skinned to the same joints (public/models/anet.glb)
         AnetAnimations.ts    pose library (13 animations)
         AnetAnimator.ts      state machine + blend tree + damping + blinking
         AnetController.tsx   movement, jumping, collisions, emotes
@@ -169,7 +174,7 @@ which is far too slow to measure performance.
 | Area | Status |
 | --- | --- |
 | World 1 – Enchanted Forest | ✅ Playable from start to finish |
-| Anet character + 13 animations | ✅ Procedural model (placeholder for a sculpted GLB, see `ASSETS.md`) |
+| Anet character + 13 animations | ✅ Sculpted HD model (GLB, auto-skinned), procedural model as fallback |
 | NPCs (fairy, rabbit, owl) | ✅ Procedural models |
 | Dialogue, quest, collectibles, achievements, saving | ✅ |
 | Menus, HUD, minimap, settings, pause, level complete | ✅ |
@@ -184,8 +189,7 @@ which is far too slow to measure performance.
 
 ## Roadmap
 
-2. Replace the procedural Anet with a sculpted, rigged GLB (Blender, Tripo AI or Meshy, plus Mixamo
-   animations), keeping the same palette and proportions.
+2. Facial animation for the HD model (blinking, talking mouth) via blend shapes or a painted face layer.
 3. World 2 – Candy Village (ingredient-collecting mission, sorting puzzle).
 4. World 3 – Crystal Cave (crystal collecting, light-beam puzzle).
 5. World 4 – Ocean Kingdom (swimming movement, rescue the baby sea turtle).
