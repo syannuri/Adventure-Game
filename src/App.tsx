@@ -12,6 +12,7 @@ import { TouchControls, useIsTouch } from './components/ui/TouchControls';
 import { AboutAnett, MainMenu, PauseMenu, SettingsPanel, WorldSelect } from './components/ui/Menus';
 import { StoryIntro } from './components/ui/StoryIntro';
 import { LevelComplete } from './components/ui/LevelComplete';
+import { ControlsCard } from './components/ui/ControlsCard';
 import { audio } from './components/audio/audioEngine';
 import { DICTS } from './i18n';
 import { player } from './systems/playerState';
@@ -110,6 +111,7 @@ export default function App() {
           {screen === 'story' && <StoryIntro />}
           {playing && <HUD />}
           {playing && <DialogueBox />}
+          {playing && !dialogue && !paused && (!cinematic || cinematic.kind === 'finale') && <ControlsCard isTouch={isTouch} />}
           {playing && isTouch && !dialogue && (!cinematic || cinematic.kind === 'finale') && !paused && <TouchControls />}
           {screen === 'complete' && <LevelComplete />}
           {paused && playing && !overlay && <PauseMenu />}
