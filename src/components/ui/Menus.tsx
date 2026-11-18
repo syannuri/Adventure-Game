@@ -15,6 +15,26 @@ const click = () => {
   audio.sfx('click');
 };
 
+/**
+ * Reliable tap for touch screens: fires on pointer-up (instant) and keeps click as a fallback,
+ * guarded so the action runs only once. Avoids taps being swallowed on iPhone / iPad.
+ */
+let lastTap = 0; // shared: the click that follows a pointer-up (even after a re-render) is ignored
+export function tapProps(action: () => void) {
+  const run = () => {
+    const now = performance.now();
+    if (now - lastTap < 600) return;
+    lastTap = now;
+    action();
+  };
+  return {
+    onPointerUp: (e: React.PointerEvent) => {
+      if (e.pointerType !== 'mouse') run();
+    },
+    onClick: run,
+  };
+}
+
 /** Small ID / EN switch shown on the main menu and in Settings. */
 export function LanguageSwitch() {
   const lang = useGame((s) => s.save.settings.language);
@@ -42,7 +62,6 @@ export function MainMenu() {
   const save = useGame((s) => s.save);
   const setScreen = useGame((s) => s.setScreen);
   const setOverlay = useGame((s) => s.setOverlay);
-  const startWorld = useGame((s) => s.startWorld);
   const t = useT();
   return (
     <div className="menu">
@@ -53,11 +72,13 @@ export function MainMenu() {
       <div className="menu-buttons">
         <button
           className="btn big yellow"
-          onClick={() => {
+          {...tapProps(() => {
             click();
-            if (!save.seenIntro) setScreen('story');
-            else startWorld('enchanted-forest');
-          }}
+            const g = useGame.getState();
+            if (g.screen !== 'menu') return;
+            if (!g.save.seenIntro) g.setScreen('story');
+            else g.startWorld('enchanted-forest');
+          })}
         >
           <Icon name="play" size={30} />
           {t.menu.play}
@@ -259,7 +280,7 @@ export function PauseMenu() {
         <h2>{t.pause.title}</h2>
         <p>{t.pause.waiting}</p>
         <div className="menu-buttons" style={{ marginTop: 16 }}>
-          <button className="btn big yellow" onClick={() => (click(), setPaused(false))}>
+          <button className="btn big yellow" {...tapProps(() => (click(), setPaused(false)))}>
             <Icon name="play" size={26} />
             {t.pause.keep}
           </button>
