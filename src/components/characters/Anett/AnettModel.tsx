@@ -67,6 +67,8 @@ export interface AnettRig {
   mouthSmile: THREE.Mesh;
   mouthOpen: THREE.Mesh;
   hairBack: THREE.Group;
+  browL: THREE.Group;
+  browR: THREE.Group;
 }
 
 // ------------------------------------------------------------------ generated geometry helpers
@@ -152,9 +154,52 @@ function unifiedHair() {
     for (let i = capRows + 1; i < last; i++) idx.push(at(0, i, j), at(1, i, j), at(0, i + 1, j), at(0, i + 1, j), at(1, i, j), at(1, i + 1, j));
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  // uv: u runs around the head, v runs down the strands (used by the strand normal map)
+  const uv: number[] = [];
+  for (let layer = 0; layer < 2; layer++)
+    for (let i = 0; i < nR; i++) for (let j = 0; j <= seg; j++) uv.push(j / seg, 1 - i / (nR - 1));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   g.setIndex(idx);
   g.computeVertexNormals();
   return g;
+}
+
+let strandTex: THREE.Texture | null = null;
+/** Generated normal map of fine vertical hair strands (tiles around the head). */
+function strandNormalTexture() {
+  if (strandTex) return strandTex;
+  const W = 256;
+  const H = 64;
+  const c = document.createElement('canvas');
+  c.width = W;
+  c.height = H;
+  const g = c.getContext('2d')!;
+  const img = g.createImageData(W, H);
+  // height profile across strands: layered sines + per-strand noise
+  const hgt = new Float32Array(W);
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const jitter = Array.from({ length: 64 }, () => rnd());
+  for (let x = 0; x < W; x++) {
+    const u = x / W;
+    hgt[x] = Math.sin(u * Math.PI * 2 * 40) * 0.35 + Math.sin(u * Math.PI * 2 * 13 + 1) * 0.4 + jitter[Math.floor(u * 64)] * 0.2;
+  }
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++) {
+      const dx = hgt[(x + 1) % W] - hgt[(x - 1 + W) % W];
+      const nx = -dx * 0.9;
+      const l = Math.hypot(nx, 1);
+      const o = (y * W + x) * 4;
+      img.data[o] = ((nx / l) * 0.5 + 0.5) * 255;
+      img.data[o + 1] = 128;
+      img.data[o + 2] = (1 / l) * 255;
+      img.data[o + 3] = 255;
+    }
+  g.putImageData(img, 0, 0);
+  strandTex = new THREE.CanvasTexture(c);
+  strandTex.wrapS = strandTex.wrapT = THREE.RepeatWrapping;
+  strandTex.repeat.set(2, 1);
+  return strandTex;
 }
 
 let blushTex: THREE.Texture | null = null;
@@ -227,7 +272,19 @@ function useMaterials() {
     return {
       skin: mat(P.skin, 0.55, { sheen: 0.3, sheenColor: new THREE.Color('#ffe2d2'), sheenRoughness: 0.6, emissive: new THREE.Color('#ff9f7a'), emissiveIntensity: 0.07 }),
       skinShade: mat(P.skinShade, 0.6),
-      hair: mat(P.hair, 0.5, { sheen: 1, sheenColor: new THREE.Color(P.hairSheen), sheenRoughness: 0.4, clearcoat: 0.2, clearcoatRoughness: 0.5, side: THREE.DoubleSide }),
+      hair: mat(P.hair, 0.46, {
+        sheen: 1,
+        sheenColor: new THREE.Color(P.hairSheen),
+        sheenRoughness: 0.4,
+        clearcoat: 0.25,
+        clearcoatRoughness: 0.45,
+        side: THREE.DoubleSide,
+        // strand detail + stretched, hair-like highlight
+        normalMap: strandNormalTexture(),
+        normalScale: new THREE.Vector2(0.28, 0.28),
+        anisotropy: 0.35,
+        anisotropyRotation: Math.PI / 2,
+      }),
       eyeWhite: mat('#fffdf8', 0.2, { clearcoat: 1 }),
       iris: mat('#ffffff', 0.2, { map: irisTexture(), clearcoat: 1, clearcoatRoughness: 0.05 }),
       highlight: new THREE.MeshBasicMaterial({ color: '#ffffff' }),
@@ -327,6 +384,8 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
     mouthSmile: useRef<THREE.Mesh>(null!),
     mouthOpen: useRef<THREE.Mesh>(null!),
     hairBack: useRef<THREE.Group>(null!),
+    browL: useRef<THREE.Group>(null!),
+    browR: useRef<THREE.Group>(null!),
   };
 
   useImperativeHandle(ref, () => {
@@ -445,12 +504,17 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
       <group ref={eref} position={[0, -0.165, 0]}>
         <mesh geometry={capsule(0.059, 0.075)} material={m.jacket} position={[0, -0.055, 0.004]} />
         <mesh geometry={geo.cuff} material={m.jacketRib} position={[0, -0.125, 0.004]} />
-        <mesh material={m.skin} position={[0, -0.168, 0.01]} scale={[0.92, 1.05, 0.88]}>
-          <sphereGeometry args={[0.05, 18, 14]} />
+        {/* hand: soft palm, four short curled fingers and a thumb */}
+        <mesh material={m.skin} position={[0, -0.162, 0.008]} scale={[1, 0.95, 0.66]}>
+          <sphereGeometry args={[0.044, 18, 14]} />
         </mesh>
-        {/* thumb */}
-        <mesh material={m.skin} position={[-0.03 * side, -0.155, 0.035]} scale={[0.6, 0.9, 0.6]}>
-          <sphereGeometry args={[0.025, 10, 8]} />
+        {[-0.024, -0.008, 0.008, 0.024].map((fx, i) => (
+          <mesh key={i} material={m.skin} position={[fx * side, -0.2 + Math.abs(fx) * 0.25, 0.016]} rotation={[0.45, 0, fx * side * 2]}>
+            <capsuleGeometry args={[0.0105, 0.026 - Math.abs(fx) * 0.15, 4, 8]} />
+          </mesh>
+        ))}
+        <mesh material={m.skin} position={[-0.036 * side, -0.16, 0.03]} rotation={[0.5, 0, -0.75 * side]}>
+          <capsuleGeometry args={[0.012, 0.024, 4, 8]} />
         </mesh>
         {item && <group position={[0, -0.175, 0.03]}>{item}</group>}
       </group>
@@ -598,10 +662,12 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
                 <Eye side={1} eref={r.eyeL} />
                 <Eye side={-1} eref={r.eyeR} />
                 {/* soft brows (mostly hidden by the bangs, like the reference) */}
-                {[1, -1].map((s) => (
-                  <mesh key={s} material={m.brow} position={[0.098 * s, 0.072, 0.225]} rotation={[0.25, 0.3 * s, 0.08 * s]}>
-                    <capsuleGeometry args={[0.007, 0.045, 4, 8]} />
-                  </mesh>
+                {([1, -1] as const).map((s) => (
+                  <group key={s} ref={s === 1 ? r.browL : r.browR}>
+                    <mesh material={m.brow} position={[0.098 * s, 0.072, 0.225]} rotation={[0.25, 0.3 * s, 0.08 * s]}>
+                      <capsuleGeometry args={[0.007, 0.045, 4, 8]} />
+                    </mesh>
+                  </group>
                 ))}
                 {/* small soft nose: a gentle bump in the same skin tone, read by shading only */}
                 <mesh material={m.skin} position={[0, -0.078, 0.221]} scale={[1.15, 0.8, 0.62]}>

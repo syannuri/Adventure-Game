@@ -23,7 +23,7 @@ const cinePos = new THREE.Vector3();
 
 export function FollowCamera({ introCenter = new THREE.Vector3(0, 1, -2) }: { introCenter?: THREE.Vector3 }) {
   const { camera, gl } = useThree();
-  const st = useRef({ init: false, snapped: false, frames: 0, target: new THREE.Vector3(), look: new THREE.Vector3() });
+  const st = useRef({ init: false, snapped: false, frames: 0, idle: 0, target: new THREE.Vector3(), look: new THREE.Vector3() });
 
   // ---- pointer orbit & zoom (attached to the canvas only, so UI buttons never rotate the camera)
   useEffect(() => {
@@ -92,12 +92,20 @@ export function FollowCamera({ introCenter = new THREE.Vector3(0, 1, -2) }: { in
     input.lookDelta.y = 0;
     input.zoomDelta = 0;
 
-    // gentle auto-follow behind Anett while moving forward-ish
+    // gentle auto-follow at a 3/4 angle (slightly to the side) so Anet's face shows more often
     const sinceLook = performance.now() - input.lastLookTime;
+    s.idle = player.speed < 0.15 && player.grounded ? s.idle + dt : 0;
     if (sinceLook > 1800 && player.speed > 1 && !g.dialogue) {
-      const behind = player.facing + Math.PI;
-      const d = angleDelta(cameraState.yaw, behind);
+      const side = angleDelta(player.facing + Math.PI, cameraState.yaw) >= 0 ? 1 : -1;
+      const threeQuarter = player.facing + Math.PI + 0.42 * side;
+      const d = angleDelta(cameraState.yaw, threeQuarter);
       if (Math.abs(d) < 2.4) cameraState.yaw += d * damp(0.55 * Math.min(1, player.speed / 4), dt);
+    } else if (sinceLook > 3000 && s.idle > 2.5 && !g.dialogue && !g.cinematic) {
+      // standing still: drift round to a front 3/4 view to show her face
+      const side = angleDelta(player.facing, cameraState.yaw) >= 0 ? 1 : -1;
+      const portrait = player.facing + 1.15 * side;
+      const d = angleDelta(cameraState.yaw, portrait);
+      cameraState.yaw += d * damp(0.35, dt);
     }
 
     // ---- follow target

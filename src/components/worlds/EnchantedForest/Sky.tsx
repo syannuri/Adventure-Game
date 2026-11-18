@@ -4,7 +4,10 @@ import * as THREE from 'three';
 import { mulberry32 } from '../../../utils/math';
 
 /** Stylized gradient sky dome with sun glow and slowly drifting puffy clouds. */
-export function Sky({ top = '#4f9fe0', horizon = '#ffe6c4', sunDir = new THREE.Vector3(0.45, 0.55, -0.7) }) {
+/** Golden-hour sun direction (shared by the sky glow and the sun light). */
+export const SUN_DIR = new THREE.Vector3(0.68, 0.42, -0.6).normalize();
+
+export function Sky({ top = '#4f9fe0', horizon = '#ffe6c4', sunDir = SUN_DIR }) {
   const mat = useMemo(
     () =>
       new THREE.ShaderMaterial({

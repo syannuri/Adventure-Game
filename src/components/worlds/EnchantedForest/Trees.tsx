@@ -67,7 +67,16 @@ function canopyVariants() {
     blob(1.1, 0.2, 3.7, 1.4, 24, 0.6),
     blob(1.1, -0.3, 3.8, -1.4, 25, 0.6),
   ])!;
-  return [v0, v1, v2];
+  // 3: tall oval crown (cypress-like)
+  const v3 = mergeGeometries([blob(1.15, 0, 3.6, 0, 31, 1.7), blob(0.85, 0.25, 5.1, 0.1, 32, 1.3), blob(0.8, -0.3, 2.9, 0.2, 33, 1.1)])!;
+  // 4: layered "cloud" crown (stacked fluffy tiers)
+  const v4 = mergeGeometries([
+    blob(1.75, 0, 3.0, 0, 41, 0.42),
+    blob(1.4, 0.2, 3.85, -0.15, 42, 0.45),
+    blob(1.0, -0.1, 4.6, 0.1, 43, 0.5),
+    blob(0.55, 0, 5.15, 0, 44, 0.65),
+  ])!;
+  return [v0, v1, v2, v3, v4];
 }
 
 function trunkGeometry() {
@@ -86,13 +95,13 @@ function trunkGeometry() {
   return mergeGeometries(roots)!;
 }
 
-const CANOPY_COLORS = ['#4fae55', '#3f9b4f', '#62b95a', '#2f8a55', '#57b086', '#7cc466'];
+const CANOPY_COLORS = ['#4fae55', '#3f9b4f', '#62b95a', '#2f8a55', '#57b086', '#7cc466', '#94c457', '#d0a84a'];
 
 export function Trees({ shadows }: { shadows: boolean }) {
   const trunkRef = useRef<THREE.InstancedMesh>(null!);
-  const canopyRefs = [useRef<THREE.InstancedMesh>(null!), useRef<THREE.InstancedMesh>(null!), useRef<THREE.InstancedMesh>(null!)];
+  const canopyRefs = [useRef<THREE.InstancedMesh>(null!), useRef<THREE.InstancedMesh>(null!), useRef<THREE.InstancedMesh>(null!), useRef<THREE.InstancedMesh>(null!), useRef<THREE.InstancedMesh>(null!)];
   const { trunk, canopies, trunkMat, canopyMat, byVariant } = useMemo(() => {
-    const byVariant: (typeof TREES)[] = [[], [], []];
+    const byVariant: (typeof TREES)[] = [[], [], [], [], []];
     TREES.forEach((t) => byVariant[t.variant].push(t));
     return {
       trunk: trunkGeometry(),

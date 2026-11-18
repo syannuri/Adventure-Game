@@ -143,7 +143,7 @@ src/
 - **Debug helpers.** `window.__anett` exposes the store, player and input for automated tests. Add `?capture` to
   the URL to keep the WebGL drawing buffer for screenshots, and `#closeup` for a close-up "photo mode" of Anet on
   the menu. **Character review mode:** `?view=face`, `?view=front`, `?view=side` or `?view=back` hides the menus
-  and shows Anet standing still from that angle, for comparing with the reference image.
+  and shows Anet standing still from that angle, for comparing with the reference image. Add `&pose=surprise` (or `celebrate`, `wave`, `dance`, `talk`) to review facial expressions.
 
 ## Testing
 

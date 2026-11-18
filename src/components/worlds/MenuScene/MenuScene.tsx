@@ -39,7 +39,7 @@ function MenuAnett() {
       t -= c.d;
     }
     if (overlay === 'about') state = 'dance';
-    if (REVIEW_VIEW) state = null;
+    if (REVIEW_VIEW) state = REVIEW_POSE;
     animator.update(rig.current, dt, { speed: 0, airborne: false, vy: 0, land: 0, action: state, overlay: 0, idleTime: REVIEW_VIEW ? 0 : 6 });
     root.current.rotation.y = REVIEW_VIEW ? 0 : Math.sin(clock.current * 0.3) * 0.25 + (state === 'dance' ? Math.sin(clock.current * 1.6) * 0.5 : 0);
   });
@@ -160,6 +160,8 @@ function MagicMap() {
 const closeup = typeof location !== 'undefined' && location.hash === '#closeup';
 /** Character review mode: ?view=face|front|side|back (menus hidden, Anett idles). */
 export const REVIEW_VIEW = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('view') : null;
+/** Optional pose for review mode: ?pose=surprise|celebrate|wave|dance|talk … */
+const REVIEW_POSE = (typeof location !== 'undefined' ? new URLSearchParams(location.search).get('pose') : null) as AnimState | null;
 const REVIEW_CAMS: Record<string, { pos: [number, number, number]; look: [number, number, number] }> = {
   face: { pos: [0.15, 1.2, 1.25], look: [0, 1.15, 0] },
   front: { pos: [0.4, 1.0, 3.0], look: [0, 0.68, 0] },

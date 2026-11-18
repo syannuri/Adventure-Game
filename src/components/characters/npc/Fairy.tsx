@@ -7,6 +7,7 @@ import { useGame } from '../../../systems/store';
 import { player } from '../../../systems/playerState';
 import { angleDelta, damp } from '../../../utils/math';
 import { Wand } from '../../gameplay/collectibles/Wand';
+import { glowTexture } from '../../effects/textures';
 
 function wingGeo(w: number, h: number) {
   const s = new THREE.Shape();
@@ -66,9 +67,13 @@ export function Fairy({ x, y, z }: { x: number; y: number; z: number }) {
   const happy = useGame((s) => s.level.stage === 'done');
 
   return (
-    <group ref={root} position={[x, y, z]}>
-      <pointLight color="#c9b6ff" intensity={3} distance={6} decay={2} position={[0, 0.4, 0.3]} />
-      <Sparkles count={26} scale={[1.6, 1.6, 1.6]} size={3} speed={0.6} color="#fff3b0" />
+    <group ref={root} position={[x, y, z]} scale={1.45}>
+      <pointLight color="#d4c2ff" intensity={6} distance={9} decay={2} position={[0, 0.4, 0.3]} />
+      <Sparkles count={30} scale={[1.6, 1.6, 1.6]} size={3} speed={0.6} color="#fff3b0" />
+      {/* soft magical aura so Lumi is easy to spot from far away */}
+      <sprite scale={1.6} position={[0, 0.1, 0]}>
+        <spriteMaterial map={glowTexture()} color="#d9c8ff" transparent opacity={0.55} depthWrite={false} blending={THREE.AdditiveBlending} />
+      </sprite>
       <group ref={body}>
         {/* dress */}
         <mesh position={[0, -0.12, 0]} castShadow>

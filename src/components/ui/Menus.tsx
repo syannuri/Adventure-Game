@@ -5,6 +5,7 @@ import { ACHIEVEMENTS } from '../../data/achievements';
 import { audio } from '../audio/audioEngine';
 import { AnettPortrait } from './Portraits';
 import { GameLogo } from './GameLogo';
+import { WorldArt } from './WorldArt';
 import { useT } from '../../i18n/useT';
 import { LANGS } from '../../i18n';
 
@@ -81,13 +82,6 @@ export function MainMenu() {
   );
 }
 
-const WORLD_ART: Record<string, string> = {
-  'enchanted-forest': '🌳',
-  'candy-village': '🍭',
-  'crystal-cave': '💎',
-  'ocean-kingdom': '🐢',
-  'sky-castle': '🏰',
-};
 
 export function WorldSelect() {
   const save = useGame((s) => s.save);
@@ -119,7 +113,9 @@ export function WorldSelect() {
                 {t.worldsScreen.world} {w.index}
               </span>
               {done && <span className="done">★</span>}
-              <div className="art passthrough">{WORLD_ART[w.id]}</div>
+              <div className="art passthrough">
+                <WorldArt id={w.id} size={96} />
+              </div>
               <h3>{txt.name}</h3>
               <p>{txt.mission}</p>
               {!w.built && <span className="lock">{t.worldsScreen.comingSoon}</span>}

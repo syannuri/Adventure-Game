@@ -181,7 +181,7 @@ function genTrees(): TreeDef[] {
   const tryAdd = (x: number, z: number, s: number, minGap: number) => {
     if (!clearAt(x, z, s * 0.6)) return;
     if (trees.some((t) => Math.hypot(t.x - x, t.z - z) < minGap * (t.s + s) * 0.5)) return;
-    trees.push({ x, z, s, hue: rnd(), variant: Math.floor(rnd() * 3), rot: rnd() * Math.PI * 2 });
+    trees.push({ x, z, s, hue: rnd(), variant: Math.floor(rnd() * 5), rot: rnd() * Math.PI * 2 });
   };
   // dense outer ring
   for (let i = 0; i < 260; i++) {
@@ -189,11 +189,20 @@ function genTrees(): TreeDef[] {
     const r = 34 + rnd() * 22;
     tryAdd(Math.cos(a) * r, Math.sin(a) * r, 1.1 + rnd() * 0.9, 3.4);
   }
-  // scattered interior trees
-  for (let i = 0; i < 220; i++) {
+  // natural groves: trees grow in clusters with open clearings between them
+  for (let c = 0; c < 18; c++) {
+    const a = rnd() * Math.PI * 2;
+    const r = 10 + rnd() * 24;
+    const cx = Math.cos(a) * r;
+    const cz = Math.sin(a) * r;
+    const n = 3 + Math.floor(rnd() * 4);
+    for (let k = 0; k < n * 4; k++) tryAdd(cx + (rnd() - 0.5) * 8, cz + (rnd() - 0.5) * 8, 0.7 + rnd() * 0.75, 3.4);
+  }
+  // a few lone trees in the clearings
+  for (let i = 0; i < 60; i++) {
     const a = rnd() * Math.PI * 2;
     const r = 8 + rnd() * 27;
-    tryAdd(Math.cos(a) * r, Math.sin(a) * r, 0.75 + rnd() * 0.7, 5.2);
+    tryAdd(Math.cos(a) * r, Math.sin(a) * r, 0.8 + rnd() * 0.6, 6.5);
   }
   return trees;
 }
@@ -228,6 +237,19 @@ export const FLOWERS = scatter(11, 900, 2, 40);
 export const GRASS = scatter(23, 5200, 0, 44, -0.4);
 export const MUSHROOMS = scatter(31, 70, 4, 36, 0.2);
 export const ROCKS = scatter(41, 26, 6, 38, 0.6);
+/** Ground detail: bushes, pebbles, ferns and fallen leaves. */
+export const BUSHES = scatter(53, 120, 5, 38, 0.5);
+export const PEBBLES = scatter(61, 320, 1, 40, -0.7);
+export const FERNS = scatter(67, 160, 4, 40, 0.3);
+export const LEAVES = scatter(71, 650, 1, 40, -1.2);
+
+/** Fallen logs (decoration + obstacles). */
+export const LOGS = [
+  { x: -23.5, z: -3.5, rot: 0.7, len: 3.2 },
+  { x: 21.5, z: 11.5, rot: -0.45, len: 2.8 },
+  { x: 7.5, z: -31, rot: 1.2, len: 3.4 },
+  { x: -29, z: 16, rot: 2.1, len: 2.6 },
+].filter((l) => clearAt(l.x, l.z, 0.5));
 
 /** Flower meadow patch around the flower star. */
 export const MEADOW = { x: -20.5, z: -19.5, r: 6 };
@@ -245,6 +267,8 @@ export function buildForestPhysics(): WorldPhysics {
     { x: WATERFALL.x - 4.2, z: WATERFALL.z - 0.6, r: 2.2 },
     { x: WATERFALL.x + 4.2, z: WATERFALL.z - 0.4, r: 2.2 },
     { x: LOG.x, z: LOG.z, r: 0.8 },
+    ...LOGS.flatMap((l) => [-0.3, 0.3].map((f) => ({ x: l.x + Math.cos(l.rot) * l.len * f, z: l.z - Math.sin(l.rot) * l.len * f, r: 0.55 }))),
+    ...BUSHES.filter((b) => b.s > 1.1).map((b) => ({ x: b.x, z: b.z, r: 0.45 * b.s })),
     ...TREASURES.map((t) => ({ x: t.x, z: t.z, r: 0.55 })),
     { x: FAIRY_POS.x, z: FAIRY_POS.z, r: 0.9 },
     { x: HOUSE.x, z: HOUSE.z, r: 1.55 },

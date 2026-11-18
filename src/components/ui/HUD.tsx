@@ -124,7 +124,7 @@ export function HUD() {
           </div>
           <div className="objective passthrough">
             <small>{t.hud.mission}</small>
-            {objText}
+            <span className="objective-text">{objText}</span>
           </div>
           <div className="hud-right">
             <button
