@@ -37,7 +37,7 @@ Requirements: Node 18+ (developed on Node 22). Runs in any modern browser with W
 | Action | Keyboard / mouse | Touch (phone / tablet) |
 | --- | --- | --- |
 | Move | WASD or arrow keys | Virtual joystick (bottom left) |
-| Run | Hold Shift, or press R to switch running on/off | 🏃 Run button, or push the joystick far |
+| Run | Hold Shift, or press R to switch running on/off | Push the joystick further: a little = walk, far = run (the ring turns orange) |
 | Jump | Space | Jump button |
 | Talk / interact | E (or Enter) | Action button (pulses when something is nearby) |
 | Look around | Drag with the mouse, wheel to zoom | Drag anywhere on the screen, pinch to zoom |

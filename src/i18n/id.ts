@@ -122,8 +122,8 @@ export const id: Dict = {
       ['Geser mouse', 'Melihat sekitar'],
     ],
     touchKeys: [
-      ['Joystick', 'Berjalan (dorong jauh untuk berlari)'],
-      ['🏃 Lari', 'Lari nyala / mati'],
+      ['Joystick (sedikit)', 'Berjalan'],
+      ['Joystick (dorong jauh)', 'Berlari 🏃'],
       ['Lompat', 'Melompat'],
       ['Aksi', 'Bicara / buka'],
       ['👋 ♪', 'Melambai / menari'],

@@ -56,8 +56,10 @@ export class AnettAnimator {
     // ---- airborne: jump (rising) -> fall (descending)
     if (inp.airborne) {
       const air = this.tmpB;
-      copyPose(air, POSES.jump(t, this.phase));
-      mixPose(air, air, POSES.fall(t, this.phase), smoothstep(1.5, -3.5, inp.vy));
+      // rising (arms up, knees tucked) -> apex (tuck, arms in a V) -> falling (arms out, legs reach down)
+      copyPose(air, POSES.apex(t, this.phase));
+      mixPose(air, air, POSES.jump(t, this.phase), smoothstep(0.8, 4.5, inp.vy));
+      mixPose(air, air, POSES.fall(t, this.phase), smoothstep(-0.8, -4.5, inp.vy));
       mixPose(loco, loco, air, 1);
     }
     if (inp.land > 0) mixPose(loco, loco, POSES.land(t, this.phase), inp.land);
@@ -85,7 +87,7 @@ export class AnettAnimator {
     }
 
     // ---- damp current toward target
-    const k = damp(inp.land > 0.3 ? 22 : 13, dt);
+    const k = damp(inp.land > 0.3 ? 22 : inp.airborne ? 17 : 13, dt);
     dampPose(this.current, this.target, k);
 
     // ---- blink

@@ -8,6 +8,8 @@ export const input = {
   run: false,
   /** Run toggle (R key or the on-screen Run button) – kid friendly, no need to hold a key */
   runToggle: false,
+  /** true while the touch joystick is steering (speed follows how far it is pushed) */
+  analog: false,
   /** Edge-triggered flags; consumers reset them after reading. */
   jumpPressed: false,
   interactPressed: false,
@@ -23,6 +25,17 @@ export const input = {
 
 const keys = new Set<string>();
 
+/** Joystick zones: below JOY_WALK the speed ramps up to walking; past JOY_RUN she runs. */
+export const JOY_WALK = 0.5;
+export const JOY_RUN = 0.62;
+
+/** Analog joystick -> speed factor: 0..1 = walking speeds, 1..2 = walk→run blend. */
+export function joystickSpeed(mag: number) {
+  if (mag <= JOY_WALK) return mag / JOY_WALK;
+  const t = Math.min(1, (mag - JOY_WALK) / (0.92 - JOY_WALK));
+  return 1 + t * t * (3 - 2 * t);
+}
+
 function recompute() {
   let x = 0;
   let y = 0;
@@ -34,7 +47,8 @@ function recompute() {
   if (tl > 0.05) {
     x = input.touchMove.x;
     y = input.touchMove.y;
-    input.run = input.runToggle || tl > 0.72;
+    input.run = input.runToggle || tl > JOY_RUN;
+    input.analog = true;
   } else {
     const len = Math.hypot(x, y);
     if (len > 0) {
@@ -42,6 +56,7 @@ function recompute() {
       y /= len;
     }
     input.run = input.runToggle || keys.has('ShiftLeft') || keys.has('ShiftRight');
+    input.analog = false;
   }
   input.move.x = x;
   input.move.y = y;

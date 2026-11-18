@@ -120,8 +120,8 @@ export const en = {
       ['Drag the mouse', 'Look around'],
     ] as [string, string][],
     touchKeys: [
-      ['Joystick', 'Walk (push far to run)'],
-      ['🏃 Run', 'Run on / off'],
+      ['Joystick (a little)', 'Walk'],
+      ['Joystick (push far)', 'Run 🏃'],
       ['Jump', 'Jump'],
       ['Action', 'Talk / open'],
       ['👋 ♪', 'Wave / dance'],
