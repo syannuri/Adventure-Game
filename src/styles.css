@@ -54,7 +54,7 @@ canvas { display: block; touch-action: none; }
 .panel { background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px; }
 
 /* ------------------------------------------------------------ main menu */
-.menu { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 5vh 16px 6vh; }
+.menu { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 5vh max(16px, env(safe-area-inset-right)) 6vh max(16px, env(safe-area-inset-left)); }
 /* ------------------------------------------------------------ title logo */
 .game-logo { display: flex; flex-direction: column; align-items: center; margin-top: 1vh; }
 .logo-word { position: relative; display: flex; gap: 0.03em; font-family: 'Luckiest Guy', 'Baloo 2', sans-serif; font-size: clamp(76px, min(15vw, 19vh), 150px); line-height: 1; padding: 0.08em 0.12em 0; }
@@ -103,7 +103,7 @@ canvas { display: block; touch-action: none; }
 .lang-switch button.on { background: var(--purple); color: white; }
 
 /* ------------------------------------------------------------ modal */
-.modal-bg { position: absolute; inset: 0; background: rgba(27, 20, 60, 0.45); display: grid; place-items: center; padding: 16px; backdrop-filter: blur(3px); animation: fade 0.25s ease; }
+.modal-bg { position: absolute; inset: 0; z-index: 20; background: rgba(27, 20, 60, 0.45); display: grid; place-items: center; padding: 16px; backdrop-filter: blur(3px); animation: fade 0.25s ease; }
 .modal { width: min(560px, 100%); max-height: 92vh; overflow: auto; animation: pop 0.35s cubic-bezier(0.2, 1.4, 0.4, 1); text-align: center; }
 .modal h2 { margin: 0 0 12px; font-size: 38px; color: var(--purple-dark); line-height: 1.1; }
 .modal p { font-size: 20px; line-height: 1.35; margin: 8px 0; color: var(--ink-soft); }
@@ -142,7 +142,7 @@ canvas { display: block; touch-action: none; }
 .world-card .art { display: flex; justify-content: center; margin: 0 0 8px; flex: 1; align-items: center; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, 0.15)); }
 
 /* ------------------------------------------------------------ HUD */
-.hud-top { position: absolute; top: max(12px, env(safe-area-inset-top)); left: 12px; right: 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.hud-top { position: absolute; top: max(12px, env(safe-area-inset-top)); left: max(12px, env(safe-area-inset-left)); right: max(12px, env(safe-area-inset-right)); display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .counters { display: flex; flex-direction: column; gap: 8px; }
 .counter { display: inline-flex; align-items: center; gap: 8px; background: var(--panel); border-radius: 999px; padding: 4px 16px 4px 6px; font-weight: 800; font-size: 22px; box-shadow: var(--shadow); min-width: 110px; }
 .counter .ico { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-size: 22px; color: white; }
@@ -195,7 +195,7 @@ canvas { display: block; touch-action: none; }
 @keyframes pulse { 50% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 210, 63, 0.35); } }
 
 /* ------------------------------------------------------------ controls help */
-.help-btn { position: absolute; left: 12px; top: 186px; width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer; font-family: inherit; font-size: 26px; font-weight: 800; background: var(--panel); color: var(--purple-dark); box-shadow: 0 4px 0 rgba(43, 35, 80, 0.18), var(--shadow); }
+.help-btn { position: absolute; left: max(12px, env(safe-area-inset-left)); top: 186px; width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer; font-family: inherit; font-size: 26px; font-weight: 800; background: var(--panel); color: var(--purple-dark); box-shadow: 0 4px 0 rgba(43, 35, 80, 0.18), var(--shadow); }
 .controls-card { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(420px, calc(100% - 32px)); max-height: calc(100% - 32px); overflow-y: auto; text-align: center; animation: pop 0.3s ease; padding: 18px 20px; }
 .controls-card h3 { margin: 0 0 10px; font-family: 'Luckiest Guy', 'Baloo 2', sans-serif; font-weight: 400; letter-spacing: 1px; font-size: 28px; color: var(--purple-dark); }
 .controls-grid { display: grid; gap: 6px; margin-bottom: 12px; text-align: left; }
@@ -269,4 +269,127 @@ canvas { display: block; touch-action: none; }
   .prompt { bottom: 200px; font-size: 18px; }
   .btn.big { font-size: 28px; padding: 14px 44px; }
   .hint { bottom: 200px; }
+}
+
+
+/* ======================================================================
+   Short landscape screens (phones held sideways: ~320–430 px tall).
+   Everything must fit on one screen without scrolling or overlapping.
+   ====================================================================== */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* --- main menu: logo + buttons stacked compactly on the left, island on the right */
+  .menu { padding-top: max(10px, env(safe-area-inset-top)); padding-bottom: max(10px, env(safe-area-inset-bottom)); justify-content: flex-start; gap: 8px; align-items: flex-start; }
+  .game-logo { margin-top: 0; }
+  .logo-word { font-size: clamp(44px, 14vh, 72px); }
+  .logo-ribbon { width: clamp(190px, 46vh, 250px); margin-top: -0.35em; }
+  .menu .menu-buttons { gap: 7px; align-items: flex-start; }
+  .menu .btn.big { font-size: 22px; padding: 6px 30px; min-height: 48px; }
+  .menu .menu-row { display: grid; grid-template-columns: auto auto; gap: 7px; justify-content: start; }
+  .menu .menu-row .btn { font-size: 14px; padding: 5px 14px; min-height: 36px; box-shadow: 0 4px 0 rgba(0, 0, 0, 0.15); }
+  .menu .menu-row .btn.ghost { box-shadow: 0 4px 0 rgba(43, 35, 80, 0.18); }
+  .star-badge { font-size: 13px; padding: 4px 12px; }
+  .star-badge .s { font-size: 16px; }
+  .menu-lang { top: max(10px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); }
+  .lang-switch button { font-size: 13px; padding: 4px 10px; }
+
+  /* --- buttons and modals */
+  .modal-bg { padding: 8px max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left)); }
+  .modal.panel { padding: 12px 18px; max-height: calc(100vh - 16px); width: min(620px, 100%); }
+  .modal h2 { font-size: 24px; margin-bottom: 4px; }
+  .modal p { font-size: 14px; margin: 4px 0; line-height: 1.3; }
+  .modal .btn, .modal .btn.big { font-size: 16px; padding: 6px 18px; min-height: 38px; }
+  .modal .menu-buttons { gap: 8px; margin-top: 8px !important; }
+  .modal .menu-row { gap: 8px; }
+  .setting { margin: 6px 0; font-size: 15px; gap: 10px; }
+  .setting label { flex-basis: 96px; }
+  .toggle button { font-size: 14px; padding: 5px; }
+  .modal .ach-list { margin-bottom: 8px; }
+  .modal .ach { font-size: 13px; padding: 2px 10px 2px 2px; }
+  .modal .ach i { width: 24px; height: 24px; }
+  .modal h3 { font-size: 15px; margin: 6px 0 4px !important; }
+  .about-portrait { width: 64px !important; height: 64px !important; margin-bottom: 2px !important; }
+
+  /* --- world map: all five cards in one row */
+  .worlds { padding: max(8px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left)); justify-content: flex-start; }
+  .worlds h1 { font-size: 30px; }
+  .worlds .star-badge { font-size: 12px; }
+  .world-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 8px 0; }
+  .world-card { min-height: 0; padding: 30px 8px 8px; border-radius: 16px; border-width: 3px; }
+  .world-card .num { font-size: 11px; top: 7px; left: 8px; padding: 1px 8px; }
+  .world-card .done { font-size: 20px; top: 4px; right: 6px; }
+  .world-card .art svg { width: 54px; height: 54px; }
+  .world-card h3 { font-size: 15px; }
+  .world-card p { display: none; }
+  .world-card .lock { font-size: 11px; margin-top: 4px; padding: 2px 6px; }
+  .worlds > .btn { font-size: 15px; padding: 5px 18px; min-height: 36px; }
+
+  /* --- HUD: counters in a row, smaller map, room for touch buttons */
+  .counters { flex-direction: row; gap: 6px; }
+  .counter { font-size: 15px; min-width: 0; padding: 2px 10px 2px 3px; gap: 5px; }
+  .counter .ico { width: 26px; height: 26px; font-size: 15px; }
+  .objective { font-size: 13px; padding: 4px 10px; max-width: 34vw; }
+  .objective small { font-size: 9px; }
+  .hud-right { flex-direction: row-reverse; align-items: flex-start; gap: 8px; }
+  .hud-right .icon-btn { width: 44px; height: 44px; font-size: 18px; }
+  .minimap { width: 84px; height: 84px; border-width: 3px; }
+  .help-btn { top: calc(max(12px, env(safe-area-inset-top)) + 40px); width: 38px; height: 38px; font-size: 20px; }
+  .toasts { top: 50px; }
+  .toast { padding: 4px 14px 4px 6px; }
+  .toast .badge { width: 32px; height: 32px; font-size: 18px; }
+  .toast span { font-size: 15px; }
+  .prompt { bottom: 14px; font-size: 15px; padding: 6px 14px; }
+  .hint { bottom: 140px; left: max(12px, env(safe-area-inset-left)); font-size: 14px; max-width: 240px; padding: 6px 10px; }
+  .world-banner { top: 16%; }
+
+  /* --- touch controls */
+  .joystick { width: 118px; height: 118px; left: max(16px, env(safe-area-inset-left)); bottom: max(14px, env(safe-area-inset-bottom)); }
+  .joystick .knob { width: 52px; height: 52px; margin: -26px 0 0 -26px; }
+  .touch-buttons { right: max(14px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); gap: 10px; }
+  .touch-buttons > div { gap: 8px !important; }
+  .tbtn.jump { width: 74px; height: 74px; font-size: 16px; }
+  .tbtn.act { width: 60px; height: 60px; font-size: 13px; }
+  .tbtn.small { width: 42px; height: 42px; font-size: 18px; }
+
+  /* --- controls help card: two columns */
+  .controls-card { padding: 10px 14px; max-height: calc(100vh - 16px); width: min(640px, calc(100% - 24px)); }
+  .controls-card h3 { font-size: 20px; margin-bottom: 6px; }
+  .controls-grid { grid-template-columns: 1fr 1fr; gap: 5px 14px; margin-bottom: 8px; }
+  .controls-row { grid-template-columns: minmax(96px, 48%) 1fr; font-size: 13px; gap: 6px; }
+  .kbd { font-size: 11px; padding: 1px 5px; }
+  .controls-card .btn { font-size: 15px; min-height: 36px; padding: 4px 22px; }
+
+  /* --- dialogue */
+  .dialogue { bottom: max(8px, env(safe-area-inset-bottom)); width: min(760px, calc(100% - 24px)); }
+  .portrait { width: 70px; height: 70px; border-width: 3px; }
+  .bubble { min-height: 0; padding: 8px 16px 12px; border-radius: 20px; }
+  .bubble .name { font-size: 13px; }
+  .bubble .line { font-size: 16px; }
+
+  /* --- level complete: title + stars on top, compact card below */
+  .complete { padding: max(6px, env(safe-area-inset-top)) 16px max(6px, env(safe-area-inset-bottom)); gap: 4px; justify-content: space-between; }
+  .complete h1 { font-size: clamp(30px, 11vh, 48px); }
+  .reward-stars span { font-size: clamp(28px, 10vh, 44px); }
+  .reward-stars { margin-top: 0; }
+  .complete .card { padding: 8px 16px; width: min(640px, 100%); }
+  .complete .card p { font-size: 13px !important; margin: 2px 0 !important; }
+  .complete .card p:first-child { font-size: 15px !important; }
+  .stats { margin: 4px 0; gap: 6px; }
+  .stat { font-size: 13px; padding: 2px 10px; }
+  .complete .ach-list { margin-bottom: 4px; gap: 4px; }
+  .complete .ach { font-size: 12px; padding: 1px 8px 1px 1px; }
+  .complete .ach i { width: 20px; height: 20px; font-size: 12px; }
+  .complete .card > div[style] { font-size: 11px !important; }
+  .complete .btn.big, .complete .btn { font-size: 16px; padding: 5px 22px; min-height: 38px; }
+}
+
+/* very short (iPhone SE sideways, ~320 px) */
+@media (orientation: landscape) and (max-height: 340px) {
+  .logo-word { font-size: 40px; }
+  .logo-ribbon { width: 170px; }
+  .menu .btn.big { min-height: 42px; font-size: 19px; }
+  .menu .menu-row .btn { min-height: 32px; font-size: 13px; }
+  .complete .card p:not(:first-child) { display: none; }
+  .tbtn.jump { width: 64px; height: 64px; }
+  .tbtn.act { width: 54px; height: 54px; }
+  .joystick { width: 104px; height: 104px; }
 }

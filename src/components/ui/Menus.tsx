@@ -207,7 +207,7 @@ export function AboutAnett({ onClose }: { onClose: () => void }) {
   return (
     <div className="modal-bg" onPointerDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal panel">
-        <div style={{ width: 120, height: 120, borderRadius: '50%', overflow: 'hidden', margin: '0 auto 8px', border: '5px solid white', boxShadow: 'var(--shadow)' }}>
+        <div className="about-portrait" style={{ width: 120, height: 120, borderRadius: '50%', overflow: 'hidden', margin: '0 auto 8px', border: '5px solid white', boxShadow: 'var(--shadow)' }}>
           <AnettPortrait />
         </div>
         <h2>{t.about.hi}</h2>
