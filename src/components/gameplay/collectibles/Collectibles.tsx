@@ -143,6 +143,7 @@ function Chest({ spot, total }: { spot: Spot; total: number }) {
         radius: 2.6,
         approach: 1.3,
         label: () => tr().prompts.openChest,
+        verb: 'open',
         enabled: () => !useGame.getState().level.treasures.includes(spot.id),
         onInteract: () => {
           const g = useGame.getState();

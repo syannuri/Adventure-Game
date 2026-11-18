@@ -68,7 +68,8 @@ export const id: Dict = {
     meetFairy: 'Temui peri Lumi di tengah hutan',
     collectStars: (n, t) => `Kumpulkan Bintang Harapan  ${n} / ${t}`,
     findWand: 'Ikuti cahaya untuk menemukan tongkat Lumi',
-    returnWand: 'Bawa tongkat ajaib kembali ke Lumi',
+    takeWand: 'Sentuh tongkatnya untuk mengambil!',
+    returnWand: 'Bawa tongkat ajaib kembali ke Lumi di tengah hutan',
     done: 'Hore! Kamu sudah menolong Lumi!',
   },
   hints: {
@@ -106,7 +107,7 @@ export const id: Dict = {
     ok: 'Oke ✓',
     speakers: { anett: 'Anet', lumi: 'Peri Lumi', pip: 'Kelinci Pip', olli: 'Burung Hantu Olli' },
   },
-  touch: { action: 'Aksi', talk: 'Bicara', jump: 'Lompat', wave: 'Lambai', dance: 'Menari', run: '🏃 Lari', runOn: '🏃 Berlari' },
+  touch: { action: 'Aksi', talk: 'Bicara', take: 'Ambil', open: 'Buka', jump: 'Lompat', wave: 'Lambai', dance: 'Menari', run: '🏃 Lari', runOn: '🏃 Berlari' },
   controls: {
     title: 'Cara bergerak',
     close: 'Mengerti!',

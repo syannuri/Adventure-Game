@@ -11,6 +11,8 @@ export interface Interactable {
   /** Anett walks until she is this close before interacting */
   approach: number;
   label: () => string;
+  /** label for the touch action button */
+  verb?: 'talk' | 'take' | 'open';
   enabled: () => boolean;
   onInteract: () => void;
 }

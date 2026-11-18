@@ -114,6 +114,7 @@ export function ForestQuest() {
         radius: 4.2,
         approach: 2.0,
         label: () => (st() === 'returnWand' ? tr().prompts.giveWand : tr().prompts.talkLumi),
+        verb: 'talk',
         enabled: () => st() !== 'done',
         onInteract: talkLumi,
       }),
@@ -144,6 +145,7 @@ export function ForestQuest() {
         radius: 3,
         approach: 1.2,
         label: () => tr().prompts.pickWand,
+        verb: 'take',
         enabled: () => st() === 'findWand',
         onInteract: pickUpWand,
       }),
@@ -154,6 +156,18 @@ export function ForestQuest() {
   useFrame(() => {
     const g = useGame.getState();
     if (g.paused || g.dialogue || g.cinematic) return;
+    // touching the wand picks it up, just like the Wishing Stars
+    if (g.level.stage === 'findWand' && Math.hypot(player.position.x - WAND_POS.x, player.position.z - WAND_POS.z) < 1.5) {
+      player.lookAt = { x: WAND_POS.x, z: WAND_POS.z };
+      pickUpWand();
+      return;
+    }
+    // walking up to Lumi with the wand hands it over automatically
+    if (g.level.stage === 'returnWand' && Math.hypot(player.position.x - FAIRY_POS.x, player.position.z - FAIRY_POS.z) < 2.6) {
+      player.lookAt = { x: FAIRY_POS.x, z: FAIRY_POS.z };
+      talkLumi();
+      return;
+    }
     if (!triggered.current && g.level.stage === 'collectStars' && g.level.stars.length >= STARS.length) {
       triggered.current = true;
       g.openDialogue(D().allStars, revealWand);

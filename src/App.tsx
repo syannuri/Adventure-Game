@@ -15,7 +15,7 @@ import { LevelComplete } from './components/ui/LevelComplete';
 import { ControlsCard } from './components/ui/ControlsCard';
 import { audio } from './components/audio/audioEngine';
 import { DICTS } from './i18n';
-import { player } from './systems/playerState';
+import { cameraState, player } from './systems/playerState';
 import { input } from './systems/input';
 import { groundHeightAt } from './systems/physics';
 
@@ -81,7 +81,7 @@ export default function App() {
 
   // expose a tiny debug/test hook (used by automated browser tests)
   useEffect(() => {
-    (window as unknown as { __anett: unknown }).__anett = { useGame, player, input, groundHeightAt };
+    (window as unknown as { __anett: unknown }).__anett = { useGame, player, input, groundHeightAt, cameraState };
   }, []);
 
   const playing = screen === 'playing';
