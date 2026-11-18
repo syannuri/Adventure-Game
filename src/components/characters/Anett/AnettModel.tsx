@@ -11,16 +11,33 @@
  *  - pink socks, tan hiking boots with dark-brown toe / heel, pink laces and collar
  *  - khaki adventure backpack with grey shoulder straps and sternum strap (Anet's explorer kit)
  *
- * PLACEHOLDER NOTICE: built from Three.js primitives + generated geometry until a sculpted & rigged
- * GLB (Blender / Mixamo pipeline) is available. The joint groups (hips, spine, neck, shoulders,
- * elbows, legs, knees) form the skeleton that AnettAnimations drives. Never change proportions or
+ * The sculpted HD model (AnettHD, public/models/anet.glb) is rendered on top of this rig: the joint
+ * groups below (hips, spine, neck, shoulders, elbows, legs, knees) are what AnettAnimations drives,
+ * and the HD skeleton copies them. The procedural meshes are the fallback while the GLB loads or if
+ * it can't. Never change proportions or
  * colours between scenes: every scene uses this one component and the palette below.
  */
-import { forwardRef, useImperativeHandle, useLayoutEffect, useMemo, useRef } from 'react';
+import { Component, Suspense, forwardRef, useCallback, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { RoundedBox } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { smoothstep } from '../../../utils/math';
+import { ANET_HD_ENABLED, AnettHD } from './AnettHD';
+
+/** If the HD model fails to load, quietly keep the procedural Anet. */
+class HDBoundary extends Component<{ children: React.ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch(e: unknown) {
+    console.warn('Anet HD model unavailable, using the procedural model', e);
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
 
 export const ANETT_PALETTE = {
   skin: '#f9dcc6', // fair, light warm-ivory (Indonesian / East-Asian fair skin)
@@ -461,6 +478,12 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
   });
 
   const movingHair = useMemo(() => createMovingHairMaterial(m.hair), [m.hair]);
+  // sculpted HD model (loads in the background; the procedural model shows until it's ready)
+  const [hdReady, setHdReady] = useState(false);
+  const onHdReady = useCallback((v: boolean) => setHdReady(v), []);
+  useLayoutEffect(() => {
+    if (r.hips.current) r.hips.current.visible = !hdReady;
+  });
   const headRef = useRef<THREE.Group>(null!);
   const hairSim = useRef({ init: false, tip: new THREE.Vector3(), vel: new THREE.Vector3(), prevAnchor: new THREE.Vector3(), speed: 0 });
 
@@ -618,9 +641,57 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
     </group>
   );
 
+  // the backpack body is shared by the procedural model and the HD model
+  const packBody = (
+    <>
+      <RoundedBox args={[0.3, 0.4, 0.16]} radius={0.06} smoothness={4} material={m.pack} />
+      <RoundedBox args={[0.31, 0.11, 0.165]} radius={0.05} smoothness={4} material={m.packDark} position={[0, 0.2, 0.012]} />
+      <RoundedBox args={[0.2, 0.17, 0.05]} radius={0.03} smoothness={3} material={m.packLight} position={[0, -0.07, -0.09]} />
+      <mesh material={m.strapDark} position={[0, -0.0, -0.117]}>
+        <boxGeometry args={[0.16, 0.006, 0.004]} />
+      </mesh>
+      {[1, -1].map((s) => (
+        <RoundedBox key={s} args={[0.055, 0.18, 0.1]} radius={0.025} smoothness={3} material={m.packLight} position={[0.165 * s, -0.08, 0.0]} />
+      ))}
+      {[-0.02, -0.12].map((y) => (
+        <mesh key={y} material={m.strap} position={[0, y, -0.12]}>
+          <boxGeometry args={[0.24, 0.018, 0.008]} />
+        </mesh>
+      ))}
+      {/* little orange loop */}
+      <mesh material={m.lace} position={[-0.11, 0.25, 0.0]} rotation={[0, Math.PI / 2, 0]}>
+        <torusGeometry args={[0.026, 0.009, 6, 14]} />
+      </mesh>
+    </>
+  );
+  const hdPack = (
+    <group>
+      <group scale={[0.92, 0.9, 0.92]}>{packBody}</group>
+      {/* shoulder straps for the sculpted body: over each shoulder and down the front */}
+      {[1, -1].map((s) => (
+        <group key={s}>
+          <mesh material={m.packDark} position={[0.122 * s, 0.205, 0.17]} rotation={[0.12, 0, 0]}>
+            <boxGeometry args={[0.036, 0.014, 0.21]} />
+          </mesh>
+          {/* front part runs from the shoulder out toward the armpit, beside the dress straps */}
+          <mesh material={m.packDark} position={[0.138 * s, 0.13, 0.322]} rotation={[-0.15, 0, 0.32 * s]}>
+            <boxGeometry args={[0.03, 0.13, 0.012]} />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+
   return (
     <group ref={r.root} scale={scale}>
       <group ref={r.body}>
+        {ANET_HD_ENABLED && (
+          <HDBoundary>
+            <Suspense fallback={null}>
+              <AnettHD joints={r as unknown as Record<string, React.RefObject<THREE.Object3D | null>>} rightHandItem={hdReady ? rightHandItem : null} onReady={onHdReady} backpack={hdPack} />
+            </Suspense>
+          </HDBoundary>
+        )}
         <group ref={r.hips} position={[0, 0.535, 0]}>
           {/* corduroy pinafore skirt (flared, ends mid-thigh) with two patch pockets */}
           <mesh geometry={geo.skirt} material={m.overall} position={[0, -0.04, 0]} />
@@ -667,26 +738,7 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
             ))}
 
             {/* big khaki hiking backpack */}
-            <group position={[0, 0.13, -0.235]}>
-              <RoundedBox args={[0.3, 0.4, 0.16]} radius={0.06} smoothness={4} material={m.pack} />
-              <RoundedBox args={[0.31, 0.11, 0.165]} radius={0.05} smoothness={4} material={m.packDark} position={[0, 0.2, 0.012]} />
-              <RoundedBox args={[0.2, 0.17, 0.05]} radius={0.03} smoothness={3} material={m.packLight} position={[0, -0.07, -0.09]} />
-              <mesh material={m.strapDark} position={[0, -0.0, -0.117]}>
-                <boxGeometry args={[0.16, 0.006, 0.004]} />
-              </mesh>
-              {[1, -1].map((s) => (
-                <RoundedBox key={s} args={[0.055, 0.18, 0.1]} radius={0.025} smoothness={3} material={m.packLight} position={[0.165 * s, -0.08, 0.0]} />
-              ))}
-              {[-0.02, -0.12].map((y) => (
-                <mesh key={y} material={m.strap} position={[0, y, -0.12]}>
-                  <boxGeometry args={[0.24, 0.018, 0.008]} />
-                </mesh>
-              ))}
-              {/* little orange loop */}
-              <mesh material={m.lace} position={[-0.11, 0.25, 0.0]} rotation={[0, Math.PI / 2, 0]}>
-                <torusGeometry args={[0.026, 0.009, 6, 14]} />
-              </mesh>
-            </group>
+            <group position={[0, 0.13, -0.235]}>{packBody}</group>
             {/* shoulder straps over the shoulders and down the front */}
             {[1, -1].map((s) => (
               <group key={s}>
@@ -717,7 +769,7 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
             </mesh>
 
             <Arm side={1} sref={r.shoulderL} eref={r.elbowL} />
-            <Arm side={-1} sref={r.shoulderR} eref={r.elbowR} item={rightHandItem} />
+            <Arm side={-1} sref={r.shoulderR} eref={r.elbowR} item={hdReady ? null : rightHandItem} />
 
             {/* neck + head (head slightly oversized for the chibi look) */}
             <group ref={r.neck} position={[0, 0.315, 0]}>

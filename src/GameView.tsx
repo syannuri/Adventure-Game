@@ -18,6 +18,10 @@ import { cameraState, player } from './systems/playerState';
 import { input } from './systems/input';
 import { groundHeightAt } from './systems/physics';
 import { audio } from './components/audio/audioEngine';
+import { preloadAnettHD } from './components/characters/Anett/AnettHD';
+
+// start downloading the sculpted Anet model as soon as the 3D engine loads
+preloadAnettHD();
 
 /** `?capture` keeps the drawing buffer so automated screenshots never catch an empty frame. */
 const CAPTURE = typeof location !== 'undefined' && new URLSearchParams(location.search).has('capture');
