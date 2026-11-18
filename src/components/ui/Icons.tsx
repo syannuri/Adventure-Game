@@ -71,9 +71,13 @@ const PATHS: Record<IconName, ReactNode> = {
   ),
   jump: (
     <>
-      <path d="M12 15.5V4" />
-      <path d="m6.5 9.5 5.5-5.5 5.5 5.5" />
-      <path d="M5 20c2-1.6 3.6-1.6 5.6 0s3.6 1.6 5.6 0 2.4-1 2.8-.6" />
+      {/* a person jumping: head, arms up in a V, body, tucked knees, motion lines below */}
+      <circle cx="12" cy="4.3" r="2.1" fill="currentColor" stroke="none" />
+      <path d="M6.2 3.6 9.3 8.2h5.4l3.1-4.6" />
+      <path d="M12 8.2v5.1" />
+      <path d="M12 13.3 8.6 15l1.6 3.2" />
+      <path d="M12 13.3l3.4 1.7-1.6 3.2" />
+      <path d="M8.2 21.2h2.4M13.4 21.2h2.4" strokeWidth={1.8} opacity={0.75} />
     </>
   ),
   talk: (

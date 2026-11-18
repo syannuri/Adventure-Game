@@ -93,7 +93,7 @@ export function TouchControls() {
             <Icon name={prompt ? (verb === 'take' ? 'take' : verb === 'open' ? 'open' : 'talk') : 'sparkle'} size={30} />
           </button>
           <button className="tbtn jump" aria-label={t.touch.jump} onPointerDown={press(() => (input.jumpPressed = true))}>
-            <Icon name="jump" size={36} />
+            <Icon name="jump" size={42} />
           </button>
         </div>
       </div>
