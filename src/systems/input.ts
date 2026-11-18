@@ -6,6 +6,8 @@ export const input = {
   /** Movement vector in screen space: x = right, y = forward. Length 0..1 */
   move: { x: 0, y: 0 },
   run: false,
+  /** Run toggle (R key or the on-screen Run button) – kid friendly, no need to hold a key */
+  runToggle: false,
   /** Edge-triggered flags; consumers reset them after reading. */
   jumpPressed: false,
   interactPressed: false,
@@ -32,17 +34,31 @@ function recompute() {
   if (tl > 0.05) {
     x = input.touchMove.x;
     y = input.touchMove.y;
-    input.run = tl > 0.85;
+    input.run = input.runToggle || tl > 0.72;
   } else {
     const len = Math.hypot(x, y);
     if (len > 0) {
       x /= len;
       y /= len;
     }
-    input.run = keys.has('ShiftLeft') || keys.has('ShiftRight');
+    input.run = input.runToggle || keys.has('ShiftLeft') || keys.has('ShiftRight');
   }
   input.move.x = x;
   input.move.y = y;
+}
+
+/** Switch running on/off (R key / Run button). Notifies listeners so the UI can show the state. */
+export function toggleRun(on = !input.runToggle) {
+  input.runToggle = on;
+  recompute();
+  runListeners.forEach((f) => f(on));
+}
+const runListeners = new Set<(on: boolean) => void>();
+export function onRunToggle(f: (on: boolean) => void) {
+  runListeners.add(f);
+  return () => {
+    runListeners.delete(f);
+  };
 }
 
 export function setTouchMove(x: number, y: number) {
@@ -72,6 +88,7 @@ export function installKeyboard() {
       input.advancePressed = true;
     }
     if (e.code === 'KeyF') input.emote = 'wave';
+    if (e.code === 'KeyR') toggleRun();
     if (e.code === 'KeyG') input.emote = 'dance';
     if (e.code.startsWith('Arrow')) e.preventDefault();
     recompute();

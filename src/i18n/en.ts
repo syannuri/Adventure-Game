@@ -35,7 +35,7 @@ export const en = {
     fast: 'Fast',
     language: '🌏 Language',
     controls:
-      'Keyboard: WASD / arrows to move · Shift to run · Space to jump · E to talk · F wave · G dance · Esc pause · drag the mouse to look around',
+      'Keyboard: WASD / arrows to move · Shift (hold) or R to run · Space to jump · E to talk · F wave · G dance · Esc pause · drag the mouse to look around',
     done: 'Done',
     reset: 'Reset progress',
     resetConfirm: 'Tap again to clear stars and badges',
@@ -104,7 +104,30 @@ export const en = {
     ok: 'OK ✓',
     speakers: { anett: 'Anet', lumi: 'Lumi the Fairy', pip: 'Pip the Rabbit', olli: 'Olli the Owl' },
   },
-  touch: { action: 'Action', talk: 'Talk', jump: 'Jump', wave: 'Wave', dance: 'Dance' },
+  touch: { action: 'Action', talk: 'Talk', jump: 'Jump', wave: 'Wave', dance: 'Dance', run: '🏃 Run', runOn: '🏃 Running' },
+  controls: {
+    title: 'How to move',
+    close: 'Got it!',
+    help: 'Controls',
+    runningOn: 'Running ON',
+    keys: [
+      ['W A S D / ← ↑ → ↓', 'Walk'],
+      ['Shift (hold) or R', 'Run'],
+      ['Space', 'Jump'],
+      ['E', 'Talk / open'],
+      ['F', 'Wave'],
+      ['G', 'Dance'],
+      ['Drag the mouse', 'Look around'],
+    ] as [string, string][],
+    touchKeys: [
+      ['Joystick', 'Walk (push far to run)'],
+      ['🏃 Run', 'Run on / off'],
+      ['Jump', 'Jump'],
+      ['Action', 'Talk / open'],
+      ['👋 ♪', 'Wave / dance'],
+      ['Drag the screen', 'Look around'],
+    ] as [string, string][],
+  },
   story: {
     pages: [
       "One rainy afternoon, Anet found Grandma's old treasure box in the attic…",

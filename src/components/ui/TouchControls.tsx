@@ -1,6 +1,6 @@
 /** On-screen virtual joystick, jump, action and emote buttons for phones and tablets. */
 import { useEffect, useRef, useState } from 'react';
-import { input, setTouchMove } from '../../systems/input';
+import { input, onRunToggle, setTouchMove, toggleRun } from '../../systems/input';
 import { useGame } from '../../systems/store';
 import { useT } from '../../i18n/useT';
 
@@ -19,6 +19,8 @@ export function TouchControls() {
   const knob = useRef<HTMLDivElement>(null);
   const active = useRef<number | null>(null);
   const prompt = useGame((s) => s.prompt);
+  const [running, setRunning] = useState(input.runToggle);
+  useEffect(() => onRunToggle(setRunning), []);
   const t = useT();
 
   const update = (cx: number, cy: number) => {
@@ -73,6 +75,9 @@ export function TouchControls() {
           </button>
           <button className="tbtn small" aria-label={t.touch.dance} onPointerDown={press(() => (input.emote = 'dance'))}>
             ♪
+          </button>
+          <button className={'tbtn run' + (running ? ' on' : '')} aria-pressed={running} onPointerDown={press(() => toggleRun())}>
+            {running ? t.touch.runOn : t.touch.run}
           </button>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center' }}>

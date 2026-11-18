@@ -194,6 +194,20 @@ canvas { display: block; touch-action: none; }
 .tbtn.small { width: 54px; height: 54px; font-size: 22px; background: linear-gradient(180deg, #ffa6cf, var(--pink)); }
 @keyframes pulse { 50% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 210, 63, 0.35); } }
 
+/* ------------------------------------------------------------ controls help */
+.help-btn { position: absolute; left: 12px; top: 186px; width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer; font-family: inherit; font-size: 26px; font-weight: 800; background: var(--panel); color: var(--purple-dark); box-shadow: 0 4px 0 rgba(43, 35, 80, 0.18), var(--shadow); }
+.controls-card { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(420px, calc(100% - 32px)); max-height: calc(100% - 32px); overflow-y: auto; text-align: center; animation: pop 0.3s ease; padding: 18px 20px; }
+.controls-card h3 { margin: 0 0 10px; font-family: 'Luckiest Guy', 'Baloo 2', sans-serif; font-weight: 400; letter-spacing: 1px; font-size: 28px; color: var(--purple-dark); }
+.controls-grid { display: grid; gap: 6px; margin-bottom: 12px; text-align: left; }
+.controls-row { display: grid; grid-template-columns: minmax(120px, 46%) 1fr; gap: 10px; align-items: center; font-size: 17px; font-weight: 700; }
+.kbd { background: #efe9ff; border: 2px solid #d8ccff; border-bottom-width: 4px; border-radius: 10px; padding: 2px 8px; font-size: 15px; font-weight: 800; color: var(--purple-dark); text-align: center; }
+.run-badge { position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--panel); border-radius: 999px; padding: 6px 16px; font-weight: 800; font-size: 17px; box-shadow: var(--shadow); color: #c45a12; }
+.tbtn.run { width: 64px; height: 44px; border-radius: 22px; font-size: 13px; background: linear-gradient(180deg, #8fe3a8, #3fbf6a); }
+.tbtn.run.on { background: linear-gradient(180deg, #ffb36b, #ff7b00); box-shadow: 0 0 0 4px rgba(255, 123, 0, 0.35), var(--shadow); }
+@media (max-width: 640px) {
+  .help-btn { top: 152px; width: 42px; height: 42px; font-size: 22px; }
+}
+
 /* ------------------------------------------------------------ level complete */
 .complete { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 8px; padding: 4vh 16px 3vh; overflow-y: auto; background: linear-gradient(180deg, rgba(27, 20, 60, 0) 30%, rgba(27, 20, 60, 0.55)); }
 .complete .head { text-align: center; }

@@ -37,7 +37,7 @@ export const id: Dict = {
     fast: 'Cepat',
     language: '🌏 Bahasa',
     controls:
-      'Keyboard: WASD / panah untuk berjalan · Shift untuk berlari · Spasi untuk melompat · E untuk bicara · F melambai · G menari · Esc jeda · geser mouse untuk melihat sekitar',
+      'Keyboard: WASD / panah untuk berjalan · Shift (tahan) atau R untuk berlari · Spasi untuk melompat · E untuk bicara · F melambai · G menari · Esc jeda · geser mouse untuk melihat sekitar',
     done: 'Selesai',
     reset: 'Mulai dari awal',
     resetConfirm: 'Tekan lagi untuk menghapus bintang & lencana'
@@ -106,7 +106,30 @@ export const id: Dict = {
     ok: 'Oke ✓',
     speakers: { anett: 'Anet', lumi: 'Peri Lumi', pip: 'Kelinci Pip', olli: 'Burung Hantu Olli' },
   },
-  touch: { action: 'Aksi', talk: 'Bicara', jump: 'Lompat', wave: 'Lambai', dance: 'Menari' },
+  touch: { action: 'Aksi', talk: 'Bicara', jump: 'Lompat', wave: 'Lambai', dance: 'Menari', run: '🏃 Lari', runOn: '🏃 Berlari' },
+  controls: {
+    title: 'Cara bergerak',
+    close: 'Mengerti!',
+    help: 'Kontrol',
+    runningOn: 'Lari AKTIF',
+    keys: [
+      ['W A S D / ← ↑ → ↓', 'Berjalan'],
+      ['Shift (tahan) atau R', 'Berlari'],
+      ['Spasi', 'Melompat'],
+      ['E', 'Bicara / buka'],
+      ['F', 'Melambai'],
+      ['G', 'Menari'],
+      ['Geser mouse', 'Melihat sekitar'],
+    ],
+    touchKeys: [
+      ['Joystick', 'Berjalan (dorong jauh untuk berlari)'],
+      ['🏃 Lari', 'Lari nyala / mati'],
+      ['Lompat', 'Melompat'],
+      ['Aksi', 'Bicara / buka'],
+      ['👋 ♪', 'Melambai / menari'],
+      ['Geser layar', 'Melihat sekitar'],
+    ],
+  },
   story: {
     pages: [
       'Suatu sore yang hujan, Anet menemukan peti harta tua milik Nenek di loteng…',
