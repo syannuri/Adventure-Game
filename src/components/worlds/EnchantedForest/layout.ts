@@ -286,5 +286,5 @@ export function buildForestPhysics(): WorldPhysics {
     { x: HOUSE.x, z: HOUSE.z, r: 1.55 },
     { x: OWL_POS.x, z: OWL_POS.z, r: 0.6 },
   ];
-  return { height: terrainHeight, colliders, platforms: PLATFORMS, boundaryRadius: 40 };
+  return { height: terrainHeight, colliders, platforms: PLATFORMS, boundaryRadius: 40, surfaceAt: (x, z) => (distToPath(x, z) < 1.6 ? 'dirt' : 'grass') };
 }
