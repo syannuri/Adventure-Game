@@ -10,9 +10,9 @@ import { Icon } from './Icons';
 import { useT } from '../../i18n/useT';
 import { LANGS } from '../../i18n';
 
+// the press sound is played globally on pointerdown (App.tsx); here we only make sure audio is unlocked
 const click = () => {
   audio.unlock();
-  audio.sfx('click');
 };
 
 /**
@@ -131,7 +131,7 @@ export function WorldSelect() {
               className={'world-card' + (w.built ? '' : ' locked')}
               style={{ background: `linear-gradient(160deg, ${w.colors[0]}, ${w.colors[1]})` }}
               onClick={() => {
-                if (!w.built) return audio.sfx('pop', { pitch: 0.7 });
+                if (!w.built) return;
                 click();
                 startWorld(w.id);
               }}

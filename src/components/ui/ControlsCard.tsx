@@ -5,7 +5,6 @@
 import { useEffect, useState } from 'react';
 import { useT } from '../../i18n/useT';
 import { input, onRunToggle } from '../../systems/input';
-import { audio } from '../audio/audioEngine';
 import { Icon, type IconName } from './Icons';
 
 const KEY_ICONS: Record<string, IconName> = { jump: 'jump', action: 'sparkle', wave: 'wave', music: 'music' };
@@ -25,7 +24,6 @@ export function ControlsCard({ isTouch }: { isTouch: boolean }) {
   const [running, setRunning] = useState(input.runToggle);
   useEffect(() => onRunToggle(setRunning), []);
   const close = () => {
-    audio.sfx('click');
     setOpen(false);
     try {
       localStorage.setItem(SEEN_KEY, '1');
@@ -37,7 +35,7 @@ export function ControlsCard({ isTouch }: { isTouch: boolean }) {
   return (
     <>
       {running && !isTouch && <div className="run-badge passthrough">🏃 {t.controls.runningOn}</div>}
-      <button className="help-btn" aria-label={t.controls.help} onClick={() => (audio.sfx('click'), setOpen(!open))}>
+      <button className="help-btn" aria-label={t.controls.help} onClick={() => setOpen(!open)}>
         <Icon name="help" size={24} />
       </button>
       {open && (

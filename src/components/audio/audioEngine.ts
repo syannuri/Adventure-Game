@@ -19,7 +19,9 @@ export type SfxName =
   | 'achievement'
   | 'magic'
   | 'chest'
-  | 'whoosh';
+  | 'whoosh'
+  | 'tap'
+  | 'tapPlay';
 
 interface Song {
   bpm: number;
@@ -426,6 +428,17 @@ class AudioEngine {
         break;
       case 'click':
         this.tone('triangle', 660 * p, 880 * p, t, 0.08, 0.1 * v, out);
+        break;
+      case 'tap':
+        // soft bubbly "pop" with a tiny bell on top
+        this.tone('sine', 360 * p, 820 * p, t, 0.09, 0.16 * v, out);
+        this.bell(mtof(88) * p, t + 0.035, 0.035 * v, out);
+        break;
+      case 'tapPlay':
+        // magical rising chime for the big Play button
+        [72, 76, 79, 84].forEach((m, i) => this.bell(mtof(m) * p, t + i * 0.05, 0.09 * v, out));
+        this.tone('sine', 300 * p, 900 * p, t, 0.14, 0.12 * v, out);
+        this.noiseHit(t, 0.35, 8000, 0.03 * v, out);
         break;
       case 'achievement':
         [67, 72, 76, 79, 84].forEach((m, i) => this.pluck(mtof(m), t + i * 0.09, 0.14 * v, out));
