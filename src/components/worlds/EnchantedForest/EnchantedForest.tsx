@@ -2,14 +2,14 @@
  * WORLD 1 – ENCHANTED FOREST (playable vertical slice)
  * Assembles environment, lighting, characters, collectibles, quest and ambience.
  */
-import { useEffect, useMemo, useRef } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
-import * as THREE from 'three';
+import { useEffect, useMemo } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { Environment, Lightformer, Sparkles } from '@react-three/drei';
 import { setWorldPhysics } from '../../../systems/physics';
 import { buildForestPhysics, COINS, FAIRY_POS, OWL_POS, RABBIT_POS, SPAWN, STARS, TREASURES, WATERFALL, terrainHeight } from './layout';
 import { Terrain } from './Terrain';
-import { SUN_DIR, Sky } from './Sky';
+import { Sky } from './Sky';
+import { RimLight, SunLight } from '../shared/Lights';
 import { Trees } from './Trees';
 import { Vegetation } from './Vegetation';
 import { GroundDetail } from './GroundDetail';
@@ -31,65 +31,6 @@ import { audio } from '../../audio/audioEngine';
 import { useGame } from '../../../systems/store';
 
 const FOG = '#dfe4c6'; // warm golden-hour haze
-
-function SunLight({ shadows, size }: { shadows: boolean; size: number }) {
-  const light = useRef<THREE.DirectionalLight>(null!);
-  const target = useMemo(() => new THREE.Object3D(), []);
-  useFrame(() => {
-    const p = player.position;
-    // snap to texel grid to avoid shadow shimmering
-    const sx = Math.round(p.x);
-    const sz = Math.round(p.z);
-    light.current.position.set(sx + SUN_DIR.x * 30, p.y + SUN_DIR.y * 30, sz + SUN_DIR.z * 30);
-    target.position.set(sx, p.y, sz);
-    target.updateMatrixWorld();
-  });
-  return (
-    <>
-      <primitive object={target} />
-      <directionalLight
-        ref={light}
-        target={target}
-        color="#ffdcae"
-        intensity={2.9}
-        castShadow={shadows}
-        shadow-mapSize={[size, size]}
-        shadow-bias={-0.0004}
-        shadow-normalBias={0.03}
-        shadow-camera-left={-24}
-        shadow-camera-right={24}
-        shadow-camera-top={24}
-        shadow-camera-bottom={-24}
-        shadow-camera-near={1}
-        shadow-camera-far={70}
-      />
-    </>
-  );
-}
-
-/**
- * Rim light: a warm light placed behind Anet (relative to the camera) that outlines her silhouette
- * so she always reads clearly against the busy forest.
- */
-function RimLight() {
-  const light = useRef<THREE.DirectionalLight>(null!);
-  const target = useMemo(() => new THREE.Object3D(), []);
-  const { camera } = useThree();
-  const dir = useMemo(() => new THREE.Vector3(), []);
-  useFrame(() => {
-    const p = player.position;
-    dir.set(p.x - camera.position.x, 0, p.z - camera.position.z).normalize();
-    light.current.position.set(p.x + dir.x * 6, p.y + 3.5, p.z + dir.z * 6);
-    target.position.set(p.x, p.y + 0.8, p.z);
-    target.updateMatrixWorld();
-  });
-  return (
-    <>
-      <primitive object={target} />
-      <directionalLight ref={light} target={target} color="#ffe7c4" intensity={1.6} />
-    </>
-  );
-}
 
 function Ambience() {
   useEffect(() => {
@@ -118,7 +59,7 @@ export function EnchantedForest() {
       <hemisphereLight args={['#cfe2ff', '#6b8a45', 0.95]} />
       <RimLight />
       <ambientLight intensity={0.18} />
-      <SunLight shadows size={high ? 2048 : 1024} />
+      <SunLight shadows size={high ? 2048 : 1024} color="#ffdcae" />
       <Environment resolution={64} frames={1} environmentIntensity={0.55}>
         <Lightformer form="rect" intensity={2} color="#fff2d8" position={[5, 8, -5]} scale={[10, 10, 1]} />
         <Lightformer form="rect" intensity={1} color="#bfe3ff" position={[-6, 4, 6]} scale={[10, 6, 1]} />

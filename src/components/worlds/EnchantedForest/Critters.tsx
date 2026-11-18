@@ -2,8 +2,9 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { POND, WATER_LEVEL, terrainHeight } from './layout';
+import { POND, WATER_LEVEL } from './layout';
 import { mulberry32 } from '../../../utils/math';
+import { getWorldPhysics } from '../../../systems/physics';
 
 const WING_COLORS = ['#ffb347', '#ff8fc8', '#9fd2ff', '#c8a2ff', '#fff07a'];
 
@@ -37,7 +38,7 @@ export function Butterflies({ count = 16 }) {
       const a = t * f.sp + f.ph;
       const x = f.cx + Math.sin(a) * f.rx;
       const z = f.cz + Math.sin(a * 1.7) * f.rz;
-      const y = terrainHeight(x, z) + 1.0 + Math.sin(a * 3.1) * 0.35;
+      const y = getWorldPhysics().height(x, z) + 1.0 + Math.sin(a * 3.1) * 0.35; // works in every world
       const dx = Math.cos(a) * f.rx;
       const dz = Math.cos(a * 1.7) * 1.7 * f.rz;
       b.position.set(x, y, z);

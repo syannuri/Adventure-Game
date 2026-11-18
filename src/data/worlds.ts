@@ -25,7 +25,7 @@ export const WORLDS: WorldInfo[] = [
     name: 'Candy Village',
     tagline: 'Lollipop trees and chocolate rivers.',
     mission: 'Help the candy makers find missing ingredients.',
-    built: false,
+    built: true,
     colors: ['#ff9ccf', '#c2508f'],
   },
   {

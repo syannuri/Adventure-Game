@@ -7,11 +7,14 @@ export type Screen = 'menu' | 'story' | 'worlds' | 'playing' | 'complete';
 export type Overlay = null | 'settings' | 'about';
 
 export interface DialogueLine {
-  speaker: 'anett' | 'lumi' | 'pip' | 'olli';
+  speaker: 'anett' | 'lumi' | 'pip' | 'olli' | 'koko';
   text: string;
 }
 
 export type ForestStage = 'meetFairy' | 'collectStars' | 'findWand' | 'returnWand' | 'done';
+/** World 2 (Candy Village) mission stages. */
+export type CandyStage = 'meetChef' | 'collectIngredients' | 'returnIngredients' | 'sortCandy' | 'done';
+export type Stage = ForestStage | CandyStage;
 
 export type CinematicKind = 'intro' | 'reveal' | 'finale';
 
@@ -25,14 +28,18 @@ export interface Cinematic {
 export type AnettEmote = 'wave' | 'dance' | 'celebrate' | 'surprise' | 'collect' | 'talk';
 
 interface LevelState {
+  /** quest items: Wishing Stars (World 1) or candy ingredients (World 2) */
   stars: string[];
   coins: string[];
   treasures: string[];
-  stage: ForestStage;
+  stage: Stage;
   hasWand: boolean;
   /** colour flower puzzle in front of the wand log: current colour index of each flower */
   flowers: number[];
   puzzleSolved: boolean;
+  /** candy sorting puzzle (World 2): candies already in the right jar, and the candy Anet is carrying */
+  sorted: string[];
+  holding: string | null;
   startedAt: number;
   lastProgressAt: number;
 }
@@ -62,7 +69,7 @@ interface GameState {
   setPaused: (p: boolean) => void;
   startWorld: (id: string) => void;
   collect: (kind: 'stars' | 'coins' | 'treasures', id: string) => void;
-  setStage: (s: ForestStage) => void;
+  setStage: (s: Stage) => void;
   setHasWand: (v: boolean) => void;
   openDialogue: (lines: DialogueLine[], onComplete?: () => void) => void;
   advanceDialogue: () => void;
@@ -78,14 +85,16 @@ interface GameState {
   resetProgress: () => void;
 }
 
-const freshLevel = (): LevelState => ({
+const freshLevel = (worldId: string | null = null): LevelState => ({
   stars: [],
   coins: [],
   treasures: [],
-  stage: 'meetFairy',
+  stage: worldId === 'candy-village' ? 'meetChef' : 'meetFairy',
   hasWand: false,
   flowers: [0, 0, 1],
   puzzleSolved: false,
+  sorted: [],
+  holding: null,
   startedAt: performance.now(),
   lastProgressAt: performance.now(),
 });
@@ -127,14 +136,14 @@ export const useGame = create<GameState>((set, get) => ({
       paused: false,
       runId: s.runId + 1,
       worldReady: false,
-      level: freshLevel(),
+      level: freshLevel(id),
       dialogue: null,
       prompt: null,
       emote: null,
       newAchievements: [],
       cinematic: { kind: 'intro', start: -1, duration: 5200 }, // starts on the first rendered frame
     }));
-    audio.playMusic('forest');
+    audio.playMusic(id === 'candy-village' ? 'candy' : 'forest');
   },
 
   collect: (kind, id) => {

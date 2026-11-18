@@ -77,7 +77,11 @@ export function MainMenu() {
             const g = useGame.getState();
             if (g.screen !== 'menu') return;
             if (!g.save.seenIntro) g.setScreen('story');
-            else g.startWorld('enchanted-forest');
+            else {
+              // continue the adventure: the first built world that isn't finished yet
+              const next = WORLDS.find((w) => w.built && !g.save.completedWorlds.includes(w.id)) ?? WORLDS[0];
+              g.startWorld(next.id);
+            }
           })}
         >
           <Icon name="play" size={30} />
