@@ -1,5 +1,6 @@
-# Builds the game and publishes it to GitHub Pages on every push to main.
-# One-time setup: repository Settings → Pages → Source: "GitHub Actions".
+# Builds the game on every push to main and publishes the built files to the `gh-pages` branch.
+# GitHub Pages serves that branch at https://syannuri.github.io/Adventure-Game/
+# (Settings → Pages → Source: "Deploy from a branch", branch `gh-pages`, folder `/ (root)`).
 name: Deploy game to GitHub Pages
 
 on:
@@ -8,16 +9,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,16 +26,14 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      # serve files as-is (no Jekyll processing)
+      - run: touch dist/.nojekyll
+      - name: Publish dist/ to the gh-pages branch
+        run: |
+          cd dist
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Deploy ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages

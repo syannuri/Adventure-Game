@@ -15,9 +15,11 @@ the legendary Crystal Castle.
 
 ## Play online
 
-The game deploys automatically to **GitHub Pages** from the `main` branch (`.github/workflows/deploy.yml`).
-One-time setup: repository **Settings → Pages → Source: GitHub Actions**, then merge to `main`.
-The site will be at `https://syannuri.github.io/Adventure-Game/`.
+**https://syannuri.github.io/Adventure-Game/**
+
+Every push to `main` builds the game and publishes it to the `gh-pages` branch (`.github/workflows/deploy.yml`).
+If the site does not appear, enable it once: repository **Settings → Pages → Source: Deploy from a branch →
+`gh-pages` / `(root)`**.
 
 ## Quick start
 
