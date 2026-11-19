@@ -27,6 +27,8 @@ export const PLANT_KINDS = ['sunflower', 'berry', 'rainbow'] as const;
 type Kind = (typeof PLANT_KINDS)[number];
 const BLOOM = 4;
 const CAN_POURS = 3;
+/** carried further than this from the garden, the can goes back to the stump (the pond is well inside) */
+const CAN_RANGE = 30;
 /** how long one growth step takes after watering (tests may shorten it) */
 export const gardenTiming = { growMs: 20000 };
 if (typeof window !== 'undefined') (window as unknown as { __anettGarden: typeof gardenTiming }).__anettGarden = gardenTiming;
@@ -165,12 +167,14 @@ export function MagicGarden() {
         z: GARDEN_STUMP.z,
         radius: 1.6,
         approach: 0.9,
-        label: () => tr().prompts.takeCan,
+        label: () => (useGame.getState().level.hasCan ? tr().prompts.putCan : tr().prompts.takeCan),
         verb: 'take',
-        enabled: () => !useGame.getState().level.hasCan,
+        enabled: () => true,
         onInteract: () => {
-          useGame.setState((s) => ({ level: { ...s.level, hasCan: true, lastProgressAt: performance.now() } }));
-          audio.sfx('pop', { pitch: 1.1 });
+          // pick the can up, or put it back on the stump (the water stays in it)
+          const carrying = useGame.getState().level.hasCan;
+          useGame.setState((s) => ({ level: { ...s.level, hasCan: !carrying, lastProgressAt: performance.now() } }));
+          audio.sfx(carrying ? 'stepWood' : 'pop', { pitch: carrying ? 1.2 : 1.1 });
           useGame.getState().playEmote('collect', 1);
         },
       }),
@@ -209,6 +213,12 @@ export function MagicGarden() {
     if (!gs.seen && dGarden < 5) {
       saveGarden({ ...gs, seen: true });
       g.openDialogue(D().gardenIntro);
+      return;
+    }
+    // wandering far away with the can: it goes back to its stump by itself
+    if (l.hasCan && dGarden > CAN_RANGE) {
+      useGame.setState((s) => ({ level: { ...s.level, hasCan: false } }));
+      toast(tr().toasts.canHome, tr().toasts.canHomeText, '🪣');
       return;
     }
     // fill the can at the pond
