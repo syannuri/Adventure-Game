@@ -22,7 +22,7 @@ import { tr } from '../../../i18n';
 const terrainHeight = (x: number, z: number) => getWorldPhysics().height(x, z);
 const spotY = (s: Spot) => (s.abs ? s.y : terrainHeight(s.x, s.z) + s.y);
 
-export type Theme = 'forest' | 'candy';
+export type Theme = 'forest' | 'candy' | 'crystal';
 
 export function Collectibles({ stars, coins, treasures, theme = 'forest' }: { stars: Spot[]; coins: Spot[]; treasures: Spot[]; theme?: Theme }) {
   return (
@@ -63,21 +63,36 @@ function WishingStar({ spot, total, theme }: { spot: Spot; total: number; theme:
       const n = useGame.getState().level.stars.length;
       audio.sfx('star');
       const candy = theme === 'candy';
-      spawnBurst(spot.x, ref.current.position.y, spot.z, candy ? INGREDIENT_GLOW[spot.id] ?? '#ffb3d1' : '#ffe27a', 60, { speed: 4 });
+      spawnBurst(spot.x, ref.current.position.y, spot.z, candy ? INGREDIENT_GLOW[spot.id] ?? '#ffb3d1' : theme === 'crystal' ? '#c9a7ff' : '#ffe27a', 60, { speed: 4 });
       spawnBurst(spot.x, ref.current.position.y, spot.z, '#ffffff', 20, { speed: 2 });
       g.playEmote('collect');
       const toast = candy
         ? { title: tr().toasts.ingredient, text: tr().toasts.ingredientCount(tr().ingredients[spot.id] ?? '', n, total), icon: '❀' }
-        : { title: tr().toasts.star, text: tr().toasts.starCount(n, total), icon: '★' };
+        : theme === 'crystal'
+          ? { title: tr().toasts.crystal, text: tr().toasts.crystalCount(n, total), icon: '◇' }
+          : { title: tr().toasts.star, text: tr().toasts.starCount(n, total), icon: '★' };
       useGame.setState((s) => ({ toasts: [...s.toasts, { id: Date.now(), ...toast }] }));
       const id = useGame.getState().toasts.at(-1)!.id;
       setTimeout(() => useGame.getState().dismissToast(id), 2600);
-      if (n === 1 && !candy) g.unlockAchievement('first_star', ACHIEVEMENTS.first_star.title, ACHIEVEMENTS.first_star.icon);
+      if (spot.id === 'cr-pillar') g.unlockAchievement('pillar_climber', ACHIEVEMENTS.pillar_climber.title, ACHIEVEMENTS.pillar_climber.icon);
+      if (n === 1 && theme === 'forest') g.unlockAchievement('first_star', ACHIEVEMENTS.first_star.title, ACHIEVEMENTS.first_star.icon);
       if (spot.id === 'star-mushroom') g.unlockAchievement('high_jumper', ACHIEVEMENTS.high_jumper.title, ACHIEVEMENTS.high_jumper.icon);
       if (spot.id === 'ing-honey') g.unlockAchievement('donut_hopper', ACHIEVEMENTS.donut_hopper.title, ACHIEVEMENTS.donut_hopper.icon);
     }
   });
   if (collected) return null;
+  if (theme === 'crystal')
+    return (
+      <group ref={ref} position={[spot.x, y, spot.z]}>
+        <mesh scale={[0.7, 1.3, 0.7]} castShadow>
+          <octahedronGeometry args={[0.32, 0]} />
+          <meshPhysicalMaterial color="#d6c4ff" emissive="#9b6bff" emissiveIntensity={1.6} roughness={0.05} clearcoat={1} toneMapped={false} />
+        </mesh>
+        <sprite scale={2.4}>
+          <spriteMaterial map={glow} color="#c9a7ff" transparent opacity={0.65} depthWrite={false} blending={THREE.AdditiveBlending} />
+        </sprite>
+      </group>
+    );
   if (theme === 'candy')
     return (
       <group ref={ref} position={[spot.x, y, spot.z]}>
@@ -126,12 +141,21 @@ function Acorn({ spot, total, theme }: { spot: Spot; total: number; theme: Theme
       g.collect('coins', spot.id);
       if (theme === 'forest') g.addAcorns(1); // golden acorns are kept for Kiki's shop
       audio.sfx('coin', { pitch: 1 + (g.level.coins.length % 5) * 0.06 });
-      spawnBurst(spot.x, ref.current.position.y, spot.z, theme === 'candy' ? '#ff8fa8' : '#ffd36b', 16, { speed: 2, up: 1.5, life: 0.7 });
-      const ach = theme === 'candy' ? 'candy_collector' : 'coin_collector';
+      spawnBurst(spot.x, ref.current.position.y, spot.z, theme === 'candy' ? '#ff8fa8' : theme === 'crystal' ? '#8ff3ff' : '#ffd36b', 16, { speed: 2, up: 1.5, life: 0.7 });
+      const ach = theme === 'candy' ? 'candy_collector' : theme === 'crystal' ? 'gem_collector' : 'coin_collector';
       if (useGame.getState().level.coins.length === total) g.unlockAchievement(ach, ACHIEVEMENTS[ach].title, ACHIEVEMENTS[ach].icon);
     }
   });
   if (collected) return null;
+  if (theme === 'crystal')
+    return (
+      <group ref={ref} position={[spot.x, y, spot.z]}>
+        <mesh scale={[0.8, 1.2, 0.8]}>
+          <octahedronGeometry args={[0.14, 0]} />
+          <meshStandardMaterial color="#8ff3ff" emissive="#3fd2ff" emissiveIntensity={1.2} roughness={0.1} toneMapped={false} />
+        </mesh>
+      </group>
+    );
   if (theme === 'candy')
     return (
       <group ref={ref} position={[spot.x, y, spot.z]}>

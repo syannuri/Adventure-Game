@@ -67,6 +67,49 @@ export function BunnyPortrait() {
   );
 }
 
+export function DragonPortrait() {
+  return (
+    <svg viewBox="0 0 100 100">
+      <rect width="100" height="100" fill="#2f2650" />
+      <circle cx="18" cy="20" r="1.6" fill="#8ff3ff" />
+      <circle cx="80" cy="16" r="1.4" fill="#8ff3ff" />
+      <circle cx="86" cy="40" r="1.2" fill="#ffb3e6" />
+      <path d="M14 70 Q8 46 30 50 Z" fill="#ffc2ec" />
+      <path d="M86 70 Q92 46 70 50 Z" fill="#ffc2ec" />
+      <ellipse cx="50" cy="86" rx="26" ry="20" fill="#b49cff" />
+      <ellipse cx="50" cy="88" rx="15" ry="14" fill="#fff0d6" />
+      <path d="M36 26 L32 12 L42 22Z M64 26 L68 12 L58 22Z" fill="#fff3c4" />
+      <circle cx="50" cy="48" r="24" fill="#b49cff" />
+      <ellipse cx="50" cy="58" rx="13" ry="9" fill="#c9b6ff" />
+      <ellipse cx="40" cy="45" rx="5.5" ry="6.5" fill="#2a1a40" />
+      <ellipse cx="60" cy="45" rx="5.5" ry="6.5" fill="#2a1a40" />
+      <circle cx="42" cy="42" r="2" fill="#fff" />
+      <circle cx="62" cy="42" r="2" fill="#fff" />
+      <ellipse cx="31" cy="55" rx="4" ry="2.5" fill="#ff9ecf" />
+      <ellipse cx="69" cy="55" rx="4" ry="2.5" fill="#ff9ecf" />
+      <path d="M44 62 Q50 67 56 62" stroke="#6a2a50" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function BatPortrait() {
+  return (
+    <svg viewBox="0 0 100 100">
+      <rect width="100" height="100" fill="#3a3060" />
+      <circle cx="78" cy="24" r="10" fill="#fff6c8" opacity="0.9" />
+      <path d="M50 52 C36 30 12 36 8 54 C18 48 24 56 26 62 C32 56 40 58 50 64Z" fill="#7a6a9e" />
+      <path d="M50 52 C64 30 88 36 92 54 C82 48 76 56 74 62 C68 56 60 58 50 64Z" fill="#7a6a9e" />
+      <ellipse cx="50" cy="56" rx="13" ry="14" fill="#5a4a7a" />
+      <path d="M40 46 L38 34 L46 43Z M60 46 L62 34 L54 43Z" fill="#5a4a7a" />
+      <circle cx="45" cy="53" r="3.6" fill="#fff" />
+      <circle cx="55" cy="53" r="3.6" fill="#fff" />
+      <circle cx="45.5" cy="53.5" r="1.8" fill="#1a1414" />
+      <circle cx="55.5" cy="53.5" r="1.8" fill="#1a1414" />
+      <path d="M47 61 L48.5 64 L50 61 L51.5 64 L53 61" stroke="#fff" strokeWidth="1.3" fill="none" />
+    </svg>
+  );
+}
+
 export function StickerArt({ id }: { id: string }) {
   switch (id) {
     case 'fairy':
@@ -85,6 +128,10 @@ export function StickerArt({ id }: { id: string }) {
       return <ButterflyPortrait />;
     case 'bunny':
       return <BunnyPortrait />;
+    case 'dragon':
+      return <DragonPortrait />;
+    case 'bat':
+      return <BatPortrait />;
     default:
       return <KokoPortrait />;
   }

@@ -7,7 +7,7 @@ import { StickerArt } from './StickerArt';
 export function StickerBook({ onClose }: { onClose: () => void }) {
   const have = useGame((s) => s.save.stickers ?? []);
   const t = useT();
-  const worlds = ['enchanted-forest', 'candy-village'] as const;
+  const worlds = ['enchanted-forest', 'candy-village', 'crystal-cave'] as const;
   return (
     <div className="modal-bg" onPointerDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal panel sticker-modal">

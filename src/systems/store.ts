@@ -8,14 +8,16 @@ export type Screen = 'menu' | 'story' | 'worlds' | 'playing' | 'complete';
 export type Overlay = null | 'settings' | 'about' | 'shop' | 'stickers';
 
 export interface DialogueLine {
-  speaker: 'anett' | 'lumi' | 'pip' | 'olli' | 'koko' | 'kiki' | 'duck';
+  speaker: 'anett' | 'lumi' | 'pip' | 'olli' | 'koko' | 'kiki' | 'duck' | 'dragon';
   text: string;
 }
 
 export type ForestStage = 'meetFairy' | 'collectStars' | 'findWand' | 'returnWand' | 'done' | 'night';
 /** World 2 (Candy Village) mission stages. */
 export type CandyStage = 'meetChef' | 'collectIngredients' | 'returnIngredients' | 'sortCandy' | 'done';
-export type Stage = ForestStage | CandyStage;
+/** World 3 (Crystal Cave) mission stages. */
+export type CaveStage = 'meetDragon' | 'collectCrystals' | 'returnCrystals' | 'lightPuzzle';
+export type Stage = ForestStage | CandyStage | CaveStage;
 
 export type CinematicKind = 'intro' | 'reveal' | 'finale';
 
@@ -54,6 +56,8 @@ interface LevelState {
   fireflies: string[];
   lanterns: string[];
   nightStage: 'collect' | 'return' | 'done';
+  /** crystal cave light puzzle: direction of each mirror crystal */
+  mirrors: number[];
   /** duckling escort side quest */
   duckQuest: 'none' | 'active' | 'done';
   ducklings: string[];
@@ -116,7 +120,7 @@ const freshLevel = (worldId: string | null = null, night = false): LevelState =>
   stars: [],
   coins: [],
   treasures: [],
-  stage: worldId === 'candy-village' ? 'meetChef' : night ? 'night' : 'meetFairy',
+  stage: worldId === 'candy-village' ? 'meetChef' : worldId === 'crystal-cave' ? 'meetDragon' : night ? 'night' : 'meetFairy',
   hasWand: false,
   flowers: [0, 0, 1],
   puzzleSolved: false,
@@ -130,6 +134,7 @@ const freshLevel = (worldId: string | null = null, night = false): LevelState =>
   fireflies: [],
   lanterns: [],
   nightStage: 'collect',
+  mirrors: [1, 0, 3],
   duckQuest: 'none',
   ducklings: [],
   startedAt: performance.now(),
@@ -183,7 +188,7 @@ export const useGame = create<GameState>((set, get) => ({
       newAchievements: [],
       cinematic: { kind: 'intro', start: -1, duration: 5200 }, // starts on the first rendered frame
     }));
-    audio.playMusic(id === 'candy-village' ? 'candy' : 'forest');
+    audio.playMusic(id === 'candy-village' ? 'candy' : id === 'crystal-cave' ? 'cave' : 'forest');
   },
 
   collect: (kind, id) => {

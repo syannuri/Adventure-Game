@@ -82,6 +82,20 @@ export const id: Dict = {
     returnWand: 'Bawa tongkat ajaib kembali ke Lumi di tengah hutan',
     done: 'Hore! Kamu sudah menolong Lumi!',
   },
+  caveObjectives: {
+    meetDragon: 'Temui Drako si naga kecil di dekat Kristal Jantung',
+    collect: (n, t) => `Cari kristal yang hilang  ${n} / ${t}`,
+    returnCrystals: 'Bawa kristal-kristalnya kembali ke Drako',
+    lightPuzzle: (n) => `Putar cermin kristal untuk mengarahkan sinar matahari  ${n} / 3`,
+    done: 'Horeee! Seluruh gua bercahaya lagi!',
+  },
+  caveHints: {
+    meetDragon: 'Ikuti jalan bercahaya ke kristal besar di tengah gua.',
+    collectCrystals: 'Lihat peta kecil! Lompati pilar-pilar batu, dan cari di dekat danau dan di kebun jamur.',
+    returnCrystals: 'Drako menunggu di samping Kristal Jantung.',
+    lightPuzzle: 'Sentuh cermin kristal untuk memutarnya. Arahkan sinar matahari dari kristal ke kristal sampai mengenai Kristal Jantung.',
+    done: '',
+  },
   night: {
     button: '🌙 Hutan Malam',
     objective: (f, ft, l, lt) => `Pesta Cahaya: kunang-kunang ${f} / ${ft} · lentera ${l} / ${lt}`,
@@ -143,6 +157,9 @@ export const id: Dict = {
     listenFlowers: 'Dengarkan lagu bunga',
     shop: 'Mampir ke toko Kiki',
     talkDuck: 'Bicara dengan Mama Bebek',
+    talkDrako: 'Bicara dengan Drako',
+    giveCrystals: 'Berikan kristal ke Drako',
+    turnMirror: 'Putar cermin kristal',
     lotus: 'Petik teratai emas',
     lantern: 'Buka harta lentera',
   },
@@ -156,6 +173,8 @@ export const id: Dict = {
     song: 'Lagu selesai!',
     acornGift: 'Biji ek emas!',
     sticker: 'Stiker baru!',
+    crystal: 'Kristal ditemukan!',
+    crystalCount: (n, t) => `${n} dari ${t} kristal`,
     riddleRight: 'Jawabanmu benar!',
     duckling: 'Anak bebek ketemu!',
     ducklingCount: (n, t) => `${n} dari ${t} anak bebek`,
@@ -176,6 +195,10 @@ export const id: Dict = {
     high_jumper: { title: 'Pelompat Jamur', description: 'Sampai di puncak jamur raksasa.' },
     puzzle_master: { title: 'Penyihir Bunga', description: 'Memecahkan teka-teki bunga warna-warni.' },
     flower_singer: { title: 'Penyanyi Bunga', description: 'Menyanyikan ketiga lagu bunga ajaib Lumi.' },
+    crystal_keeper: { title: 'Penjaga Kristal', description: 'Menerangi Gua Kristal untuk Drako.' },
+    light_master: { title: 'Ahli Cahaya', description: 'Mengarahkan sinar matahari ke Kristal Jantung.' },
+    gem_collector: { title: 'Pengumpul Permata', description: 'Mengumpulkan semua permata kecil di Gua Kristal.' },
+    pillar_climber: { title: 'Pemanjat Pilar', description: 'Mencapai kristal di pilar batu tertinggi.' },
     night_light: { title: 'Pembawa Cahaya', description: 'Menyalakan semua lentera untuk Pesta Cahaya Lumi.' },
     sky_hopper: { title: 'Pelompat Pegas', description: 'Memantul ke harta lentera di pohon raksasa.' },
     riddle_solver: { title: 'Penjelajah Pintar', description: 'Menjawab semua teka-teki hewan dari Olli.' },
@@ -192,7 +215,7 @@ export const id: Dict = {
   dialogue: {
     next: 'Lanjut ▶',
     ok: 'Oke ✓',
-    speakers: { anett: 'Anet', lumi: 'Peri Lumi', pip: 'Kelinci Pip', olli: 'Burung Hantu Olli', koko: 'Koko si Koki', kiki: 'Kiki si Tupai', duck: 'Mama Bebek' },
+    speakers: { anett: 'Anet', lumi: 'Peri Lumi', pip: 'Kelinci Pip', olli: 'Burung Hantu Olli', koko: 'Koko si Koki', kiki: 'Kiki si Tupai', duck: 'Mama Bebek', dragon: 'Drako si Naga Kecil' },
   },
   touch: { action: 'Aksi', talk: 'Bicara', take: 'Ambil', open: 'Buka', touchFlower: 'Sentuh', jump: 'Lompat', wave: 'Lambai', dance: 'Menari', run: '🏃 Lari', runOn: '🏃 Berlari' },
   controls: {
@@ -238,7 +261,7 @@ export const id: Dict = {
     count: (n, t) => `${n} dari ${t} stiker`,
     tip: 'Dekati hewan untuk memotretnya dan menempelkan stikernya di bukumu!',
     hidden: '?',
-    worldLabel: { 'enchanted-forest': 'Hutan Ajaib', 'candy-village': 'Desa Permen' },
+    worldLabel: { 'enchanted-forest': 'Hutan Ajaib', 'candy-village': 'Desa Permen', 'crystal-cave': 'Gua Kristal' },
     close: 'Selesai',
   },
   animals: {
@@ -251,6 +274,8 @@ export const id: Dict = {
     butterfly: ['Kupu-kupu', 'Butterfly'],
     bunny: ['Anak kelinci', 'Bunny'],
     gingerbread: ['Kue jahe', 'Gingerbread'],
+    dragon: ['Naga kecil', 'Baby dragon'],
+    bat: ['Kelelawar', 'Bat'],
   },
   shop: {
     title: 'Toko Kiki',
@@ -291,6 +316,7 @@ export const id: Dict = {
     byWorld: {
       'enchanted-forest': { title: 'Hutan Selamat!', helped: 'Kamu membantu Lumi menemukan tongkat ajaibnya!', coins: 'Biji ek', treasures: 'Harta' },
       'candy-village': { title: 'Pesta Terselamatkan!', helped: 'Kamu membantu Koko membuat Kue Pelangi!', coins: 'Permen Mint', treasures: 'Kado' },
+      'crystal-cave': { title: 'Gua Bercahaya!', helped: 'Kamu membantu Drako menerangi Gua Kristal!', coins: 'Permata', treasures: 'Harta' },
     },
   },
 };
