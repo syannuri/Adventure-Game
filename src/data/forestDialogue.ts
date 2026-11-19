@@ -176,6 +176,15 @@ const EN = {
     L('anett', `But first I need food: ${foods.join(', ')}. Little beams of light show where the food is!`),
   ],
   picnicAllFood: [L('anett', 'I found all the food! Back to the picnic blanket!')],
+  rainbowAppears: [
+    L('anett', 'The rain has stopped... Wow, look up! A rainbow!'),
+    L('anett', 'But its colours are so pale. The rain washed seven colour drops down into the forest!'),
+    L('anett', 'Let me find them all: red, orange, yellow, green, blue, indigo and violet! And I can jump in the puddles too. Splash!'),
+  ],
+  rainbowDone: [
+    L('anett', 'I found all seven colours! Red, orange, yellow, green, blue, indigo, violet!'),
+    L('anett', 'Look how bright the rainbow is now! It is the most beautiful rainbow ever!'),
+  ],
   picnicGuests: [
     L('pip', 'Hop hop! We are here for the picnic! Thank you for inviting us, Anet!'),
     L('anett', 'Welcome, everyone! Look at the bubbles: I will bring each of you the food you like!'),
@@ -375,6 +384,15 @@ const ID: typeof EN = {
     L('anett', `Tapi pertama aku butuh makanan: ${foods.join(', ')}. Cahaya kecil menunjukkan di mana makanannya!`),
   ],
   picnicAllFood: [L('anett', 'Semua makanan sudah ketemu! Ayo kembali ke tikar piknik!')],
+  rainbowAppears: [
+    L('anett', 'Hujannya sudah berhenti... Wah, lihat ke atas! Ada pelangi!'),
+    L('anett', 'Tapi warnanya pudar sekali. Hujan membawa tujuh tetes warna jatuh ke hutan!'),
+    L('anett', 'Ayo kucari semuanya: merah, jingga, kuning, hijau, biru, nila, dan ungu! Aku juga bisa melompat ke genangan air. Byur!'),
+  ],
+  rainbowDone: [
+    L('anett', 'Ketujuh warnanya sudah ketemu! Merah, jingga, kuning, hijau, biru, nila, ungu!'),
+    L('anett', 'Lihat, pelanginya cerah sekali sekarang! Pelangi paling indah!'),
+  ],
   picnicGuests: [
     L('pip', 'Hop hop! Kami datang untuk piknik! Terima kasih sudah mengundang kami, Anet!'),
     L('anett', 'Selamat datang, semuanya! Lihat gelembungnya: aku akan membawakan makanan kesukaan kalian!'),

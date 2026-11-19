@@ -20,6 +20,7 @@ import { kusutObjective } from '../components/gameplay/missions/KusutQuest';
 import { gardenStatus } from '../components/gameplay/sidequests/MagicGarden';
 import { treehouseStatus } from '../components/gameplay/sidequests/TreeHouse';
 import { picnicStatus } from '../components/gameplay/sidequests/PicnicQuest';
+import { rainStatus } from '../components/gameplay/sidequests/RainbowQuest';
 import type { ForestStage } from '../systems/store';
 
 export interface WorldHud {
@@ -79,7 +80,7 @@ export const WORLD_HUD: Record<string, WorldHud> = {
     hint: () => (useGame.getState().kusut ? (['match', 'done'].includes(level().kusutStage) ? '' : tr().kusut.hint) : useGame.getState().night ? (level().nightStage === 'collect' ? tr().night.hint : '') : (FOREST_HINTS()[level().stage as ForestStage] ?? '')),
     side: () => {
       const l = level();
-      const parts = [musicStatus(), riddleStatus(), duckStatus(), gardenStatus(), treehouseStatus(), picnicStatus(), l.bunnyQuest === 'active' ? '🐰 ' + tr().hud.bunnies(l.bunnies.length, 3) : null].filter(Boolean);
+      const parts = [musicStatus(), riddleStatus(), duckStatus(), gardenStatus(), treehouseStatus(), picnicStatus(), rainStatus(), l.bunnyQuest === 'active' ? '🐰 ' + tr().hud.bunnies(l.bunnies.length, 3) : null].filter(Boolean);
       return parts.length ? parts.join('  ·  ') : null;
     },
   },

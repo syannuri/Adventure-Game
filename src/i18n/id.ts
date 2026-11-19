@@ -222,6 +222,8 @@ export const id: Dict = {
     sky_hopper: { title: 'Pelompat Pegas', description: 'Memantul ke harta lentera di pohon raksasa.' },
     forest_champion: { title: 'Juara Hutan', description: 'Memenangkan Pertandingan Besar Hutan melawan Si Kusut.' },
     kusut_friend: { title: 'Sahabat Monster', description: 'Berteman dengan Si Kusut si monster berantakan.' },
+    rainbow_hunter: { title: 'Pemburu Pelangi', description: 'Menemukan ketujuh warna pelangi.' },
+    puddle_jumper: { title: 'Peloncat Genangan', description: 'Melompat ke lima genangan air setelah hujan.' },
     picnic_host: { title: 'Tuan Rumah Piknik', description: 'Memberi setiap teman makanan kesukaannya saat piknik.' },
     tree_house: { title: 'Pembangun Rumah Pohon', description: 'Membangun rumah pohon lengkap di pohon ek.' },
     swing_high: { title: 'Ayun Tinggi', description: 'Bermain ayunan di rumah pohon.' },
@@ -331,6 +333,13 @@ export const id: Dict = {
     go: 'Ayo!',
     completeTitle: 'Juara Hutan!',
     completeHelped: 'Kamu memenangkan Pertandingan Besar Hutan, dan Si Kusut menjadi teman semua!',
+  },
+  rain: {
+    startTitle: 'Tik tik tik!',
+    startText: 'Hujan rintik-rintik',
+    raining: 'Sedang hujan…',
+    colorCount: (n, t) => `Warna pelangi ${n} / ${t}`,
+    colors: { red: 'Merah!', orange: 'Jingga!', yellow: 'Kuning!', green: 'Hijau!', blue: 'Biru!', indigo: 'Nila!', violet: 'Ungu!' },
   },
   picnic: {
     foods: { carrot: 'wortel', bread: 'roti', walnut: 'kenari', apple: 'apel', honey: 'madu' },

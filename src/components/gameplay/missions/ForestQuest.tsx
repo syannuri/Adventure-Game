@@ -32,6 +32,7 @@ import { MagicGarden } from '../sidequests/MagicGarden';
 import { LeafRace } from '../sidequests/LeafRace';
 import { TreeHouse } from '../sidequests/TreeHouse';
 import { PicnicQuest } from '../sidequests/PicnicQuest';
+import { RainbowQuest } from '../sidequests/RainbowQuest';
 import { OlliRiddles, olliRiddleLines } from '../sidequests/OlliRiddles';
 import { LanternPosts, NightQuest, nightTalkLumi } from './NightQuest';
 import { KusutQuest, kusutTalkLumi } from './KusutQuest';
@@ -237,6 +238,7 @@ export function ForestQuest() {
       <LanternPosts />
       {night && <NightQuest />}
       {kusut && <KusutQuest />}
+      {!night && !kusut && <RainbowQuest />}
     </>
   );
 }

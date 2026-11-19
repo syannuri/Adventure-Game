@@ -587,8 +587,8 @@ class AudioEngine {
 
   // ------------------------------------------------------------------ ambience
 
-  /** Fade a looping ambience layer to `level` (0..1). Layers: 'waterfall', 'wind'. */
-  setAmbience(name: 'waterfall' | 'wind', level: number) {
+  /** Fade a looping ambience layer to `level` (0..1). Layers: 'waterfall', 'wind', 'rain'. */
+  setAmbience(name: 'waterfall' | 'wind' | 'rain', level: number) {
     const ctx = this.ctx;
     if (!ctx) return;
     let a = this.ambience[name];
@@ -597,8 +597,8 @@ class AudioEngine {
       src.buffer = this.noiseBuf;
       src.loop = true;
       const f = ctx.createBiquadFilter();
-      f.type = name === 'waterfall' ? 'lowpass' : 'lowpass';
-      f.frequency.value = name === 'waterfall' ? 1400 : 380;
+      f.type = name === 'rain' ? 'highpass' : 'lowpass';
+      f.frequency.value = name === 'waterfall' ? 1400 : name === 'rain' ? 1700 : 380;
       const gain = ctx.createGain();
       gain.gain.value = 0;
       src.connect(f).connect(gain).connect(this.ambBus);
@@ -607,7 +607,7 @@ class AudioEngine {
     }
     if (Math.abs(a.target - level) > 0.01) {
       a.target = level;
-      a.gain.gain.setTargetAtTime(level * (name === 'waterfall' ? 0.9 : 0.35), ctx.currentTime, 0.3);
+      a.gain.gain.setTargetAtTime(level * (name === 'waterfall' ? 0.9 : name === 'rain' ? 0.5 : 0.35), ctx.currentTime, 0.6);
     }
   }
 
