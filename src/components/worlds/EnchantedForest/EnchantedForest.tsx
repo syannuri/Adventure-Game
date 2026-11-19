@@ -6,7 +6,7 @@ import { useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Environment, Lightformer, Sparkles } from '@react-three/drei';
 import { setWorldPhysics } from '../../../systems/physics';
-import { buildForestPhysics, COINS, FAIRY_POS, OWL_POS, RABBIT_POS, SPAWN, STARS, TREASURES, WATERFALL, terrainHeight } from './layout';
+import { buildForestPhysics, SHOP, COINS, FAIRY_POS, OWL_POS, RABBIT_POS, SPAWN, STARS, TREASURES, WATERFALL, terrainHeight } from './layout';
 import { Terrain } from './Terrain';
 import { Sky } from './Sky';
 import { RimLight, SunLight } from '../shared/Lights';
@@ -15,7 +15,8 @@ import { Vegetation } from './Vegetation';
 import { GroundDetail } from './GroundDetail';
 import { Water } from './Water';
 import { Glade, PathStones, Platforms } from './Props';
-import { Birds, Butterflies, Ducks } from './Critters';
+import { Birds, Butterflies } from './Critters';
+import { StickerWatcher } from '../../gameplay/stickers/StickerWatcher';
 import { AnettController } from '../../characters/Anett/AnettController';
 import { Fairy } from '../../characters/npc/Fairy';
 import { Rabbit } from '../../characters/npc/Rabbit';
@@ -30,7 +31,13 @@ import { player } from '../../../systems/playerState';
 import { audio } from '../../audio/audioEngine';
 import { useGame } from '../../../systems/store';
 
-const FOG = '#dfe4c6'; // warm golden-hour haze
+const FOG = '#dfe4c6';
+const FOREST_STICKERS = [
+  { id: 'fairy', x: FAIRY_POS.x, z: FAIRY_POS.z },
+  { id: 'rabbit', x: RABBIT_POS.x, z: RABBIT_POS.z },
+  { id: 'owl', x: OWL_POS.x, z: OWL_POS.z },
+  { id: 'squirrel', x: SHOP.x + 1.1, z: SHOP.z },
+]; // warm golden-hour haze
 
 function Ambience() {
   useEffect(() => {
@@ -76,7 +83,6 @@ export function EnchantedForest() {
       <Glade />
       <PathStones />
       <Butterflies count={high ? 18 : 10} />
-      <Ducks />
       <Birds />
       <Sparkles count={high ? 220 : 90} scale={[70, 5, 70]} position={[0, 2.5, -4]} size={3.5} speed={0.25} color="#fff6b8" opacity={0.85} />
       <Sparkles count={60} scale={[9, 3, 9]} position={[FAIRY_POS.x, 1.6, FAIRY_POS.z]} size={4} speed={0.4} color="#d9c9ff" />
@@ -95,6 +101,7 @@ export function EnchantedForest() {
       <Bursts />
       <Bursts channel="dust" />
       <Ambience />
+      <StickerWatcher statics={FOREST_STICKERS} />
     </>
   );
 }

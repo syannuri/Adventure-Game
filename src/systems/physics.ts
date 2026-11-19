@@ -10,6 +10,8 @@ export interface CircleCollider {
   x: number;
   z: number;
   r: number;
+  /** water (the pond): blocks walking in, but Anet can jump over it onto lily pads */
+  water?: boolean;
 }
 
 export interface Platform {
@@ -67,7 +69,10 @@ export function surfaceAt(x: number, z: number, feetY: number): Surface {
 
 /** Push a moving circle (the player) out of all solid obstacles. Mutates pos. */
 export function resolveCollisions(pos: { x: number; y: number; z: number }, radius: number) {
-  for (const c of world.colliders) pushOut(pos, c.x, c.z, c.r + radius);
+  for (const c of world.colliders) {
+    if (c.water && pos.y > world.height(pos.x, pos.z) + 0.2) continue;
+    pushOut(pos, c.x, c.z, c.r + radius);
+  }
   for (const p of world.platforms) {
     if (pos.y < p.top - STEP) pushOut(pos, p.x, p.z, p.r + radius * 0.6);
   }

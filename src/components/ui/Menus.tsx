@@ -178,6 +178,10 @@ export function MainMenu() {
       </div>
 
       <div className="home-top">
+        <button className="icon-btn home-gear home-stickers" aria-label={t.stickerBook.open} onClick={() => (click(), setOverlay('stickers'))}>
+          <Icon name="sparkle" size={22} />
+          <span className="badge-n">{(save.stickers ?? []).length}</span>
+        </button>
         <button className="icon-btn home-gear" aria-label={t.menu.settings} onClick={() => (click(), setOverlay('settings'))}>
           <Icon name="gear" size={22} />
         </button>
@@ -427,6 +431,10 @@ export function PauseMenu() {
             <button className="btn ghost" onClick={() => (click(), setOverlay('settings'))}>
               <Icon name="gear" size={18} />
               {t.pause.settings}
+            </button>
+            <button className="btn ghost" onClick={() => (click(), setOverlay('stickers'))}>
+              <Icon name="sparkle" size={18} />
+              {t.stickerBook.open}
             </button>
             <button className="btn teal" onClick={() => (click(), worldId && startWorld(worldId))}>
               <Icon name="restart" size={18} />

@@ -26,7 +26,11 @@ export type SfxName =
   | 'stepWood'
   | 'tapPlay'
   | 'giggle'
-  | 'note';
+  | 'note'
+  | 'peep'
+  | 'splash'
+  | 'shutter'
+  | 'quack';
 
 interface Song {
   bpm: number;
@@ -501,6 +505,24 @@ class AudioEngine {
         // one sung note of the singing flowers: a bell with a soft sine underneath (pitch = semitone ratio from C5)
         this.bell(mtof(72) * p, t, 0.16 * v, out);
         this.tone('sine', mtof(72) * p, mtof(72) * p, t, 0.35, 0.08 * v, out);
+        break;
+      case 'peep':
+        // a tiny duckling "peep-peep"
+        [0, 0.14].forEach((d) => this.tone('sine', 2300 * p, 2900 * p, t + d, 0.07, 0.07 * v, out));
+        break;
+      case 'quack':
+        this.tone('sawtooth', 420 * p, 300 * p, t, 0.14, 0.06 * v, out);
+        this.tone('square', 640 * p, 460 * p, t, 0.12, 0.03 * v, out);
+        break;
+      case 'splash':
+        this.noiseSweep(t, 0.5, 1800, 300, 0.35 * v, out);
+        this.noiseHit(t, 0.25, 4000, 0.18 * v, out);
+        break;
+      case 'shutter':
+        // camera "click-shhk"
+        this.noiseHit(t, 0.04, 6000, 0.22 * v, out);
+        this.noiseHit(t + 0.07, 0.06, 3500, 0.16 * v, out);
+        this.bell(mtof(91) * p, t + 0.12, 0.05 * v, out);
         break;
       case 'giggle':
         // a little bunny "hee-hee-hee": quick wobbly chirps

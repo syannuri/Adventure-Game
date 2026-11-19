@@ -5,10 +5,10 @@ import { setLangSource, tr } from '../i18n';
 import { COSMETICS } from '../data/cosmetics';
 
 export type Screen = 'menu' | 'story' | 'worlds' | 'playing' | 'complete';
-export type Overlay = null | 'settings' | 'about' | 'shop';
+export type Overlay = null | 'settings' | 'about' | 'shop' | 'stickers';
 
 export interface DialogueLine {
-  speaker: 'anett' | 'lumi' | 'pip' | 'olli' | 'koko' | 'kiki';
+  speaker: 'anett' | 'lumi' | 'pip' | 'olli' | 'koko' | 'kiki' | 'duck';
   text: string;
 }
 
@@ -44,6 +44,11 @@ interface LevelState {
   /** World 1 side quest: Pip's little brothers playing hide-and-seek */
   bunnyQuest: 'none' | 'active' | 'done';
   bunnies: string[];
+  /** lily-pad hop: golden lotus picked */
+  lotus: boolean;
+  /** duckling escort side quest */
+  duckQuest: 'none' | 'active' | 'done';
+  ducklings: string[];
   startedAt: number;
   lastProgressAt: number;
 }
@@ -92,6 +97,8 @@ interface GameState {
   equipCosmetic: (id: string) => void;
   unequipSlot: (slot: string) => void;
   setMetKiki: () => void;
+  /** returns true if the sticker is new */
+  addSticker: (id: string) => boolean;
   resetProgress: () => void;
 }
 
@@ -107,6 +114,9 @@ const freshLevel = (worldId: string | null = null): LevelState => ({
   holding: null,
   bunnyQuest: 'none',
   bunnies: [],
+  lotus: false,
+  duckQuest: 'none',
+  ducklings: [],
   startedAt: performance.now(),
   lastProgressAt: performance.now(),
 });
@@ -254,6 +264,15 @@ export const useGame = create<GameState>((set, get) => ({
     writeSave(save);
     set({ save });
   },
+  addSticker: (id) => {
+    const s = get().save;
+    const stickers = s.stickers ?? [];
+    if (stickers.includes(id)) return false;
+    const save = { ...s, stickers: [...stickers, id] };
+    writeSave(save);
+    set({ save });
+    return true;
+  },
   markIntroSeen: () => {
     const save = { ...get().save, seenIntro: true };
     writeSave(save);
@@ -280,6 +299,7 @@ function loadSaveDefaultsWith(settings: Settings): SaveData {
     owned: [],
     equipped: {},
     metKiki: false,
+    stickers: [],
   };
 }
 

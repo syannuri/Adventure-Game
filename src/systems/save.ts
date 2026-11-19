@@ -17,6 +17,8 @@ export interface SaveData {
   equipped: Record<string, string>;
   /** Kiki gives a little welcome gift on the first visit */
   metKiki: boolean;
+  /** animal stickers collected in the sticker book */
+  stickers: string[];
 }
 
 export interface Settings {
@@ -41,6 +43,7 @@ export const defaultSave = (): SaveData => ({
   owned: [],
   equipped: {},
   metKiki: false,
+  stickers: [],
 });
 
 function detectQuality(): 'high' | 'low' {
