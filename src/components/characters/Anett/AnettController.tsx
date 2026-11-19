@@ -44,6 +44,9 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
     grounded: true,
     coyote: 0,
     jumpBuffer: 0,
+    /** anticipation: a short crouch before the feet leave the ground */
+    crouchT: 0,
+    crouchLen: 0.1,
     airTime: 0,
     land: 0,
     idleTime: 0,
@@ -183,14 +186,26 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
     input.jumpPressed = false; // one press = one jump (the short buffer still forgives early presses)
     s.jumpBuffer -= dt;
     s.coyote -= dt;
-    if (s.jumpBuffer > 0 && (s.grounded || s.coyote > 0)) {
+    const launch = () => {
       s.vy = JUMP_VELOCITY;
       s.grounded = false;
       s.coyote = 0;
       s.jumpBuffer = 0;
+      s.crouchT = 0;
       s.action = null;
       audio.sfx('jump', { pitch: 0.95 + Math.random() * 0.1 });
-    }
+    };
+    if (s.crouchT > 0) {
+      // the knees are bending: push off when the crouch is done (or right away if she steps off an edge)
+      s.crouchT -= dt;
+      if (s.crouchT <= 0 || !s.grounded) launch();
+    } else if (s.jumpBuffer > 0 && s.grounded) {
+      // a real jump starts with a quick crouch: shorter when running so she keeps her speed
+      s.crouchLen = Math.hypot(s.hv.x, s.hv.y) > 3 ? 0.06 : 0.1;
+      s.crouchT = s.crouchLen;
+      s.jumpBuffer = 0;
+      s.action = null;
+    } else if (s.jumpBuffer > 0 && s.coyote > 0) launch();
 
     // ------------------------------------------------ integrate
     s.vy -= GRAVITY * dt;
@@ -272,6 +287,8 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
       action,
       overlay: Math.max(0, overlay),
       idleTime: s.idleTime,
+      crouch: s.crouchT > 0 ? Math.min(1, (s.crouchLen - s.crouchT) / (s.crouchLen * 0.45) + 0.35) : 0,
+      airSpeed: s.grounded ? 0 : hs,
     });
 
     // footsteps on each foot plant

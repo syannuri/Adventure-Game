@@ -231,6 +231,14 @@ Keeper, Light Master, Gem Collector, Pillar Climber).
   blending by vertical velocity, landing squash, and damped joint blending between all states. It also has an
   upper-body overlay layer for collecting. All 13 required animations are in: idle breathing, eye blinking,
   looking around, walk, run, jump, land, wave, dance, celebrate, surprise, collect and talk (NPC interaction).
+  **Natural jump:** a real jump has stages, as people do:
+  1. a split-second crouch for anticipation (knees bend, arms swing back; shorter while running so speed isn't lost)
+  2. push-off with the body stretched and the arms swinging forward and up
+  3. knees drawn up a little at the top
+  4. legs reaching for the ground with the arms out for balance on the way down
+  5. a soft landing where the knees bend to absorb the fall (deeper after a higher fall)
+
+  A running jump becomes a long stride through the air, with the arms swinging opposite to the legs.
 - **Movement and physics:** camera-relative movement, acceleration, coyote time, jump buffering, gravity, ground
   and platform detection, landing detection, and circle collisions against trees, rocks, the pond and buildings.
 - **Third-person camera:** smooth follow, mouse/touch orbit, zoom, gentle auto-follow, and collision with trees
