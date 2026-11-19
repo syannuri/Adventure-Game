@@ -58,7 +58,16 @@ const EN = {
     L('olli', 'Three treasure chests are hidden near the edges of the forest. Can you find them all?'),
     L('olli', 'And pick up the golden acorns along the paths. Hoo! They shine like little suns.'),
   ],
-  olliDone: [L('olli', 'Hoo-hoo! Splendid work, Anet. The whole forest is proud of you!')],  bunnyIntro: [
+  olliDone: [L('olli', 'Hoo-hoo! Splendid work, Anet. The whole forest is proud of you!')],  musicFound: [
+    L('anett', 'Wow, these giant flowers can sing! Every flower sings a different note.'),
+    L('anett', 'If I touch the magic bud in the middle, they sing a song. Then I step on the flowers in the same order!'),
+  ],
+  musicAgain: [L('anett', 'Oops, that was a different flower. Let me listen one more time!')],
+  musicWin: [
+    L('anett', 'I sang all three flower songs!'),
+    L('anett', 'Now the flowers can play any song I like. La la la!'),
+  ],
+  bunnyIntro: [
     L('pip', 'Oh, Anet! My three little brothers are playing hide-and-seek, and now they won\'t come home!'),
     L('pip', 'They giggle when someone comes close. Listen carefully: the louder the giggle, the closer you are!'),
     L('anett', "I'm good at hide-and-seek! I'll find them all, Pip!"),
@@ -130,7 +139,16 @@ const ID: typeof EN = {
     L('olli', 'Ada tiga peti harta tersembunyi di pinggir hutan. Bisakah kamu menemukan semuanya?'),
     L('olli', 'Ambil juga biji ek emas di sepanjang jalan. Hu! Mereka bersinar seperti matahari kecil.'),
   ],
-  olliDone: [L('olli', 'Hu-hu! Kerja yang luar biasa, Anet. Seluruh hutan bangga padamu!')],  bunnyIntro: [
+  olliDone: [L('olli', 'Hu-hu! Kerja yang luar biasa, Anet. Seluruh hutan bangga padamu!')],  musicFound: [
+    L('anett', 'Wah, bunga-bunga raksasa ini bisa bernyanyi! Setiap bunga punya nada yang berbeda.'),
+    L('anett', 'Kalau aku sentuh kuncup ajaib di tengah, mereka menyanyikan lagu. Lalu aku injak bunganya dengan urutan yang sama!'),
+  ],
+  musicAgain: [L('anett', 'Ups, itu bunga yang lain. Ayo dengarkan sekali lagi!')],
+  musicWin: [
+    L('anett', 'Aku berhasil menyanyikan ketiga lagu bunga!'),
+    L('anett', 'Sekarang bunga-bunga bisa memainkan lagu apa saja. La la la!'),
+  ],
+  bunnyIntro: [
     L('pip', 'Oh, Anet! Tiga adik kecilku sedang main petak umpet, dan sekarang mereka tidak mau pulang!'),
     L('pip', 'Mereka suka cekikikan kalau ada yang mendekat. Dengarkan baik-baik: makin keras cekikikannya, makin dekat kamu!'),
     L('anett', 'Aku jago main petak umpet! Aku akan menemukan mereka semua, Pip!'),
