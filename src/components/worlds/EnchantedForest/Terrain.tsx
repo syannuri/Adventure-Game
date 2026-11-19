@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
-import { distToPath, MEADOW, POND, terrainHeight } from './layout';
+import { distToPath, MEADOW, POND, STREAM_HALF, streamQuery, terrainHeight } from './layout';
 import { mulberry32, smoothstep } from '../../../utils/math';
 
 /** Adds natural variation to the ground colour: soft grass patches, mossy spots and fine speckle. */
@@ -72,6 +72,9 @@ export function Terrain() {
       c.lerp(path, pathW * (0.8 + n2 * 0.15));
       const dPond = Math.hypot(x - POND.x, z - POND.z);
       c.lerp(sand, (1 - smoothstep(POND.r - 0.5, POND.r + 1.6, dPond)) * 0.8);
+      // sandy, pebbly stream bed and banks
+      const sq = streamQuery(x, z);
+      if (sq) c.lerp(sand, (1 - smoothstep(STREAM_HALF - 0.1, STREAM_HALF + 1.1, sq.d)) * 0.75);
       // subtle darkening in hollows -> fake ambient occlusion
       c.multiplyScalar(0.9 + smoothstep(-1.2, 1.5, y) * 0.12);
       colors[i * 3] = c.r;

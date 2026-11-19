@@ -115,6 +115,7 @@ interface GameState {
   unequipSlot: (slot: string) => void;
   setMetKiki: () => void;
   setGarden: (g: GardenSave) => void;
+  setLeafRace: (r: NonNullable<SaveData['leafRace']>) => void;
   /** returns true if the sticker is new */
   addSticker: (id: string) => boolean;
   resetProgress: () => void;
@@ -285,6 +286,11 @@ export const useGame = create<GameState>((set, get) => ({
     const equipped = { ...s.equipped };
     delete equipped[slot];
     const save = { ...s, equipped };
+    writeSave(save);
+    set({ save });
+  },
+  setLeafRace: (leafRace) => {
+    const save = { ...get().save, leafRace };
     writeSave(save);
     set({ save });
   },

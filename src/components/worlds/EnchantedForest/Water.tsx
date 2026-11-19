@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Sparkles } from '@react-three/drei';
-import { POND, WATER_LEVEL, WATERFALL, terrainHeight } from './layout';
+import { POND, STREAM, STREAM_HALF, STREAM_MOUTH_S, WATER_LEVEL, WATERFALL, terrainHeight } from './layout';
 import { lumpy, prep } from './Trees';
 import { mulberry32 } from '../../../utils/math';
 
@@ -148,6 +148,7 @@ export function Water() {
         <circleGeometry args={[POND.r + 1.6, 64]} />
       </mesh>
       <mesh geometry={cascade} material={fallMat} renderOrder={2} />
+      <Stream />
       {rocks.map((r, i) => (
         <mesh key={i} geometry={rockGeo} position={[r.x, r.y, r.z]} rotation={[0, r.r, 0]} scale={r.s} castShadow receiveShadow>
           <meshStandardMaterial color={i % 3 ? '#8f978d' : '#7f8a7c'} roughness={0.95} />
@@ -182,6 +183,81 @@ export function Water() {
           )}
         </group>
       ))}
+    </group>
+  );
+}
+
+/** The stream ribbon: follows the centre line at the water level, with ripples flowing downstream. */
+function Stream() {
+  const geo = useMemo(() => {
+    const pts = STREAM.filter((p) => p.s <= STREAM_MOUTH_S);
+    const w = STREAM_HALF + 0.4;
+    const pos: number[] = [];
+    const uv: number[] = [];
+    const idx: number[] = [];
+    pts.forEach((p, i) => {
+      const a = pts[Math.max(0, i - 1)];
+      const b = pts[Math.min(pts.length - 1, i + 1)];
+      const l = Math.hypot(b.x - a.x, b.z - a.z) || 1;
+      const nx = -(b.z - a.z) / l;
+      const nz = (b.x - a.x) / l;
+      for (const side of [-1, 1]) {
+        pos.push(p.x + nx * w * side, p.level, p.z + nz * w * side);
+        uv.push(side < 0 ? 0 : 1, p.s);
+      }
+      if (i < pts.length - 1) idx.push(i * 2, i * 2 + 2, i * 2 + 1, i * 2 + 1, i * 2 + 2, i * 2 + 3);
+    });
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    g.setIndex(idx);
+    g.computeVertexNormals();
+    return g;
+  }, []);
+  const mat = useMemo(() => {
+    const m = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      fog: true,
+      uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uTime: { value: 0 } }]),
+      vertexShader: `
+        #include <fog_pars_vertex>
+        varying vec2 vUv;
+        void main(){ vUv = uv; vec4 mvPosition = modelViewMatrix * vec4(position,1.0); gl_Position = projectionMatrix * mvPosition;
+          #include <fog_vertex>
+        }`,
+      fragmentShader: `
+        #include <fog_pars_fragment>
+        uniform float uTime; varying vec2 vUv;
+        float hash(vec2 p){ return fract(sin(dot(p, vec2(41.3, 289.1))) * 43758.5453); }
+        void main(){
+          float across = abs(vUv.x - 0.5) * 2.0;
+          vec3 deep = vec3(0.16, 0.55, 0.66); vec3 shallow = vec3(0.5, 0.88, 0.86);
+          vec3 col = mix(deep, shallow, smoothstep(0.3, 1.0, across));
+          // ripples carried downstream (vUv.y is metres along the stream)
+          float y = vUv.y - uTime * 1.6;
+          float w = sin(y * 3.1 + sin(vUv.x * 9.0 + y * 0.7) * 1.4) * sin(vUv.x * 13.0 - y * 0.9);
+          col += vec3(1.0) * smoothstep(0.55, 0.95, w) * 0.35;
+          float flecks = step(0.985, hash(vec2(floor(vUv.x * 26.0), floor(y * 5.0))));
+          col += flecks * 0.4;
+          // foam lines along the banks
+          col = mix(col, vec3(0.95), smoothstep(0.78, 0.92, across) * (0.5 + 0.5 * sin(y * 4.0 + vUv.x * 30.0)) * 0.6);
+          float alpha = 0.86 * (1.0 - smoothstep(0.9, 1.0, across));
+          gl_FragColor = vec4(col, alpha);
+          #include <colorspace_fragment>
+          #include <fog_fragment>
+        }`,
+    });
+    m.uniforms.uTime = waterUniforms.uTime;
+    return m;
+  }, []);
+  // the spring: a little pool of bubbling water among mossy rocks where the stream begins
+  const src = STREAM[0];
+  return (
+    <group>
+      <mesh geometry={geo} material={mat} renderOrder={1} />
+      <Sparkles count={24} scale={[2.2, 0.6, 2.2]} position={[src.x, src.level + 0.3, src.z]} size={5} speed={1.2} color="#ffffff" />
     </group>
   );
 }

@@ -21,6 +21,8 @@ export interface SaveData {
   stickers: string[];
   /** Anet's magic garden in the forest (keeps growing while she is away) */
   garden?: GardenSave;
+  /** leaf race on the forest stream: best time (seconds), most bubbles and how many races */
+  leafRace?: { best: number | null; bubbles: number; runs: number; wins: number };
 }
 
 export interface GardenSave {

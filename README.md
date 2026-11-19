@@ -107,6 +107,13 @@ by a ring of green dots, and then it is thirsty again (a blue drop floats above 
 growing while Anet is away. A blooming plant can be picked for +3 acorns and planted again. A bee visits the
 flowers and goes in the sticker book. Badges: *Little Gardener* (first bloom) and *Rainbow Garden* (all three).
 
+**Leaf race on the stream:** a little stream runs from a spring in the north-west hills down into the pond (Anet can
+wade through it). At the top a duck waits beside a big leaf. Hop on and race the duck to the pond. A 3-2-1 countdown
+starts the race. Then steer left and right to pop 12 bubbles and push forward to go faster. Bumping one of the mossy
+rocks only slows the leaf down. The race bar shows the time, the bubbles, and where the duck and the leaf are. At the
+finish Anet hops onto the bank and says her time; a new best time is saved. The first race gives +5 acorns. Badges:
+*Leaf Racer* (beat the duck) and *Bubble Catcher* (all 12 bubbles in one race).
+
 **Olli's animal riddles:** Olli asks three riddles, for example "I am white and round, I swim on the pond and say
 quack quack!". Walking up to the right animal answers each one: the duck, the butterfly, the squirrel. Solving all
 three gives +5 acorns and the *Clever Explorer* badge. The HUD shows the riddle number while one is open.

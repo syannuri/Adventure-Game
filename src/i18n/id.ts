@@ -169,6 +169,7 @@ export const id: Dict = {
     plant: (name) => `Tanam biji ${name}`,
     water: (name) => `Siram ${name}`,
     takeCan: 'Ambil kaleng penyiram',
+    leafRace: 'Naik daun dan balapan!',
     pick: (name) => `Petik ${name}`,
   },
   toasts: {
@@ -214,6 +215,8 @@ export const id: Dict = {
     pillar_climber: { title: 'Pemanjat Pilar', description: 'Mencapai kristal di pilar batu tertinggi.' },
     night_light: { title: 'Pembawa Cahaya', description: 'Menyalakan semua lentera untuk Pesta Cahaya Lumi.' },
     sky_hopper: { title: 'Pelompat Pegas', description: 'Memantul ke harta lentera di pohon raksasa.' },
+    leaf_racer: { title: 'Pembalap Daun', description: 'Mengalahkan bebek dalam balapan daun di sungai.' },
+    bubble_catcher: { title: 'Penangkap Gelembung', description: 'Memecahkan semua gelembung dalam satu balapan daun.' },
     green_thumb: { title: 'Tukang Kebun Cilik', description: 'Menumbuhkan tanaman pertamamu di kebun ajaib.' },
     rainbow_garden: { title: 'Kebun Pelangi', description: 'Menumbuhkan ketiga tanaman ajaib di kebun.' },
     riddle_solver: { title: 'Penjelajah Pintar', description: 'Menjawab semua teka-teki hewan dari Olli.' },
@@ -293,6 +296,7 @@ export const id: Dict = {
     bat: ['Kelelawar', 'Bat'],
     bee: ['Lebah', 'Bee'],
   },
+  race: { go: 'Ayo!', sec: 'dtk', ahead: 'Kamu di depan!', behind: 'Bebek di depan!' },
   shop: {
     title: 'Toko Kiki',
     pouch: 'Kantongmu',

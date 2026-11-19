@@ -101,6 +101,36 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
     const locked = !!g.dialogue || (!!g.cinematic && g.cinematic.kind !== 'finale') || g.screen !== 'playing';
     const finale = g.cinematic?.kind === 'finale' || g.screen === 'complete';
 
+    // ------------------------------------------------ riding (leaf race): placed by the ride, no physics
+    if (player.ride) {
+      const r = player.ride;
+      pos.set(r.x, r.y, r.z);
+      player.facing = r.facing;
+      s.vy = 0;
+      s.hv.set(0, 0);
+      s.grounded = true;
+      s.airTime = 0;
+      player.autoTarget = null;
+      input.jumpPressed = false;
+      input.emote = null;
+      let ra: AnimState | null = s.action ? s.action.name : null;
+      if (s.action) {
+        s.action.time += dt;
+        if (s.action.time > s.action.duration) s.action = null;
+      }
+      if (g.dialogue && g.dialogue.lines[g.dialogue.index]?.speaker === 'anett') ra = 'talk';
+      animator.update(rig.current, dt, { speed: 0, airborne: false, vy: 0, land: 0, action: ra, overlay: 0, idleTime: 0 });
+      player.velocity.set(0, 0, 0);
+      player.grounded = true;
+      player.speed = 0;
+      group.current.position.copy(pos);
+      group.current.rotation.y = player.facing;
+      blob.current.position.y = 0.02;
+      blob.current.scale.setScalar(0.8);
+      onAfterMove?.(dt);
+      return;
+    }
+
     // ------------------------------------------------ desired horizontal velocity
     const yaw = cameraState.yaw;
     const fx = -Math.sin(yaw);

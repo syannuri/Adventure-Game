@@ -14,6 +14,8 @@ export const player = {
   autoTarget: null as null | { x: number; z: number; stopDist: number; onArrive: () => void },
   /** Point Anett should turn toward (talking to an NPC). */
   lookAt: null as null | { x: number; z: number },
+  /** riding something (the leaf race): the controller just places Anet here, no walking physics */
+  ride: null as null | { x: number; y: number; z: number; facing: number },
   /** reset hook set by the controller */
   teleport: (_x: number, _y: number, _z: number, _facing: number) => {},
 };

@@ -167,6 +167,7 @@ export const en = {
     plant: (name: string) => `Plant the ${name} seed`,
     water: (name: string) => `Water the ${name}`,
     takeCan: 'Take the watering can',
+    leafRace: 'Hop on the leaf and race!',
     pick: (name: string) => `Pick the ${name}`,
   },
   toasts: {
@@ -212,6 +213,8 @@ export const en = {
     pillar_climber: { title: 'Pillar Climber', description: 'Reached the crystal on the tallest stone pillar.' },
     night_light: { title: 'Light Bringer', description: "Lit every lantern for Lumi's Light Party." },
     sky_hopper: { title: 'Spring Jumper', description: 'Bounced up to the lantern treasure in the giant tree.' },
+    leaf_racer: { title: 'Leaf Racer', description: 'Beat the duck in the leaf race down the stream.' },
+    bubble_catcher: { title: 'Bubble Catcher', description: 'Popped every bubble in one leaf race.' },
     green_thumb: { title: 'Little Gardener', description: 'Grew your first plant in the magic garden.' },
     rainbow_garden: { title: 'Rainbow Garden', description: 'Grew all three magic plants in the garden.' },
     riddle_solver: { title: 'Clever Explorer', description: "Solved all of Olli's animal riddles." },
@@ -292,6 +295,7 @@ export const en = {
     bat: ['Bat', 'Kelelawar'],
     bee: ['Bee', 'Lebah'],
   } as Record<string, [string, string]>,
+  race: { go: 'Go!', sec: 's', ahead: 'You are in front!', behind: 'The duck is in front!' },
   shop: {
     title: "Kiki's Shop",
     pouch: 'Your pouch',

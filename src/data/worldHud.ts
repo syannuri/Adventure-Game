@@ -58,6 +58,7 @@ export const WORLD_HUD: Record<string, WorldHud> = {
       ground: '#bfe6a8',
       paths: Forest.PATHS,
       pathColor: '#e7cd98',
+      lines: [{ pts: Forest.STREAM.filter((_, i) => i % 4 === 0).map((p) => [p.x, p.z] as [number, number]), color: '#7fd0e0', width: Forest.STREAM_HALF * 2 }],
       landmarks: [
         { x: Forest.POND.x, z: Forest.POND.z, r: Forest.POND.r, fill: '#7fd0e0' },
         { x: Forest.FAIRY_POS.x, z: Forest.FAIRY_POS.z, r: 1.6, fill: '#b8a2ff' },
