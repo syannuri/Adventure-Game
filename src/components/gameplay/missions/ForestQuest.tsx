@@ -29,6 +29,7 @@ import { LilyPads } from '../sidequests/LilyPads';
 import { DucklingQuest } from '../sidequests/DucklingQuest';
 import { SpringMushroom } from '../sidequests/SpringMushroom';
 import { MagicGarden } from '../sidequests/MagicGarden';
+import { LeafRace } from '../sidequests/LeafRace';
 import { OlliRiddles, olliRiddleLines } from '../sidequests/OlliRiddles';
 import { LanternPosts, NightQuest, nightTalkLumi } from './NightQuest';
 
@@ -222,6 +223,7 @@ export function ForestQuest() {
       <DucklingQuest />
       <SpringMushroom />
       <MagicGarden />
+      <LeafRace />
       <OlliRiddles />
       <LanternPosts />
       {night && <NightQuest />}

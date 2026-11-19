@@ -898,3 +898,15 @@ canvas { display: block; touch-action: none; }
 /* night forest button on the world card */
 .night-btn { margin-top: 6px; border: 0; border-radius: 999px; padding: 6px 14px; font-family: inherit; font-weight: 800; font-size: 14px; color: #fff; background: linear-gradient(180deg, #4a5bb8, #1f2a66); box-shadow: 0 4px 0 #141c48, 0 0 14px rgba(214, 255, 122, 0.45); cursor: pointer; }
 .night-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #141c48; }
+
+/* leaf race overlay */
+.race-count { position: absolute; inset: 0; display: grid; place-items: center; font-family: 'Luckiest Guy', 'Baloo 2', sans-serif; font-size: min(26vw, 30vh); color: #ffd23f; -webkit-text-stroke: 0.05em #2f5d2a; paint-order: stroke fill; text-shadow: 0 0.06em 0 #1d3d1a; animation: pop 0.3s ease; z-index: 6; }
+.race-box { position: absolute; left: 50%; top: 104px; transform: translateX(-50%); background: rgba(255, 255, 255, 0.88); border-radius: 18px; padding: 8px 18px 10px; font-weight: 800; color: #2f5d2a; box-shadow: var(--shadow); min-width: 250px; text-align: center; z-index: 6; }
+.race-line { font-size: 22px; line-height: 1.1; white-space: nowrap; }
+.race-track { position: relative; height: 12px; margin: 10px 8px 0; border-radius: 8px; background: #cfe9c4; }
+.race-track span { position: absolute; top: -9px; transform: translateX(-50%); font-size: 18px; line-height: 1; }
+.race-flag { right: -14px; }
+.race-ahead, .race-behind { font-size: 14px; margin-top: 6px; }
+.race-ahead { color: #2f8a3a; }
+.race-behind { color: #c46a1a; }
+@media (max-width: 640px) { .race-box { top: 132px; min-width: 0; } .race-line { font-size: 18px; } }

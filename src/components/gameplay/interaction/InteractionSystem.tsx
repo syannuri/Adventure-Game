@@ -11,7 +11,7 @@ export function InteractionSystem() {
   useFrame(() => {
     const g = useGame.getState();
     if (g.paused) return;
-    const busy = !!g.dialogue || (!!g.cinematic && g.cinematic.kind !== 'finale') || g.screen !== 'playing' || g.level.stage === 'done';
+    const busy = !!player.ride || !!g.dialogue || (!!g.cinematic && g.cinematic.kind !== 'finale') || g.screen !== 'playing' || g.level.stage === 'done';
     if (busy) {
       input.interactPressed = false;
       if (current.current) {

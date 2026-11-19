@@ -79,7 +79,8 @@ export function distToPath(x: number, z: number) {
   return d;
 }
 
-export function terrainHeight(x: number, z: number) {
+/** Ground height before the stream is carved in. */
+function baseHeight(x: number, z: number) {
   const r = Math.hypot(x, z);
   let h = Math.sin(x * 0.085) * 0.55 + Math.cos(z * 0.07 + 1.3) * 0.5 + Math.sin((x + z) * 0.16) * 0.22 + Math.cos(x * 0.31 - z * 0.23) * 0.08;
   // flat central glade where the fairy lives
@@ -93,6 +94,117 @@ export function terrainHeight(x: number, z: number) {
   const dp = Math.hypot(x - POND.x, z - POND.z);
   h = lerp(h, -1.5, 1 - smoothstep(POND.r * 0.55, POND.r + 2.2, dp));
   return h;
+}
+
+// --------------------------------------------------------------------- the stream (leaf race)
+
+/**
+ * A little stream from a spring in the north-west hills down into the pond. It crosses no path.
+ * Anet can wade through it; the leaf race rides it from the spring to the pond.
+ */
+const STREAM_CTRL: [number, number][] = [
+  [-25, -34.5],
+  [-20, -31],
+  [-15, -28],
+  [-10, -29.5],
+  [-5, -28.5],
+  [-1, -25.5],
+  [3, -23.5],
+  [7, -22.2],
+  [10, -19.6],
+  [12.6, -18.4],
+];
+/** half the width of the water */
+export const STREAM_HALF = 1.6;
+function chaikin(pts: [number, number][], n: number): [number, number][] {
+  let p = pts;
+  for (let k = 0; k < n; k++) {
+    const out: [number, number][] = [p[0]];
+    for (let i = 0; i < p.length - 1; i++) {
+      const [ax, az] = p[i];
+      const [bx, bz] = p[i + 1];
+      out.push([ax * 0.75 + bx * 0.25, az * 0.75 + bz * 0.25], [ax * 0.25 + bx * 0.75, az * 0.25 + bz * 0.75]);
+    }
+    out.push(p[p.length - 1]);
+    p = out;
+  }
+  return p;
+}
+/** centre line sampled every ~0.5 m: position, distance along the stream and water level */
+export const STREAM: { x: number; z: number; s: number; level: number }[] = (() => {
+  const raw = chaikin(STREAM_CTRL, 3);
+  const pts: { x: number; z: number; s: number; level: number }[] = [];
+  let s = 0;
+  for (let i = 0; i < raw.length - 1; i++) {
+    const [ax, az] = raw[i];
+    const [bx, bz] = raw[i + 1];
+    const l = Math.hypot(bx - ax, bz - az);
+    const n = Math.max(1, Math.round(l / 0.5));
+    for (let k = 0; k < n; k++) pts.push({ x: ax + ((bx - ax) * k) / n, z: az + ((bz - az) * k) / n, s: s + (l * k) / n, level: 0 });
+    s += l;
+  }
+  const last = raw[raw.length - 1];
+  pts.push({ x: last[0], z: last[1], s, level: 0 });
+  // the water always runs downhill and stays below the banks; it ends at the pond's level
+  let level = Infinity;
+  for (const p of pts) {
+    const bank = Math.min(...[-1, 1].map((side) => baseHeight(p.x + side * 1.2, p.z + side * 1.2)), baseHeight(p.x, p.z));
+    level = Math.min(level - 0.006, bank - 0.32);
+    p.level = Math.max(WATER_LEVEL, level);
+  }
+  return pts;
+})();
+export const STREAM_LEN = STREAM[STREAM.length - 1].s;
+/** where the stream flows into the pond (its ribbon stops here) */
+export const STREAM_MOUTH_S = STREAM.find((p) => Math.hypot(p.x - POND.x, p.z - POND.z) < POND.r + 1.65)?.s ?? STREAM_LEN;
+/** leaf race: the start (a little dock just inside the walkable area) and the finish arch before the pond */
+export const RACE_START_S = (STREAM.find((p) => Math.hypot(p.x, p.z) < 36)?.s ?? 2) + 0.6;
+export const RACE_END_S = STREAM_MOUTH_S - 2.2;
+const SB = STREAM.reduce((b, p) => ({ x0: Math.min(b.x0, p.x), x1: Math.max(b.x1, p.x), z0: Math.min(b.z0, p.z), z1: Math.max(b.z1, p.z) }), { x0: Infinity, x1: -Infinity, z0: Infinity, z1: -Infinity });
+
+/** distance to the stream's centre line and the matching distance along it (and its water level) */
+export function streamQuery(x: number, z: number) {
+  if (x < SB.x0 - 5 || x > SB.x1 + 5 || z < SB.z0 - 5 || z > SB.z1 + 5) return null;
+  let best = Infinity;
+  let bs = 0;
+  let bl = 0;
+  for (let i = 0; i < STREAM.length - 1; i++) {
+    const a = STREAM[i];
+    const b = STREAM[i + 1];
+    const dx = b.x - a.x;
+    const dz = b.z - a.z;
+    const l2 = dx * dx + dz * dz || 1;
+    const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / l2));
+    const d = Math.hypot(x - (a.x + dx * t), z - (a.z + dz * t));
+    if (d < best) {
+      best = d;
+      bs = a.s + (b.s - a.s) * t;
+      bl = a.level + (b.level - a.level) * t;
+    }
+  }
+  return { d: best, s: bs, level: bl };
+}
+
+/** point on the stream at distance s: position, flow direction and water level */
+export function streamAt(s: number) {
+  const c = Math.max(0, Math.min(STREAM_LEN - 0.001, s));
+  let i = 0;
+  while (i < STREAM.length - 2 && STREAM[i + 1].s < c) i++;
+  const a = STREAM[i];
+  const b = STREAM[i + 1];
+  const t = (c - a.s) / (b.s - a.s || 1);
+  const l = Math.hypot(b.x - a.x, b.z - a.z) || 1;
+  return { x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t, dx: (b.x - a.x) / l, dz: (b.z - a.z) / l, level: a.level + (b.level - a.level) * t };
+}
+
+export function terrainHeight(x: number, z: number) {
+  const h = baseHeight(x, z);
+  const q = streamQuery(x, z);
+  if (!q || q.d > STREAM_HALF + 1.8) return h;
+  // a shallow channel: deepest in the middle, a gentle bank up to the grass
+  const bed = q.level - 0.12 - 0.3 * (1 - Math.min(1, q.d / STREAM_HALF) ** 2);
+  if (q.d <= STREAM_HALF) return Math.min(h, bed);
+  return lerp(Math.min(h, q.level - 0.12), h, smoothstep(STREAM_HALF, STREAM_HALF + 1.8, q.d));
 }
 
 // --------------------------------------------------------------------- quest objects
@@ -289,7 +401,12 @@ function genTrees(): TreeDef[] {
   return trees;
 }
 
-export const TREES = genTrees();
+const TREES_ALL = genTrees();
+const clearOfStream = (x: number, z: number, r: number) => {
+  const q = streamQuery(x, z);
+  return !q || q.d > STREAM_HALF + r;
+};
+export const TREES = TREES_ALL.filter((t) => clearOfStream(t.x, t.z, 0.8 + 0.45 * t.s));
 
 /** Hand-placed giant "hero" trees with glowing lanterns. */
 export const HERO_TREES = [
@@ -312,14 +429,15 @@ function scatter(seed: number, count: number, rMin: number, rMax: number, gap = 
     if (Math.hypot(x - PUZZLE_TABLET.x, z - PUZZLE_TABLET.z) < 2.6) continue; // keep the flower puzzle clear
     if (Math.hypot(x - MUSIC.x, z - MUSIC.z) < MUSIC.r + 1.3) continue; // and the singing flowers
     if (Math.hypot(x - SHOP.x, z - SHOP.z) < 2.2) continue; // and Kiki's shop
-    if (TREES.some((t) => Math.hypot(t.x - x, t.z - z) < 0.9 * t.s)) continue;
+    if (TREES_ALL.some((t) => Math.hypot(t.x - x, t.z - z) < 0.9 * t.s)) continue;
     out.push({ x, z, s: 0.6 + rnd() * 0.8, r: rnd() * Math.PI * 2, c: rnd() });
   }
   return out;
 }
 
 /** keep the garden clearing free (filtered afterwards so nothing else moves) */
-const notInGarden = <T extends { x: number; z: number }>(list: T[], extra = 0) => list.filter((p) => Math.hypot(p.x - GARDEN.x, p.z - GARDEN.z) > GARDEN.r + extra);
+const notInGarden = <T extends { x: number; z: number }>(list: T[], extra = 0) =>
+  list.filter((p) => Math.hypot(p.x - GARDEN.x, p.z - GARDEN.z) > GARDEN.r + extra && clearOfStream(p.x, p.z, 0.35 + Math.max(0, extra * 0.5)));
 export const FLOWERS = notInGarden(scatter(11, 900, 2, 40));
 export const GRASS = notInGarden(scatter(23, 5200, 0, 44, -0.4), -1.2);
 export const MUSHROOMS = notInGarden(scatter(31, 70, 4, 36, 0.2));

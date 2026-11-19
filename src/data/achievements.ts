@@ -22,6 +22,8 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
   sky_hopper: { id: 'sky_hopper', title: 'Spring Jumper', description: 'Bounced up to the lantern treasure in the giant tree.', icon: '⇑' },
   riddle_solver: { id: 'riddle_solver', title: 'Clever Explorer', description: "Solved all of Olli's animal riddles.", icon: '?' },
   lily_hopper: { id: 'lily_hopper', title: 'Lily Hopper', description: 'Hopped across the lily pads to the golden lotus.', icon: '❁' },
+  leaf_racer: { id: 'leaf_racer', title: 'Leaf Racer', description: 'Beat the duck in the leaf race down the stream.', icon: '❧' },
+  bubble_catcher: { id: 'bubble_catcher', title: 'Bubble Catcher', description: 'Popped every bubble in one leaf race.', icon: '○' },
   green_thumb: { id: 'green_thumb', title: 'Little Gardener', description: 'Grew your first plant in the magic garden.', icon: '❦' },
   rainbow_garden: { id: 'rainbow_garden', title: 'Rainbow Garden', description: 'Grew all three magic plants in the garden.', icon: '✿' },
   duck_helper: { id: 'duck_helper', title: 'Duck Helper', description: 'Brought all four ducklings home to Mama Duck.', icon: '◒' },

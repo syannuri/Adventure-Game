@@ -146,6 +146,16 @@ const EN = {
     rainbow: [L('anett', 'Ooh! A magic rainbow flower! It sparkles in every colour!')],
   } as Record<string, DialogueLine[]>,
   gardenAll: [L('anett', 'All three plants bloomed! My garden is so beautiful! A little bee came to visit too!')],
+  raceIntro: [
+    L('duck', 'Quack! Do you want to race me down the stream to the pond? Hop on the big leaf!'),
+    L('anett', 'Yes! How do I steer?'),
+    L('duck', 'Go left and right to pop the bubbles. Push forward to go faster, and steer around the rocks. Quack quack, ready?'),
+  ],
+  raceResult: (time: string, n: number, t: number, record: boolean) => [
+    L('anett', `${record ? 'A new record! ' : ''}I raced down the stream in ${time} seconds and popped ${n} of ${t} bubbles!`),
+  ],
+  raceWin: [L('duck', 'Quack! You were faster than me! What a great leaf racer!')],
+  raceLose: [L('duck', 'Quack quack! I won this time. That was fun! Race me again whenever you like!')],
 };
 
 const ID: typeof EN = {
@@ -290,6 +300,16 @@ const ID: typeof EN = {
     rainbow: [L('anett', 'Ooh! Bunga pelangi ajaib! Berkilau dengan semua warna!')],
   },
   gardenAll: [L('anett', 'Ketiga tanaman sudah mekar! Kebunku indah sekali! Ada lebah kecil yang datang berkunjung juga!')],
+  raceIntro: [
+    L('duck', 'Kwek! Mau balapan denganku menyusuri sungai sampai ke kolam? Naiklah ke daun besar itu!'),
+    L('anett', 'Mau! Bagaimana cara mengemudikannya?'),
+    L('duck', 'Geser ke kiri dan kanan untuk memecahkan gelembung. Tekan maju supaya lebih cepat, dan hindari batu. Kwek kwek, siap?'),
+  ],
+  raceResult: (time, n, t, record) => [
+    L('anett', `${record ? 'Rekor baru! ' : ''}Aku menyusuri sungai dalam ${time} detik dan memecahkan ${n} dari ${t} gelembung!`),
+  ],
+  raceWin: [L('duck', 'Kwek! Kamu lebih cepat dariku! Kamu pembalap daun yang hebat!')],
+  raceLose: [L('duck', 'Kwek kwek! Kali ini aku menang. Seru sekali! Ayo balapan lagi kapan saja!')],
 };
 
 /** Dialogue in the current language. */
