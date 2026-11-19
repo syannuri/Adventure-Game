@@ -5,6 +5,8 @@
 import type { Spot } from '../components/worlds/EnchantedForest/layout';
 import * as Forest from '../components/worlds/EnchantedForest/layout';
 import * as Candy from '../components/worlds/CandyVillage/layout';
+import * as Cave from '../components/worlds/CrystalCave/layout';
+import { caveObjective } from '../components/gameplay/missions/caveObjective';
 import { useGame } from '../systems/store';
 import { forestObjective, FOREST_HINTS, type Objective } from '../components/gameplay/missions/forestObjective';
 import { candyObjective } from '../components/gameplay/missions/candyObjective';
@@ -98,6 +100,32 @@ export const WORLD_HUD: Record<string, WorldHud> = {
     },
     hint: () => tr().candyHints[level().stage] ?? '',
   },
+};
+
+WORLD_HUD['crystal-cave'] = {
+  index: 3,
+  stars: Cave.CRYSTALS,
+  coins: Cave.GEMS,
+  treasures: Cave.CAVE_CHESTS,
+  starIcon: '◇',
+  starColor: '#9b6bff',
+  coinIcon: '◆',
+  coinColor: '#2fb6d9',
+  map: {
+    ground: '#6a5f96',
+    paths: Cave.PATHS,
+    pathColor: '#b6a8ec',
+    lines: [{ pts: [[Cave.SOURCE.x, Cave.SOURCE.z], ...Cave.MIRRORS.map((m) => [m.x, m.z] as [number, number]), [Cave.HEART.x, Cave.HEART.z]], color: '#fff3b0', width: 0.6 }],
+    landmarks: [
+      { x: Cave.LAKE.x, z: Cave.LAKE.z, r: Cave.LAKE.r, fill: '#5fe0e8' },
+      { x: Cave.HEART.x, z: Cave.HEART.z, r: 1.8, fill: '#c9a7ff' },
+    ],
+  },
+  objective: () => {
+    const l = level();
+    return caveObjective(l.stage, l.stars, l.mirrors);
+  },
+  hint: () => tr().caveHints[level().stage] ?? '',
 };
 
 export const worldHud = (id: string | null) => WORLD_HUD[id ?? 'enchanted-forest'] ?? WORLD_HUD['enchanted-forest'];

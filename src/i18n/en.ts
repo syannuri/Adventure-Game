@@ -80,6 +80,20 @@ export const en = {
     returnWand: 'Bring the magic wand back to Lumi in the middle of the forest',
     done: 'Hooray! You helped Lumi!',
   },
+  caveObjectives: {
+    meetDragon: 'Find Drako the baby dragon by the Heart Crystal',
+    collect: (n: number, t: number) => `Find the lost crystals  ${n} / ${t}`,
+    returnCrystals: 'Bring the crystals back to Drako',
+    lightPuzzle: (n: number) => `Turn the mirror crystals to guide the sunbeam  ${n} / 3`,
+    done: 'Hooray! The whole cave is glowing again!',
+  },
+  caveHints: {
+    meetDragon: 'Walk down the glowing path to the big crystal in the middle of the cave.',
+    collectCrystals: 'Look at the little map! Jump up the stone pillars, and look by the lake and in the mushroom grove.',
+    returnCrystals: 'Drako is waiting next to the Heart Crystal.',
+    lightPuzzle: 'Touch a mirror crystal to turn it. Make the sunbeam go from crystal to crystal until it reaches the Heart Crystal.',
+    done: '',
+  } as Record<string, string>,
   night: {
     button: '🌙 Night forest',
     objective: (f: number, ft: number, l: number, lt: number) => `Light Party: fireflies ${f} / ${ft} · lanterns ${l} / ${lt}`,
@@ -141,6 +155,9 @@ export const en = {
     listenFlowers: 'Listen to the flower song',
     shop: "Visit Kiki's shop",
     talkDuck: 'Talk to Mama Duck',
+    talkDrako: 'Talk to Drako',
+    giveCrystals: 'Give the crystals to Drako',
+    turnMirror: 'Turn the mirror crystal',
     lotus: 'Pick the golden lotus',
     lantern: 'Open the lantern treasure',
   },
@@ -154,6 +171,8 @@ export const en = {
     song: 'Song complete!',
     acornGift: 'Golden acorns!',
     sticker: 'New sticker!',
+    crystal: 'Crystal found!',
+    crystalCount: (n: number, t: number) => `${n} of ${t} crystals`,
     riddleRight: 'You got it!',
     duckling: 'Found a duckling!',
     ducklingCount: (n: number, t: number) => `${n} of ${t} ducklings`,
@@ -174,6 +193,10 @@ export const en = {
     high_jumper: { title: 'Mushroom Hopper', description: 'Reached the top of the giant mushrooms.' },
     puzzle_master: { title: 'Flower Wizard', description: 'Solved the colour flower puzzle.' },
     flower_singer: { title: 'Flower Singer', description: "Sang all three songs of Lumi's singing flowers." },
+    crystal_keeper: { title: 'Crystal Keeper', description: 'Lit up the Crystal Cave for Drako.' },
+    light_master: { title: 'Light Master', description: 'Guided the sunbeam to the Heart Crystal.' },
+    gem_collector: { title: 'Gem Collector', description: 'Collected every little gem in the Crystal Cave.' },
+    pillar_climber: { title: 'Pillar Climber', description: 'Reached the crystal on the tallest stone pillar.' },
     night_light: { title: 'Light Bringer', description: "Lit every lantern for Lumi's Light Party." },
     sky_hopper: { title: 'Spring Jumper', description: 'Bounced up to the lantern treasure in the giant tree.' },
     riddle_solver: { title: 'Clever Explorer', description: "Solved all of Olli's animal riddles." },
@@ -190,7 +213,7 @@ export const en = {
   dialogue: {
     next: 'Next ▶',
     ok: 'OK ✓',
-    speakers: { anett: 'Anet', lumi: 'Lumi the Fairy', pip: 'Pip the Rabbit', olli: 'Olli the Owl', koko: 'Koko the Chef', kiki: 'Kiki the Squirrel', duck: 'Mama Duck' },
+    speakers: { anett: 'Anet', lumi: 'Lumi the Fairy', pip: 'Pip the Rabbit', olli: 'Olli the Owl', koko: 'Koko the Chef', kiki: 'Kiki the Squirrel', duck: 'Mama Duck', dragon: 'Drako the Baby Dragon' },
   },
   touch: { action: 'Action', talk: 'Talk', take: 'Take', open: 'Open', touchFlower: 'Touch', jump: 'Jump', wave: 'Wave', dance: 'Dance', run: '🏃 Run', runOn: '🏃 Running' },
   controls: {
@@ -236,7 +259,7 @@ export const en = {
     count: (n: number, t: number) => `${n} of ${t} stickers`,
     tip: 'Walk up close to an animal to take its picture for your book!',
     hidden: '?',
-    worldLabel: { 'enchanted-forest': 'Enchanted Forest', 'candy-village': 'Candy Village' } as Record<string, string>,
+    worldLabel: { 'enchanted-forest': 'Enchanted Forest', 'candy-village': 'Candy Village', 'crystal-cave': 'Crystal Cave' } as Record<string, string>,
     close: 'Done',
   },
   /** animal names in both languages (the book shows both, a little word lesson) */
@@ -250,6 +273,8 @@ export const en = {
     butterfly: ['Butterfly', 'Kupu-kupu'],
     bunny: ['Bunny', 'Anak kelinci'],
     gingerbread: ['Gingerbread', 'Kue jahe'],
+    dragon: ['Baby dragon', 'Naga kecil'],
+    bat: ['Bat', 'Kelelawar'],
   } as Record<string, [string, string]>,
   shop: {
     title: "Kiki's Shop",
@@ -290,6 +315,7 @@ export const en = {
     byWorld: {
       'enchanted-forest': { title: 'Forest Saved!', helped: 'You helped Lumi find her magic wand!', coins: 'Acorns', treasures: 'Treasures' },
       'candy-village': { title: 'Party Saved!', helped: 'You helped Koko bake the Rainbow Cake!', coins: 'Peppermints', treasures: 'Gifts' },
+      'crystal-cave': { title: 'The Cave Shines!', helped: 'You helped Drako light up the Crystal Cave!', coins: 'Gems', treasures: 'Treasures' },
     } as Record<string, { title: string; helped: string; coins: string; treasures: string }>,
   },
 };

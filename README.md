@@ -8,8 +8,8 @@ the legendary Crystal Castle.
 
 > **Languages:** Bahasa Indonesia (default) and English. Switch with the **ID / EN** button on the main menu or in Settings.
 >
-> **Current status: World 1 (Enchanted Forest) and World 2 (Candy Village) are playable.** Worlds 3–5 are shown on
-> the map as "Coming soon". See [Status](#status) for what's done, what's a placeholder and what's next.
+> **Current status: World 1 (Enchanted Forest), World 2 (Candy Village) and World 3 (Crystal Cave) are playable.**
+> Worlds 4–5 are shown on the map as "Coming soon". See [Status](#status) for what's done, what's a placeholder and what's next.
 
 ---
 
@@ -135,6 +135,26 @@ Optional extras: 20 peppermints, 3 gift boxes, and new achievements (Candy Hero,
 Peppermint Collector). **Play** on the main menu continues with the first world that isn't finished yet.
 Progress (completed worlds, Magic Stars, achievements, best scores, settings) is saved in browser storage.
 
+## World 3 – Crystal Cave
+
+**Mission:** help Drako the baby dragon light up his cave again.
+
+1. Walk down the glowing path to the dark Heart Crystal and talk to Drako. He is sad and can't fly.
+2. Find the **5 little crystals** (Pip the rabbit gives hints):
+   - on the tall stone pillars in the east (jump from pillar to pillar)
+   - on the shore of the glowing lake in the west
+   - in the glowing mushroom grove in the south-east
+   - on the high ledge in the north-east
+   - at the end of the path in the north
+3. Bring them back. Drako sets them around the Heart Crystal.
+4. **Light-beam puzzle:** a sunbeam falls through a hole in the roof onto a prism. Touch each of the three mirror
+   crystals to turn it a quarter turn. The beam shows how far it gets, and a mirror lights up when it sends the
+   light on to the next one. When all three face the right way, the beam reaches the Heart Crystal.
+5. The whole cave lights up, Drako flies again, and the Magic Star is awarded.
+
+Optional extras: 20 gems, 3 treasure chests, bats and Drako for the sticker book, and new achievements (Crystal
+Keeper, Light Master, Gem Collector, Pillar Climber).
+
 ## Features in this build
 
 - **Anet (HD):** a sculpted, fully textured 3D model made from the main-menu cover illustration
@@ -202,10 +222,11 @@ src/
         AnetAnimations.ts    pose library (13 animations)
         AnetAnimator.ts      state machine + blend tree + damping + blinking
         AnetController.tsx   movement, jumping, collisions, emotes
-      npc/                    Fairy (Lumi), Rabbit (Pip), Owl (Olli)
+      npc/                    Fairy (Lumi), Rabbit (Pip), Owl (Olli), Squirrel (Kiki), Dragon (Drako)
     worlds/
       EnchantedForest/        layout.ts (map data), Terrain, Sky, Trees, Vegetation, Water, Props, Critters
       CandyVillage/           layout.ts, CandyTerrain (ground + chocolate river), CandyProps, candyTextures
+      CrystalCave/            layout.ts, CaveScene (floor, dome, crystals, glowing lake, pillars, bats)
       shared/Lights.tsx       sun + rim light used by every world
       MenuScene/              3D backdrop for the menus
     gameplay/
@@ -256,15 +277,17 @@ which is far too slow to measure performance.
 | --- | --- |
 | World 1 – Enchanted Forest | ✅ Playable from start to finish |
 | World 2 – Candy Village | ✅ Playable from start to finish (Koko the chef, 5 ingredients, candy sorting puzzle) |
+| World 3 – Crystal Cave | ✅ Playable from start to finish (Drako the baby dragon, 5 crystals, light-beam puzzle) |
 | Anet character + 13 animations | ✅ Sculpted HD model (GLB, auto-skinned), procedural model as fallback |
 | NPCs (fairy, rabbit, owl) | ✅ Procedural models |
 | Dialogue, quest, collectibles, achievements, saving | ✅ |
 | Menus, HUD, minimap, settings, pause, level complete | ✅ |
 | Keyboard + touch controls | ✅ (touch verified only in device emulation) |
 | Music and SFX | ✅ Original, synthesized at runtime (placeholder for recorded audio) |
-| Puzzles | ✅ Colour flower puzzle (World 1), candy sorting puzzle (World 2). ⏳ Memory and crystal-linking puzzles planned for later worlds |
-| Baby dragon and cloud creature NPCs | ⏳ Planned for later worlds |
-| Worlds 3–5 (Crystal Cave, Ocean Kingdom, Sky Castle) | ⏳ Not built – shown as "Coming soon" |
+| Puzzles | ✅ Colour flower puzzle (World 1), candy sorting puzzle (World 2), light-beam mirror puzzle (World 3) |
+| Baby dragon NPC | ✅ Drako (procedural model) |
+| Cloud creature NPC | ⏳ Planned for World 5 |
+| Worlds 4–5 (Ocean Kingdom, Sky Castle) | ⏳ Not built – shown as "Coming soon" |
 | Crystal Castle finale | ⏳ Not built |
 | Cosmetics / unlockable characters | ⏳ Not built (progress tracking is in place) |
 | Native Android / iOS builds | ⏳ Not set up – the web build works in mobile browsers; wrap with Capacitor later |
@@ -272,7 +295,6 @@ which is far too slow to measure performance.
 ## Roadmap
 
 2. Real blend-shape facial animation for the HD model (it now has blinking/squinting eyelids and an opening mouth).
-4. World 3 – Crystal Cave (crystal collecting, light-beam puzzle).
 5. World 4 – Ocean Kingdom (swimming movement, rescue the baby sea turtle).
 6. World 5 – Sky Castle (floating islands, rainbow bridges, Crystal Castle finale).
 7. Recorded music and voice lines; Capacitor packaging for Android and iOS.

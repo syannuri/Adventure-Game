@@ -34,7 +34,7 @@ export const WORLDS: WorldInfo[] = [
     name: 'Crystal Cave',
     tagline: 'Glowing crystals under the mountain.',
     mission: 'Collect five crystals and solve the light puzzle.',
-    built: false,
+    built: true,
     colors: ['#8fd8ff', '#4b4bbd'],
   },
   {

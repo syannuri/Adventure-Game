@@ -30,6 +30,7 @@ const CAPTURE = typeof location !== 'undefined' && new URLSearchParams(location.
 
 const EnchantedForest = lazy(() => import('./components/worlds/EnchantedForest/EnchantedForest').then((m) => ({ default: m.EnchantedForest })));
 const CandyVillage = lazy(() => import('./components/worlds/CandyVillage/CandyVillage').then((m) => ({ default: m.CandyVillage })));
+const CrystalCave = lazy(() => import('./components/worlds/CrystalCave/CrystalCave').then((m) => ({ default: m.CrystalCave })));
 const PostFX = lazy(() => import('./components/effects/PostFX'));
 
 /** Bloom etc. start a moment after the first frame so the world appears immediately. */
@@ -80,7 +81,7 @@ export default function GameView({ review = false }: { review?: boolean }) {
         }}
       >
         <Suspense fallback={null}>
-          {review ? <MenuScene /> : inWorld ? worldId === 'candy-village' ? <CandyVillage key={runId} /> : <EnchantedForest key={runId} /> : null}
+          {review ? <MenuScene /> : inWorld ? worldId === 'candy-village' ? <CandyVillage key={runId} /> : worldId === 'crystal-cave' ? <CrystalCave key={runId} /> : <EnchantedForest key={runId} /> : null}
           <DeferredPostFX quality={quality} inWorld={inWorld} />
         </Suspense>
       </Canvas>
