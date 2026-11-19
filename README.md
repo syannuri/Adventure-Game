@@ -241,7 +241,20 @@ Keeper, Light Master, Gem Collector, Pillar Climber).
 - **NPCs:** Lumi the fairy (iridescent wings, sad → happy expression), Pip the rabbit and Olli the owl, plus
   ambient bunnies. All have idle and talking animations and face Anet when she's near.
 - **Dialogue:** speech bubbles with SVG character portraits, typewriter text and voice "chirps".
-- **Living main menu:** a parallax golden-hour sky; the five worlds float as islands (tap to see their names); birds and fireflies; Anet hops and talks when tapped; a "next adventure" card and a pulsing Play button that continues with the first unfinished world; the Magic Stars collected so far.
+- **Living main menu:** a painted golden-hour sky appears instantly. A moment later a **3D layer** fades in over it:
+  - the five worlds float as little animated 3D islands: the forest with swaying trees and a waterfall, the
+    candy village with spinning lollipops and a cupcake house, the crystal cave with glowing crystals, the ocean
+    with a swimming turtle, and the sky castle with waving flags
+  - they fly in one after another; locked worlds wear a golden padlock, finished ones a spinning star
+  - tapping an island makes it bounce with sparkles and shows its name
+  - a trail of fairy dust links the worlds in order, and Lumi flies loops along it with a sparkly tail
+  - 3D clouds drift past, a flock of birds crosses the sky, and butterflies and petals drift over the meadow
+  - everything moves with a gentle 3D parallax that follows the mouse or finger
+  - phones get their own island layout around Anet
+  - without WebGL (or with `?flat`) the painted menu with its 2D islands stays
+
+  Also on the menu: Anet hops and talks when tapped, a "next adventure" card, a pulsing Play button that continues
+  with the first unfinished world, and the Magic Stars collected so far.
 - **UI:** animated main menu with 3D scene, storybook opening cinematic ("Anet discovers the map"), world
   select map, character introduction, settings (music volume, sound volume, graphics quality), pause menu, HUD
   (star, acorn and treasure counters, mission objective, rotating minimap with objective marker), achievement
@@ -286,7 +299,7 @@ src/
       CandyVillage/           layout.ts, CandyTerrain (ground + chocolate river), CandyProps, candyTextures
       CrystalCave/            layout.ts, CaveScene (floor, dome, crystals, glowing lake, pillars, bats)
       shared/Lights.tsx       sun + rim light used by every world
-      MenuScene/              3D backdrop for the menus
+      MenuScene/              3D layer of the home screen (Menu3D) and the character review scene
     gameplay/
       interaction/            interactable registry + proximity/approach system
       collectibles/           Wishing Stars, acorns, treasure chests, wand

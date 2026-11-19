@@ -1,8 +1,9 @@
 /**
- * Painted golden-hour backdrop for the menus (pure SVG + CSS animation: no WebGL, so it is light
- * and perfectly smooth on phones). Anet stands on the meadow, breathing, blinking and waving.
+ * Painted golden-hour backdrop for the menus (SVG + CSS animation, shown instantly). Anet stands on
+ * the meadow, breathing, blinking and waving. A moment later a transparent 3D layer fades in over the
+ * painted sky: the floating world islands, clouds, a fairy and more (see MenuScene/Menu3D).
  */
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { Component, Suspense, lazy, memo, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useGame, type Screen } from '../../systems/store';
 import { useT } from '../../i18n/useT';
 import { WORLDS } from '../../data/worlds';
@@ -311,12 +312,56 @@ function LensFlare() {
   );
 }
 
+/** The 3D layer (islands, clouds, fairy…) loads after the painted menu has appeared. */
+const Menu3D = lazy(() => import('../worlds/MenuScene/Menu3D'));
+
+/** If WebGL is not available the painted menu simply stays as it is. */
+class Quiet extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    document.documentElement.classList.remove('menu3d');
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+function webglOk() {
+  try {
+    const c = document.createElement('canvas');
+    return !!(c.getContext('webgl2') || c.getContext('webgl'));
+  } catch {
+    return false;
+  }
+}
+
+function Layer3D() {
+  const [go, setGo] = useState(false);
+  useEffect(() => {
+    if (!webglOk() || new URLSearchParams(location.search).has('flat')) return;
+    const id = window.setTimeout(() => setGo(true), 350);
+    return () => window.clearTimeout(id);
+  }, []);
+  if (!go) return null;
+  return (
+    <Quiet>
+      <Suspense fallback={null}>
+        <Menu3D />
+      </Suspense>
+    </Quiet>
+  );
+}
+
 export function MenuBackdrop({ screen }: { screen: Screen }) {
   return (
     <div className={'menu-backdrop' + (screen === 'menu' ? '' : ' dim')} aria-hidden>
       <div className="mb-parallax">
         <Scene />
       </div>
+      <Layer3D />
       <Birds />
       <div className="mb-warmth" />
       <LensFlare />

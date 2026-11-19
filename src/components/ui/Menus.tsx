@@ -10,6 +10,7 @@ import { sparkleBurst } from './sparkleBurst';
 import { Icon } from './Icons';
 import { useT } from '../../i18n/useT';
 import { LANGS } from '../../i18n';
+import { ISLAND_SPOTS } from '../../data/menuIslands';
 
 // the press sound is played globally on pointerdown (App.tsx); here we only make sure audio is unlocked
 const click = () => {
@@ -58,24 +59,6 @@ export function LanguageSwitch() {
     </div>
   );
 }
-
-/** The five worlds float in the sky above the meadow (landscape / portrait positions in % and vw). */
-const ISLAND_SPOTS = {
-  land: [
-    [44, 46, 7.5],
-    [52, 24, 8.5],
-    [61, 50, 6.2],
-    [40, 20, 6],
-    [63, 13, 6.6],
-  ],
-  port: [
-    [5, 31, 15],
-    [74, 29, 16],
-    [7, 47, 12],
-    [78, 46, 12],
-    [44, 23, 11],
-  ],
-} as const;
 
 function WorldIsland({ i, onTap }: { i: number; onTap: (i: number, e: React.MouseEvent) => void }) {
   const w = WORLDS[i];
