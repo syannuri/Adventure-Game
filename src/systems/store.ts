@@ -68,6 +68,8 @@ interface LevelState {
   brambles: string[];
   bells: number;
   match: { round: number; anet: number; kusut: number; losses: number; results: (boolean | null)[] };
+  /** picnic for the forest friends: food found, guests fed, food Anet is carrying */
+  picnic: { stage: 'none' | 'collect' | 'serve' | 'done'; foods: string[]; served: string[]; holding: string | null };
   /** duckling escort side quest */
   duckQuest: 'none' | 'active' | 'done';
   ducklings: string[];
@@ -154,6 +156,7 @@ const freshLevel = (worldId: string | null = null, night = false, kusut = false)
   ducklings: [],
   hasCan: false,
   water: 0,
+  picnic: { stage: 'none', foods: [], served: [], holding: null },
   kusutStage: 'arrive',
   brambles: [],
   bells: 0,

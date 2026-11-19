@@ -45,6 +45,15 @@ export const KUSUT_SPOTS = [
   { x: -26.5, z: -15.5 },
 ];
 export const ARENA = { x: -20.5, z: -19.5, r: 5.5 };
+/** Picnic: a blanket in a clearing in the east; the food lies around the forest. */
+export const PICNIC = { x: 18.5, z: 13.8 };
+export const PICNIC_FOOD = [
+  { id: 'carrot', x: 7, z: 19 },
+  { id: 'bread', x: -3.5, z: -5.5 },
+  { id: 'walnut', x: -15.5, z: -1.5 },
+  { id: 'apple', x: 24.5, z: -10.5 },
+  { id: 'honey', x: -6.5, z: 13.5 },
+];
 /** bundles of twigs lying around the forest */
 export const TWIGS = [
   [4, 23],
@@ -470,6 +479,7 @@ const notInGarden = <T extends { x: number; z: number }>(list: T[], extra = 0) =
     (p) =>
       Math.hypot(p.x - GARDEN.x, p.z - GARDEN.z) > GARDEN.r + extra &&
       Math.hypot(p.x - TREEHOUSE.x, p.z - TREEHOUSE.z) > TREEHOUSE.clear + extra &&
+      Math.hypot(p.x - PICNIC.x, p.z - PICNIC.z) > 2.6 + extra &&
       clearOfStream(p.x, p.z, 0.35 + Math.max(0, extra * 0.5)),
   );
 export const FLOWERS = notInGarden(scatter(11, 900, 2, 40));

@@ -24,6 +24,7 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
   lily_hopper: { id: 'lily_hopper', title: 'Lily Hopper', description: 'Hopped across the lily pads to the golden lotus.', icon: '❁' },
   forest_champion: { id: 'forest_champion', title: 'Forest Champion', description: 'Won the Great Forest Match against Grumble.', icon: '♛' },
   kusut_friend: { id: 'kusut_friend', title: 'Monster Friend', description: 'Made friends with Grumble the messy monster.', icon: '♥' },
+  picnic_host: { id: 'picnic_host', title: 'Picnic Host', description: 'Gave every friend their favourite food at the picnic.', icon: '✿' },
   tree_house: { id: 'tree_house', title: 'Tree House Builder', description: 'Built a whole tree house in the oak tree.', icon: '⌂' },
   swing_high: { id: 'swing_high', title: 'Swing High', description: 'Had a swing on the tree-house swing.', icon: '◡' },
   leaf_racer: { id: 'leaf_racer', title: 'Leaf Racer', description: 'Beat the duck in the leaf race down the stream.', icon: '❧' },

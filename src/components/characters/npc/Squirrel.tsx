@@ -12,7 +12,7 @@ import { angleDelta, damp } from '../../../utils/math';
 const FUR = '#e08a3c';
 const BELLY = '#fbe2c2';
 
-function Kiki({ wx, wz, rot }: { wx: number; wz: number; rot: number }) {
+export function Kiki({ wx, wz, rot }: { wx: number; wz: number; rot: number }) {
   const body = useRef<THREE.Group>(null!);
   const tail = useRef<THREE.Group>(null!);
   const head = useRef<THREE.Group>(null!);
