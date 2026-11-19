@@ -48,6 +48,7 @@ export type AnimState =
   | 'crouch'
   | 'jump'
   | 'leap'
+  | 'climb'
   | 'apex'
   | 'fall'
   | 'land'
@@ -234,6 +235,31 @@ export const POSES: Record<AnimState, (t: number, phase: number) => Pose> = {
     p.joints.neck = [-0.1, -0.06, S(t * 3) * 0.02];
     p.mouth = 0.35;
     p.brow = 0.3;
+    return p;
+  },
+
+  /**
+   * Climbing a ladder (facing it): hands reach up for the rungs and the feet step up, the left hand
+   * moving with the right foot and the other way round. `ph` advances by PI per rung.
+   */
+  climb: (_t, ph) => {
+    const p = emptyPose();
+    const s = S(ph);
+    const up = (v: number) => Math.max(0, v);
+    // legs: the stepping leg lifts its knee high, the standing leg pushes straight
+    p.joints.legL = [-0.35 - up(s) * 0.85, 0, 0.08];
+    p.joints.kneeL = [0.35 + up(s) * 1.25, 0, 0];
+    p.joints.legR = [-0.35 - up(-s) * 0.85, 0, -0.08];
+    p.joints.kneeR = [0.35 + up(-s) * 1.25, 0, 0];
+    // arms: reaching up for the next rung, the other hand holding lower with a bent elbow
+    p.joints.shoulderL = [-2.45 - up(-s) * 0.35 + up(s) * 0.5, 0, 0.18];
+    p.joints.shoulderR = [-2.45 - up(s) * 0.35 + up(-s) * 0.5, 0, -0.18];
+    p.joints.elbowL = [-0.35 - up(s) * 0.75, 0, 0];
+    p.joints.elbowR = [-0.35 - up(-s) * 0.75, 0, 0];
+    p.joints.spine = [0.16, s * 0.05, 0];
+    p.joints.hips = [0, s * 0.08, s * 0.04];
+    p.joints.neck = [-0.3, 0, 0];
+    p.bodyY = -0.02;
     return p;
   },
 

@@ -124,7 +124,9 @@ tree house is built in four steps with twig bundles and golden acorns from the p
 4. a swing (6 acorns)
 
 The 7 twig bundles, tied with a pink ribbon, lie around the forest. The next part is always shown as a see-through
-blueprint. Anet climbs the ladder up and down, and swings on the swing. Progress is saved, and the HUD shows what the
+blueprint. Anet climbs the ladder rung by rung like a real climber (hands reaching for the rungs, opposite foot
+stepping up, a wooden creak per rung) and steps off onto the deck; going down she faces the ladder. She also
+swings on the swing. Progress is saved, and the HUD shows what the
 next part still needs. Badges: *Tree House Builder* and *Swing High*.
 
 **Picnic for the forest friends:** a checked blanket and an empty basket wait in a clearing in the east. Anet finds
