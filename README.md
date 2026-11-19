@@ -101,7 +101,8 @@ its name in both Bahasa Indonesia and English. Filling the book unlocks *Sticker
 Anet high up onto a leafy branch, where a glowing lantern treasure waits (+5 acorns, *Spring Jumper* badge).
 
 **Anet's magic garden:** in a clearing east of the glade there are three raised beds: a sunflower, a berry bush and a
-rainbow flower. Plant a seed, take the watering can from the tree stump and water it. The can is filled at the pond
+rainbow flower. Plant a seed, take the watering can from the tree stump and water it. When done, put the can back on the
+stump (it also goes back by itself if Anet wanders far away with it). The can is filled at the pond
 and holds water for three plants. A watered plant grows one step (seed, sprout, bud, bloom) after a short wait, shown
 by a ring of green dots, and then it is thirsty again (a blue drop floats above it). The garden is saved and keeps
 growing while Anet is away. A blooming plant can be picked for +3 acorns and planted again. A bee visits the
