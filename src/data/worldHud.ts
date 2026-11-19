@@ -17,6 +17,7 @@ import { duckStatus } from '../components/gameplay/sidequests/DucklingQuest';
 import { riddleStatus } from '../components/gameplay/sidequests/OlliRiddles';
 import { nightObjective } from '../components/gameplay/missions/NightQuest';
 import { gardenStatus } from '../components/gameplay/sidequests/MagicGarden';
+import { treehouseStatus } from '../components/gameplay/sidequests/TreeHouse';
 import type { ForestStage } from '../systems/store';
 
 export interface WorldHud {
@@ -63,6 +64,7 @@ export const WORLD_HUD: Record<string, WorldHud> = {
         { x: Forest.POND.x, z: Forest.POND.z, r: Forest.POND.r, fill: '#7fd0e0' },
         { x: Forest.FAIRY_POS.x, z: Forest.FAIRY_POS.z, r: 1.6, fill: '#b8a2ff' },
         { x: Forest.GARDEN.x, z: Forest.GARDEN.z, r: 2.3, fill: '#c9a26b' },
+        { x: Forest.TREEHOUSE.x, z: Forest.TREEHOUSE.z, r: 2.4, fill: '#e0625a' },
       ],
     },
     objective: () => {
@@ -73,7 +75,7 @@ export const WORLD_HUD: Record<string, WorldHud> = {
     hint: () => (useGame.getState().night ? (level().nightStage === 'collect' ? tr().night.hint : '') : (FOREST_HINTS()[level().stage as ForestStage] ?? '')),
     side: () => {
       const l = level();
-      const parts = [musicStatus(), riddleStatus(), duckStatus(), gardenStatus(), l.bunnyQuest === 'active' ? '🐰 ' + tr().hud.bunnies(l.bunnies.length, 3) : null].filter(Boolean);
+      const parts = [musicStatus(), riddleStatus(), duckStatus(), gardenStatus(), treehouseStatus(), l.bunnyQuest === 'active' ? '🐰 ' + tr().hud.bunnies(l.bunnies.length, 3) : null].filter(Boolean);
       return parts.length ? parts.join('  ·  ') : null;
     },
   },

@@ -114,6 +114,18 @@ rocks only slows the leaf down. The race bar shows the time, the bubbles, and wh
 finish Anet hops onto the bank and says her time; a new best time is saved. The first race gives +5 acorns. Badges:
 *Leaf Racer* (beat the duck) and *Bubble Catcher* (all 12 bubbles in one race).
 
+**Anet's tree house:** at the south end of the main path (behind the start) stands a big oak with a plan board. The
+tree house is built in four steps with twig bundles and golden acorns from the pouch:
+
+1. floor and ladder (2 twigs, 5 acorns)
+2. a little house with a red roof (3 twigs, 8 acorns)
+3. railing, a flag and fairy lights (2 twigs, 5 acorns)
+4. a swing (6 acorns)
+
+The 7 twig bundles, tied with a pink ribbon, lie around the forest. The next part is always shown as a see-through
+blueprint. Anet climbs the ladder up and down, and swings on the swing. Progress is saved, and the HUD shows what the
+next part still needs. Badges: *Tree House Builder* and *Swing High*.
+
 **Olli's animal riddles:** Olli asks three riddles, for example "I am white and round, I swim on the pond and say
 quack quack!". Walking up to the right animal answers each one: the duck, the butterfly, the squirrel. Solving all
 three gives +5 acorns and the *Clever Explorer* badge. The HUD shows the riddle number while one is open.
