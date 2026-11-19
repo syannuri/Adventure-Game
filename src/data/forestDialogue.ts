@@ -58,7 +58,18 @@ const EN = {
     L('olli', 'Three treasure chests are hidden near the edges of the forest. Can you find them all?'),
     L('olli', 'And pick up the golden acorns along the paths. Hoo! They shine like little suns.'),
   ],
-  olliDone: [L('olli', 'Hoo-hoo! Splendid work, Anet. The whole forest is proud of you!')],  springFound: [L('anett', 'A blue mushroom that wobbles like jelly! If I jump on it, maybe it bounces me up to that lantern in the tree!')],
+  olliDone: [L('olli', 'Hoo-hoo! Splendid work, Anet. The whole forest is proud of you!')],  nightIntro: [
+    L('lumi', 'Good evening, Anet! Tonight is the forest Light Party!'),
+    L('lumi', 'Please catch ten fireflies in your jar, and light the five lantern posts along the paths.'),
+    L('anett', "A Light Party! I'll make the whole forest glow!"),
+  ],
+  nightReady: [L('anett', 'All the fireflies are in my jar and every lantern is glowing! Back to Lumi!')],
+  nightLumi: (f: number, l: number) => [L('lumi', `You have ${f} fireflies and ${l} lanterns lit. Keep going, the party needs more light!`)],
+  nightFinale: [
+    L('lumi', 'Oh, how beautiful! Now, let the fireflies fly free!'),
+    L('anett', 'Fly, little fireflies! Light up the night!'),
+  ],
+  springFound: [L('anett', 'A blue mushroom that wobbles like jelly! If I jump on it, maybe it bounces me up to that lantern in the tree!')],
   lanternOpen: [L('anett', 'A lantern treasure, high up in the tree! It is full of golden acorns!')],
   riddleIntro: [
     L('olli', 'Hoo-hoo! Do you like riddles, Anet? I have three animal riddles for you.'),
@@ -178,7 +189,18 @@ const ID: typeof EN = {
     L('olli', 'Ada tiga peti harta tersembunyi di pinggir hutan. Bisakah kamu menemukan semuanya?'),
     L('olli', 'Ambil juga biji ek emas di sepanjang jalan. Hu! Mereka bersinar seperti matahari kecil.'),
   ],
-  olliDone: [L('olli', 'Hu-hu! Kerja yang luar biasa, Anet. Seluruh hutan bangga padamu!')],  springFound: [L('anett', 'Jamur biru yang bergoyang seperti agar-agar! Kalau aku melompat di atasnya, mungkin aku terpental sampai ke lentera di pohon itu!')],
+  olliDone: [L('olli', 'Hu-hu! Kerja yang luar biasa, Anet. Seluruh hutan bangga padamu!')],  nightIntro: [
+    L('lumi', 'Selamat malam, Anet! Malam ini ada Pesta Cahaya di hutan!'),
+    L('lumi', 'Tolong tangkap sepuluh kunang-kunang ke dalam toplesmu, dan nyalakan lima tiang lentera di sepanjang jalan.'),
+    L('anett', 'Pesta Cahaya! Aku akan membuat seluruh hutan bercahaya!'),
+  ],
+  nightReady: [L('anett', 'Semua kunang-kunang sudah di toples dan semua lentera menyala! Ayo kembali ke Lumi!')],
+  nightLumi: (f, l) => [L('lumi', `Kamu sudah punya ${f} kunang-kunang dan ${l} lentera menyala. Ayo terus, pestanya butuh lebih banyak cahaya!`)],
+  nightFinale: [
+    L('lumi', 'Wah, indah sekali! Sekarang, ayo lepaskan kunang-kunangnya!'),
+    L('anett', 'Terbanglah, kunang-kunang kecil! Terangi malam ini!'),
+  ],
+  springFound: [L('anett', 'Jamur biru yang bergoyang seperti agar-agar! Kalau aku melompat di atasnya, mungkin aku terpental sampai ke lentera di pohon itu!')],
   lanternOpen: [L('anett', 'Harta lentera di atas pohon! Isinya biji ek emas!')],
   riddleIntro: [
     L('olli', 'Hu-hu! Kamu suka teka-teki, Anet? Aku punya tiga teka-teki hewan untukmu.'),

@@ -14,6 +14,7 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
   puzzle_master: { id: 'puzzle_master', title: 'Flower Wizard', description: 'Solved the colour flower puzzle.', icon: '✿' },
   high_jumper: { id: 'high_jumper', title: 'Mushroom Hopper', description: 'Reached the top of the giant mushrooms.', icon: '▲' },
   flower_singer: { id: 'flower_singer', title: 'Flower Singer', description: "Sang all three songs of Lumi's singing flowers.", icon: '♫' },
+  night_light: { id: 'night_light', title: 'Light Bringer', description: "Lit every lantern for Lumi's Light Party.", icon: '☾' },
   sky_hopper: { id: 'sky_hopper', title: 'Spring Jumper', description: 'Bounced up to the lantern treasure in the giant tree.', icon: '⇑' },
   riddle_solver: { id: 'riddle_solver', title: 'Clever Explorer', description: "Solved all of Olli's animal riddles.", icon: '?' },
   lily_hopper: { id: 'lily_hopper', title: 'Lily Hopper', description: 'Hopped across the lily pads to the golden lotus.', icon: '❁' },

@@ -39,9 +39,10 @@ export function forestObjective(stage: ForestStage, stars: string[], solved = fa
     case 'returnWand':
       return { text: tr().objectives.returnWand, target: FAIRY_POS };
     case 'done':
+    case 'night':
       return { text: tr().objectives.done, target: null };
   }
 }
 
 /** Gentle hints shown when a child seems stuck (current language). */
-export const FOREST_HINTS = (): Record<ForestStage, string> => tr().hints;
+export const FOREST_HINTS = (): Partial<Record<ForestStage, string>> => tr().hints;

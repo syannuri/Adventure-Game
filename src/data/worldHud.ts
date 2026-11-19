@@ -13,6 +13,7 @@ import { tr } from '../i18n';
 import { musicStatus } from '../components/gameplay/puzzles/MusicFlowers';
 import { duckStatus } from '../components/gameplay/sidequests/DucklingQuest';
 import { riddleStatus } from '../components/gameplay/sidequests/OlliRiddles';
+import { nightObjective } from '../components/gameplay/missions/NightQuest';
 import type { ForestStage } from '../systems/store';
 
 export interface WorldHud {
@@ -61,9 +62,10 @@ export const WORLD_HUD: Record<string, WorldHud> = {
     },
     objective: () => {
       const l = level();
+      if (useGame.getState().night) return nightObjective();
       return forestObjective(l.stage as ForestStage, l.stars, l.puzzleSolved, matchedCount(l.flowers));
     },
-    hint: () => FOREST_HINTS()[level().stage as ForestStage] ?? '',
+    hint: () => (useGame.getState().night ? (level().nightStage === 'collect' ? tr().night.hint : '') : (FOREST_HINTS()[level().stage as ForestStage] ?? '')),
     side: () => {
       const l = level();
       const parts = [musicStatus(), riddleStatus(), duckStatus(), l.bunnyQuest === 'active' ? '🐰 ' + tr().hud.bunnies(l.bunnies.length, 3) : null].filter(Boolean);

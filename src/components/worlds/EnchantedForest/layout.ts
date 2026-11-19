@@ -139,6 +139,35 @@ export const SPRING_PLATFORMS: Platform[] = [
   { x: BRANCH.x, z: BRANCH.z, r: BRANCH.r, top: terrainHeight(BRANCH.x, BRANCH.z) + BRANCH.h },
 ];
 
+/** Night forest: lantern posts beside the paths (unlit by day) and fireflies to catch. */
+function besidePath(pi: number, si: number, t: number, side: number, off = 1.9) {
+  const a = PATHS[pi][si];
+  const b = PATHS[pi][si + 1];
+  const dx = b[0] - a[0];
+  const dz = b[1] - a[1];
+  const l = Math.hypot(dx, dz) || 1;
+  return { x: a[0] + dx * t + (-dz / l) * off * side, z: a[1] + dz * t + (dx / l) * off * side };
+}
+export const LANTERN_POSTS = [
+  { id: 'lamp-1', ...besidePath(0, 0, 0.55, 1) },
+  { id: 'lamp-2', ...besidePath(1, 1, 0.5, -1) },
+  { id: 'lamp-3', ...besidePath(2, 2, 0.5, -1) },
+  { id: 'lamp-4', ...besidePath(3, 1, 0.5, -1) },
+  { id: 'lamp-5', ...besidePath(1, 3, 0.5, 1) },
+];
+export const FIREFLY_SPOTS = [
+  [4, 12],
+  [-8, 3],
+  [12, -12],
+  [-16, -7],
+  [-19, -17],
+  [6, -20],
+  [17, 2],
+  [-2.5, -12.5],
+  [-22, 6],
+  [22, -6],
+].map(([x, z], i) => ({ id: `ff-${i}`, x, z }));
+
 /** Mama duck waits on the south shore; her four ducklings got lost in the forest. */
 export const MAMA_DUCK = { x: 18.2, z: -10.0 };
 export const DUCKLING_SPOTS = [
@@ -327,6 +356,7 @@ export function buildForestPhysics(): WorldPhysics {
     { x: MUSIC.x, z: MUSIC.z, r: 0.35 }, // the magic bud in the middle of the singing flowers
     { x: SHOP.x, z: SHOP.z, r: 0.95 }, // Kiki's shop stall
     { x: MAMA_DUCK.x, z: MAMA_DUCK.z, r: 0.35 },
+    ...LANTERN_POSTS.map((l) => ({ x: l.x, z: l.z, r: 0.18 })),
   ];
   return { height: terrainHeight, colliders, platforms: [...PLATFORMS, ...LILY_PLATFORMS, ...SPRING_PLATFORMS], boundaryRadius: 40, surfaceAt: (x, z) => (distToPath(x, z) < 1.6 ? 'dirt' : 'grass') };
 }

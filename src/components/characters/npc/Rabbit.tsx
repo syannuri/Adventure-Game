@@ -18,7 +18,7 @@ export function Rabbit({ x, y, z, npc = true, scale = 1, wander = 0, controlled 
     const t = clock.elapsedTime + seed;
     const g = useGame.getState();
     const talking = npc && g.dialogue?.lines[g.dialogue.index]?.speaker === 'pip';
-    const happy = npc && g.level.stage === 'done';
+    const happy = npc && (g.level.stage === 'done' || g.level.stage === 'night');
     const hopCycle = (t * (happy ? 1.6 : 0.5)) % 1;
     const hop = talking ? Math.abs(Math.sin(t * 8)) * 0.05 : hopCycle < 0.18 || happy ? Math.sin(((hopCycle % 0.5) / 0.18) * Math.PI) * 0.2 : 0;
     body.current.position.y = Math.max(0, hop);

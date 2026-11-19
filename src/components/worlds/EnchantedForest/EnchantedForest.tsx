@@ -4,7 +4,7 @@
  */
 import { useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Environment, Lightformer, Sparkles } from '@react-three/drei';
+import { Environment, Lightformer, Sparkles, Stars } from '@react-three/drei';
 import { setWorldPhysics } from '../../../systems/physics';
 import { buildForestPhysics, SHOP, COINS, FAIRY_POS, OWL_POS, RABBIT_POS, SPAWN, STARS, TREASURES, WATERFALL, terrainHeight } from './layout';
 import { Terrain } from './Terrain';
@@ -32,6 +32,8 @@ import { audio } from '../../audio/audioEngine';
 import { useGame } from '../../../systems/store';
 
 const FOG = '#dfe4c6';
+const NIGHT_FOG = '#18214a';
+const NO_STARS: typeof STARS = [];
 const FOREST_STICKERS = [
   { id: 'fairy', x: FAIRY_POS.x, z: FAIRY_POS.z },
   { id: 'rabbit', x: RABBIT_POS.x, z: RABBIT_POS.z },
@@ -39,12 +41,12 @@ const FOREST_STICKERS = [
   { id: 'squirrel', x: SHOP.x + 1.1, z: SHOP.z },
 ]; // warm golden-hour haze
 
-function Ambience() {
+function Ambience({ night }: { night: boolean }) {
   useEffect(() => {
-    audio.setBirds(true);
+    audio.setBirds(!night);
     audio.setAmbience('wind', 0.5);
     return () => audio.stopAmbience();
-  }, []);
+  }, [night]);
   useFrame((_, dt) => {
     windUniforms.uTime.value += Math.min(dt, 0.05);
     const d = Math.hypot(player.position.x - WATERFALL.x, player.position.z - (WATERFALL.z + 1));
@@ -58,22 +60,25 @@ export function EnchantedForest() {
   const quality = useGame((s) => s.save.settings.quality);
   const high = quality === 'high';
   const spawn = useMemo(() => ({ ...SPAWN }), []);
+  const night = useGame((s) => s.night);
+  const fog = night ? NIGHT_FOG : FOG;
 
   return (
     <>
-      <color attach="background" args={[FOG]} />
-      <fog attach="fog" args={[FOG, 28, 105]} />
-      <hemisphereLight args={['#cfe2ff', '#6b8a45', 0.95]} />
-      <RimLight />
-      <ambientLight intensity={0.18} />
-      <SunLight shadows size={high ? 2048 : 1024} color="#ffdcae" />
-      <Environment resolution={64} frames={1} environmentIntensity={0.55}>
-        <Lightformer form="rect" intensity={2} color="#fff2d8" position={[5, 8, -5]} scale={[10, 10, 1]} />
+      <color attach="background" args={[fog]} />
+      <fog attach="fog" args={night ? [fog, 20, 90] : [fog, 28, 105]} />
+      <hemisphereLight args={night ? ['#6d82c4', '#1f2e2a', 0.6] : ['#cfe2ff', '#6b8a45', 0.95]} />
+      <RimLight color={night ? '#a9c4ff' : undefined} />
+      <ambientLight intensity={night ? 0.14 : 0.18} />
+      <SunLight shadows size={high ? 2048 : 1024} color={night ? '#9fb8ff' : '#ffdcae'} intensity={night ? 1.25 : 2.9} />
+      <Environment resolution={64} frames={1} environmentIntensity={night ? 0.3 : 0.55}>
+        <Lightformer form="rect" intensity={2} color={night ? '#8ea6ff' : '#fff2d8'} position={[5, 8, -5]} scale={[10, 10, 1]} />
         <Lightformer form="rect" intensity={1} color="#bfe3ff" position={[-6, 4, 6]} scale={[10, 6, 1]} />
-        <Lightformer form="ring" intensity={0.8} color="#9fe0b0" position={[0, -4, 0]} rotation-x={Math.PI / 2} scale={8} />
+        <Lightformer form="ring" intensity={0.8} color={night ? '#7f8fd0' : '#9fe0b0'} position={[0, -4, 0]} rotation-x={Math.PI / 2} scale={8} />
       </Environment>
 
-      <Sky top="#5c9fe0" horizon="#ffd8a8" />
+      {night ? <Sky top="#0b1534" horizon="#3b3f7e" night /> : <Sky top="#5c9fe0" horizon="#ffd8a8" />}
+      {night && <Stars radius={260} depth={80} count={high ? 2600 : 1200} factor={7} saturation={0.3} fade speed={0.6} />}
       <Terrain />
       <Trees shadows={high} />
       <Vegetation quality={quality} />
@@ -84,7 +89,7 @@ export function EnchantedForest() {
       <PathStones />
       <Butterflies count={high ? 18 : 10} />
       <Birds />
-      <Sparkles count={high ? 220 : 90} scale={[70, 5, 70]} position={[0, 2.5, -4]} size={3.5} speed={0.25} color="#fff6b8" opacity={0.85} />
+      <Sparkles count={high ? (night ? 320 : 220) : night ? 140 : 90} scale={[70, 5, 70]} position={[0, 2.5, -4]} size={night ? 5 : 3.5} speed={0.25} color={night ? '#d6ff7a' : '#fff6b8'} opacity={0.85} />
       <Sparkles count={60} scale={[9, 3, 9]} position={[FAIRY_POS.x, 1.6, FAIRY_POS.z]} size={4} speed={0.4} color="#d9c9ff" />
 
       <Fairy x={FAIRY_POS.x} y={terrainHeight(FAIRY_POS.x, FAIRY_POS.z) + 1.25} z={FAIRY_POS.z} />
@@ -93,14 +98,14 @@ export function EnchantedForest() {
       <Rabbit x={6} y={terrainHeight(6, -18)} z={-18} npc={false} scale={0.6} wander={2} />
       <Owl x={OWL_POS.x} y={terrainHeight(OWL_POS.x, OWL_POS.z) - 0.05} z={OWL_POS.z} />
 
-      <Collectibles stars={STARS} coins={COINS} treasures={TREASURES} />
+      <Collectibles stars={night ? NO_STARS : STARS} coins={COINS} treasures={TREASURES} />
       <ForestQuest />
       <InteractionSystem />
       <AnettController spawn={spawn} />
       <FollowCamera />
       <Bursts />
       <Bursts channel="dust" />
-      <Ambience />
+      <Ambience night={night} />
       <StickerWatcher statics={FOREST_STICKERS} />
     </>
   );

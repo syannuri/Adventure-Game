@@ -894,3 +894,7 @@ canvas { display: block; touch-action: none; }
   .sticker b { font-size: 13px; }
   .sticker-tip { display: none; }
 }
+
+/* night forest button on the world card */
+.night-btn { margin-top: 6px; border: 0; border-radius: 999px; padding: 6px 14px; font-family: inherit; font-weight: 800; font-size: 14px; color: #fff; background: linear-gradient(180deg, #4a5bb8, #1f2a66); box-shadow: 0 4px 0 #141c48, 0 0 14px rgba(214, 255, 122, 0.45); cursor: pointer; }
+.night-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #141c48; }

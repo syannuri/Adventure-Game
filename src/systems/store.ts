@@ -12,7 +12,7 @@ export interface DialogueLine {
   text: string;
 }
 
-export type ForestStage = 'meetFairy' | 'collectStars' | 'findWand' | 'returnWand' | 'done';
+export type ForestStage = 'meetFairy' | 'collectStars' | 'findWand' | 'returnWand' | 'done' | 'night';
 /** World 2 (Candy Village) mission stages. */
 export type CandyStage = 'meetChef' | 'collectIngredients' | 'returnIngredients' | 'sortCandy' | 'done';
 export type Stage = ForestStage | CandyStage;
@@ -50,6 +50,10 @@ interface LevelState {
   lantern: boolean;
   /** Olli's riddles: -1 not started, 0..2 current riddle, 3 all solved */
   riddle: number;
+  /** night forest (after World 1): fireflies caught, lanterns lit, and the night mission step */
+  fireflies: string[];
+  lanterns: string[];
+  nightStage: 'collect' | 'return' | 'done';
   /** duckling escort side quest */
   duckQuest: 'none' | 'active' | 'done';
   ducklings: string[];
@@ -63,6 +67,8 @@ interface GameState {
   paused: boolean;
   save: SaveData;
   worldId: string | null;
+  /** night version of the Enchanted Forest (unlocked after finishing it) */
+  night: boolean;
   runId: number;
   /** false while a world is mounting / compiling shaders (shows the loading screen) */
   worldReady: boolean;
@@ -80,7 +86,7 @@ interface GameState {
   setScreen: (s: Screen) => void;
   setOverlay: (o: Overlay) => void;
   setPaused: (p: boolean) => void;
-  startWorld: (id: string) => void;
+  startWorld: (id: string, opts?: { night?: boolean }) => void;
   collect: (kind: 'stars' | 'coins' | 'treasures', id: string) => void;
   setStage: (s: Stage) => void;
   setHasWand: (v: boolean) => void;
@@ -106,11 +112,11 @@ interface GameState {
   resetProgress: () => void;
 }
 
-const freshLevel = (worldId: string | null = null): LevelState => ({
+const freshLevel = (worldId: string | null = null, night = false): LevelState => ({
   stars: [],
   coins: [],
   treasures: [],
-  stage: worldId === 'candy-village' ? 'meetChef' : 'meetFairy',
+  stage: worldId === 'candy-village' ? 'meetChef' : night ? 'night' : 'meetFairy',
   hasWand: false,
   flowers: [0, 0, 1],
   puzzleSolved: false,
@@ -121,6 +127,9 @@ const freshLevel = (worldId: string | null = null): LevelState => ({
   lotus: false,
   lantern: false,
   riddle: -1,
+  fireflies: [],
+  lanterns: [],
+  nightStage: 'collect',
   duckQuest: 'none',
   ducklings: [],
   startedAt: performance.now(),
@@ -136,6 +145,7 @@ export const useGame = create<GameState>((set, get) => ({
   paused: false,
   save: loadSave(),
   worldId: null,
+  night: false,
   runId: 0,
   worldReady: false,
   setWorldReady: () => {
@@ -157,14 +167,16 @@ export const useGame = create<GameState>((set, get) => ({
   setOverlay: (overlay) => set({ overlay }),
   setPaused: (paused) => set({ paused }),
 
-  startWorld: (id) => {
+  startWorld: (id, opts) => {
+    const night = !!opts?.night && id === 'enchanted-forest';
     set((s) => ({
       worldId: id,
+      night,
       screen: 'playing',
       paused: false,
       runId: s.runId + 1,
       worldReady: false,
-      level: freshLevel(id),
+      level: freshLevel(id, night),
       dialogue: null,
       prompt: null,
       emote: null,

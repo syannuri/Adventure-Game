@@ -290,6 +290,18 @@ export function WorldSelect() {
               <p>{txt.mission}</p>
               {!w.built && <span className="lock">{t.worldsScreen.comingSoon}</span>}
               {w.built && <span className="lock">{done ? t.worldsScreen.playAgain : t.worldsScreen.play}</span>}
+              {done && w.id === 'enchanted-forest' && (
+                <button
+                  className="night-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    click();
+                    startWorld(w.id, { night: true });
+                  }}
+                >
+                  {t.night.button}
+                </button>
+              )}
             </div>
           );
         })}
