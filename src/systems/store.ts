@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { loadSave, writeSave, type SaveData, type Settings } from './save';
+import { loadSave, writeSave, type GardenSave, type SaveData, type Settings } from './save';
 import { audio } from '../components/audio/audioEngine';
 import { setLangSource, tr } from '../i18n';
 import { COSMETICS } from '../data/cosmetics';
@@ -58,6 +58,9 @@ interface LevelState {
   nightStage: 'collect' | 'return' | 'done';
   /** crystal cave light puzzle: direction of each mirror crystal */
   mirrors: number[];
+  /** magic garden: carrying the watering can, and how many pours of water are in it */
+  hasCan: boolean;
+  water: number;
   /** duckling escort side quest */
   duckQuest: 'none' | 'active' | 'done';
   ducklings: string[];
@@ -111,6 +114,7 @@ interface GameState {
   equipCosmetic: (id: string) => void;
   unequipSlot: (slot: string) => void;
   setMetKiki: () => void;
+  setGarden: (g: GardenSave) => void;
   /** returns true if the sticker is new */
   addSticker: (id: string) => boolean;
   resetProgress: () => void;
@@ -137,6 +141,8 @@ const freshLevel = (worldId: string | null = null, night = false): LevelState =>
   mirrors: [1, 0, 3],
   duckQuest: 'none',
   ducklings: [],
+  hasCan: false,
+  water: 0,
   startedAt: performance.now(),
   lastProgressAt: performance.now(),
 });
@@ -279,6 +285,11 @@ export const useGame = create<GameState>((set, get) => ({
     const equipped = { ...s.equipped };
     delete equipped[slot];
     const save = { ...s, equipped };
+    writeSave(save);
+    set({ save });
+  },
+  setGarden: (garden) => {
+    const save = { ...get().save, garden };
     writeSave(save);
     set({ save });
   },

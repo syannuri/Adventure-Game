@@ -67,6 +67,25 @@ export function BunnyPortrait() {
   );
 }
 
+export function BeePortrait() {
+  return (
+    <svg viewBox="0 0 100 100">
+      <rect width="100" height="100" fill="#fff6d6" />
+      <ellipse cx="38" cy="34" rx="14" ry="18" fill="#dff4ff" opacity="0.9" transform="rotate(-25 38 34)" />
+      <ellipse cx="62" cy="34" rx="14" ry="18" fill="#dff4ff" opacity="0.9" transform="rotate(25 62 34)" />
+      <ellipse cx="50" cy="62" rx="26" ry="22" fill="#ffd23f" />
+      <path d="M36 46 Q50 42 64 46 L68 54 Q50 50 32 54Z" fill="#3a2a2a" />
+      <path d="M28 66 Q50 62 72 66 L71 74 Q50 70 29 74Z" fill="#3a2a2a" />
+      <circle cx="42" cy="60" r="3.4" fill="#2b1b14" />
+      <circle cx="58" cy="60" r="3.4" fill="#2b1b14" />
+      <circle cx="36" cy="66" r="3" fill="#ff9fb4" opacity="0.8" />
+      <circle cx="64" cy="66" r="3" fill="#ff9fb4" opacity="0.8" />
+      <path d="M44 68 Q50 73 56 68" stroke="#2b1b14" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      <path d="M44 42 Q40 28 34 26 M56 42 Q60 28 66 26" stroke="#3a2a2a" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function DragonPortrait() {
   return (
     <svg viewBox="0 0 100 100">
@@ -132,6 +151,8 @@ export function StickerArt({ id }: { id: string }) {
       return <DragonPortrait />;
     case 'bat':
       return <BatPortrait />;
+    case 'bee':
+      return <BeePortrait />;
     default:
       return <KokoPortrait />;
   }
