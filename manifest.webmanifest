@@ -1,0 +1,17 @@
+{
+  "name": "Anet: Petualangan Ajaib",
+  "short_name": "Anet",
+  "description": "Game petualangan 3D untuk anak: bantu Anet dan Peri Lumi di Hutan Ajaib.",
+  "lang": "id",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#ffdca0",
+  "theme_color": "#f0709a",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

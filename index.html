@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#f0709a" />
+    <!-- app icon + "Add to Home Screen" (iPhone / iPad / Android) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="./favicon-64.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <!-- cover figure: start downloading right away so the menu appears complete -->
+    <link rel="preload" as="image" href="./cover/anet-720.webp" imagesrcset="./cover/anet-720.webp 382w, ./cover/anet-1300.webp 690w" imagesizes="(min-height: 700px) 40vh, 30vh" type="image/webp" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Anet" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Anet: Petualangan Ajaib</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@600;700&family=Luckiest+Guy&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="./assets/index-ByxSyJFW.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Dv3CpQYZ.css">
+  </head>
+  <body>
+    <!-- Instant splash: shown before the game's JavaScript has downloaded -->
+    <style>
+      #splash { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: linear-gradient(180deg, #8fa6e0 0%, #c6b0e6 35%, #ffc9a8 62%, #ffe2a6 80%, #ffeec2 100%); transition: opacity 0.5s ease; font-family: 'Luckiest Guy', 'Baloo 2', system-ui, sans-serif; }
+      #splash.gone { opacity: 0; pointer-events: none; }
+      #splash .t { font-size: min(22vw, 26vh); line-height: 1; color: #ffc928; -webkit-text-stroke: 0.06em #3b1a78; paint-order: stroke fill; text-shadow: 0 0.08em 0 #2a1060; letter-spacing: 0.02em; animation: sb 1.6s ease-in-out infinite; }
+      #splash .s { margin-top: 2vh; text-align: center; font: 700 18px 'Baloo 2', system-ui, sans-serif; color: #3b1a78; opacity: 0.8; }
+      #splash .dots span { display: inline-block; width: 10px; height: 10px; margin: 0 4px; border-radius: 50%; background: #7b5cff; animation: sd 1s ease-in-out infinite; }
+      #splash .dots span:nth-child(2) { animation-delay: 0.15s; }
+      #splash .dots span:nth-child(3) { animation-delay: 0.3s; }
+      @keyframes sb { 50% { transform: translateY(-3%) rotate(-2deg); } }
+      @keyframes sd { 50% { transform: translateY(-8px); opacity: 0.5; } }
+    </style>
+    <div id="splash"><div><div class="t">ANET</div><div class="s"><div class="dots"><span></span><span></span><span></span></div></div></div></div>
+    <div id="root"></div>
+  </body>
+</html>
