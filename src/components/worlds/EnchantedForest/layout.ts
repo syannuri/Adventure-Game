@@ -26,6 +26,21 @@ export const SHOP = { x: -3.6, z: 4.8, rot: Math.PI / 2 };
 export const GARDEN = { x: 8.5, z: -1.5, r: 3.4 };
 export const GARDEN_BEDS = [-1.7, 0, 1.7].map((dx, i) => ({ i, x: GARDEN.x + dx, z: GARDEN.z }));
 export const GARDEN_STUMP = { x: GARDEN.x - 3.3, z: GARDEN.z + 1.9 };
+/**
+ * Anet's tree house: a big oak at the south end of the main path. Built in steps with twigs found in
+ * the forest and golden acorns. The platform is 3 m up; the ladder faces the path (north).
+ */
+export const TREEHOUSE = { x: 0.5, z: 28, r: 2.4, h: 3.0, clear: 4.6 };
+/** bundles of twigs lying around the forest */
+export const TWIGS = [
+  [4, 23],
+  [-4.5, 23.5],
+  [12.5, 0.5],
+  [-8, -12.5],
+  [6, -15.5],
+  [29.5, -8],
+  [-26.5, -15.5],
+].map(([x, z], i) => ({ id: `twig-${i}`, x, z }));
 
 /**
  * Colour flower puzzle guarding the wand: a stone tablet with three gems, and three magic flowers in
@@ -437,7 +452,12 @@ function scatter(seed: number, count: number, rMin: number, rMax: number, gap = 
 
 /** keep the garden clearing free (filtered afterwards so nothing else moves) */
 const notInGarden = <T extends { x: number; z: number }>(list: T[], extra = 0) =>
-  list.filter((p) => Math.hypot(p.x - GARDEN.x, p.z - GARDEN.z) > GARDEN.r + extra && clearOfStream(p.x, p.z, 0.35 + Math.max(0, extra * 0.5)));
+  list.filter(
+    (p) =>
+      Math.hypot(p.x - GARDEN.x, p.z - GARDEN.z) > GARDEN.r + extra &&
+      Math.hypot(p.x - TREEHOUSE.x, p.z - TREEHOUSE.z) > TREEHOUSE.clear + extra &&
+      clearOfStream(p.x, p.z, 0.35 + Math.max(0, extra * 0.5)),
+  );
 export const FLOWERS = notInGarden(scatter(11, 900, 2, 40));
 export const GRASS = notInGarden(scatter(23, 5200, 0, 44, -0.4), -1.2);
 export const MUSHROOMS = notInGarden(scatter(31, 70, 4, 36, 0.2));
@@ -486,6 +506,7 @@ export function buildForestPhysics(): WorldPhysics {
     ...LANTERN_POSTS.map((l) => ({ x: l.x, z: l.z, r: 0.18 })),
     ...GARDEN_BEDS.map((b) => ({ x: b.x, z: b.z, r: 0.5 })),
     { x: GARDEN_STUMP.x, z: GARDEN_STUMP.z, r: 0.4 },
+    { x: TREEHOUSE.x, z: TREEHOUSE.z, r: 1.05 }, // the tree-house oak
   ];
   return { height: terrainHeight, colliders, platforms: [...PLATFORMS, ...LILY_PLATFORMS, ...SPRING_PLATFORMS], boundaryRadius: 40, surfaceAt: (x, z) => (distToPath(x, z) < 1.6 ? 'dirt' : 'grass') };
 }

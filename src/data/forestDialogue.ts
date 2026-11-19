@@ -155,6 +155,23 @@ const EN = {
     L('anett', `${record ? 'A new record! ' : ''}I raced down the stream in ${time} seconds and popped ${n} of ${t} bubbles!`),
   ],
   raceWin: [L('duck', 'Quack! You were faster than me! What a great leaf racer!')],
+  treeIntro: [
+    L('anett', 'What a big, strong oak tree! A tree house up there would be wonderful!'),
+    L('anett', 'There is a plan on this board. I need bundles of twigs and golden acorns to build it.'),
+    L('anett', 'Twig bundles are lying around the forest, tied with a pink ribbon. Golden acorns are along the paths!'),
+  ],
+  treeNeed: (twigs: number, acorns: number) => [
+    L(
+      'anett',
+      twigs && acorns
+        ? `I need ${twigs} more ${twigs === 1 ? 'bundle' : 'bundles'} of twigs and ${acorns} more golden acorns.`
+        : twigs
+          ? `I need ${twigs} more ${twigs === 1 ? 'bundle' : 'bundles'} of twigs. They have a pink ribbon!`
+          : `I need ${acorns} more golden acorns. I can find them along the paths!`,
+    ),
+  ],
+  treeFloor: [L('anett', 'The floor and the ladder are ready! I can climb up the ladder now!')],
+  treeDone: [L('anett', 'My tree house is finished! With fairy lights, a flag and a swing! This is my secret forest home!')],
   raceLose: [L('duck', 'Quack quack! I won this time. That was fun! Race me again whenever you like!')],
 };
 
@@ -309,6 +326,23 @@ const ID: typeof EN = {
     L('anett', `${record ? 'Rekor baru! ' : ''}Aku menyusuri sungai dalam ${time} detik dan memecahkan ${n} dari ${t} gelembung!`),
   ],
   raceWin: [L('duck', 'Kwek! Kamu lebih cepat dariku! Kamu pembalap daun yang hebat!')],
+  treeIntro: [
+    L('anett', 'Pohon ek yang besar dan kokoh! Pasti seru kalau ada rumah pohon di atasnya!'),
+    L('anett', 'Di papan ini ada rencananya. Aku butuh ikatan ranting dan biji ek emas untuk membangunnya.'),
+    L('anett', 'Ikatan ranting tersebar di hutan, diikat pita merah muda. Biji ek emas ada di sepanjang jalan!'),
+  ],
+  treeNeed: (twigs, acorns) => [
+    L(
+      'anett',
+      twigs && acorns
+        ? `Aku butuh ${twigs} ikat ranting lagi dan ${acorns} biji ek emas lagi.`
+        : twigs
+          ? `Aku butuh ${twigs} ikat ranting lagi. Rantingnya diikat pita merah muda!`
+          : `Aku butuh ${acorns} biji ek emas lagi. Aku bisa menemukannya di sepanjang jalan!`,
+    ),
+  ],
+  treeFloor: [L('anett', 'Lantai dan tangganya sudah jadi! Sekarang aku bisa naik tangga!')],
+  treeDone: [L('anett', 'Rumah pohonku sudah jadi! Ada lampu warna-warni, bendera, dan ayunan! Ini rumah rahasiaku di hutan!')],
   raceLose: [L('duck', 'Kwek kwek! Kali ini aku menang. Seru sekali! Ayo balapan lagi kapan saja!')],
 };
 

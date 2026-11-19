@@ -23,6 +23,8 @@ export interface SaveData {
   garden?: GardenSave;
   /** leaf race on the forest stream: best time (seconds), most bubbles and how many races */
   leafRace?: { best: number | null; bubbles: number; runs: number; wins: number };
+  /** Anet's tree house: how many parts are built, the twig bundles picked up, and whether she found it */
+  treehouse?: { stage: number; twigs: string[]; seen: boolean };
 }
 
 export interface GardenSave {
