@@ -74,6 +74,17 @@ Optional extras: 22 golden acorns, 3 hidden treasure chests (Olli the owl gives 
 - Songs grow from 3 to 4 to 5 notes. A wrong flower just means "let's listen again", with no penalty.
 - After all three songs: the *Flower Singer* badge, and the flowers stay playable for free play.
 
+**Kiki's shop (spend golden acorns):**
+- Golden acorns now go into Anet's pouch and are kept between games (shown as 👜 next to the acorn counter).
+- Kiki the squirrel has a little stall beside the path into the glade. The first visit comes with a welcome gift of
+  5 acorns. Finding Pip's brothers and singing the flower songs each give 5 more.
+- Things to buy:
+  - hair: star clip, big pink bow, flower crown, acorn cap
+  - face: heart glasses
+  - backpack: star charm, or a pink, sky-blue or mint backpack
+- Bought items are worn right away on the 3D model. Each one can be worn or taken off again, and they are saved.
+  New badge: *Stylish Explorer*.
+
 ## World 2 – Candy Village
 
 **Mission:** help Koko the gingerbread chef find the missing candy ingredients so he can bake the Rainbow Cake.

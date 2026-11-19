@@ -835,3 +835,34 @@ canvas { display: block; touch-action: none; }
 }
 
 .objective-side { display: block; margin-top: 2px; font-size: 0.82em; font-weight: 800; color: #b3125e; }
+
+/* Kiki's shop */
+.shop-modal { width: min(640px, 94vw); max-height: 92vh; overflow-y: auto; text-align: center; }
+.shop-head { display: flex; align-items: center; gap: 14px; justify-content: center; margin-bottom: 10px; }
+.shop-head h2 { margin: 0; }
+.shop-kiki { width: 72px; height: 72px; border-radius: 50%; overflow: hidden; border: 4px solid #fff; box-shadow: var(--shadow); flex: 0 0 auto; }
+.shop-kiki svg { width: 100%; height: 100%; display: block; }
+.shop-pouch { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #5a4a7a; }
+.shop-pouch b { color: #a35f00; }
+.acorn { display: inline-block; width: 14px; height: 17px; border-radius: 45% 45% 50% 50% / 38% 38% 62% 62%; background: radial-gradient(circle at 35% 60%, #ffd36b, #d78a1c); box-shadow: inset 0 4px 0 #7a4a22; vertical-align: -2px; }
+.shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; text-align: center; }
+.shop-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 8px; border-radius: 18px; background: rgba(255, 255, 255, 0.7); border: 2px solid rgba(255, 255, 255, 0.9); box-shadow: 0 6px 16px rgba(59, 26, 120, 0.1); }
+.shop-item.wearing { border-color: #7ee081; background: rgba(230, 255, 236, 0.85); }
+.shop-item .art { width: 64px; height: 64px; }
+.shop-item .art svg { width: 100%; height: 100%; }
+.shop-item .name { font-weight: 800; font-size: 15px; line-height: 1.15; color: #3b1a78; }
+.shop-item .slot { font-size: 12px; font-weight: 700; color: #8a7aa8; }
+.shop-btn { font-size: 15px !important; padding: 6px 14px !important; min-height: 40px !important; margin-top: auto; }
+.shop-btn.disabled, .shop-btn.disabled:active { background: #ece8f5 !important; color: #8a7aa8; box-shadow: none !important; transform: none !important; cursor: default; font-size: 13px !important; }
+.shop-tip { font-size: 14px; color: #6a5a8a; margin: 10px 0; }
+@media (orientation: landscape) and (max-height: 500px) {
+  .shop-modal { padding: 10px 14px; }
+  .shop-kiki { width: 48px; height: 48px; }
+  .shop-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 7px; }
+  .shop-item { padding: 6px; }
+  .shop-item .art { width: 42px; height: 42px; }
+  .shop-item .name { font-size: 13px; }
+  .shop-tip { display: none; }
+}
+
+.counter .pouch { margin-left: 4px; font-size: 0.72em; font-weight: 800; color: #a35f00; background: rgba(255, 236, 190, 0.9); border-radius: 999px; padding: 0 6px; }

@@ -19,6 +19,7 @@ import { forestDialogue as D } from '../../../data/forestDialogue';
 import { ACHIEVEMENTS } from '../../../data/achievements';
 import { tr } from '../../../i18n';
 import { angleDelta, damp } from '../../../utils/math';
+import { rewardAcorns } from '../shop/KikiShopQuest';
 
 /** Hiding spots, worked out from the forest layout so they always sit right behind the object. */
 function hidingSpots() {
@@ -64,6 +65,7 @@ function finishQuest() {
     const s = useGame.getState();
     useGame.setState((st) => ({ level: { ...st.level, bunnyQuest: 'done', lastProgressAt: performance.now() } }));
     s.unlockAchievement('bunny_friend', ACHIEVEMENTS.bunny_friend.title, ACHIEVEMENTS.bunny_friend.icon);
+    rewardAcorns(5);
     s.playEmote('dance', 2.4);
     audio.sfx('star', { pitch: 1.2 });
     for (let i = 0; i < 4; i++) spawnBurst(RABBIT_POS.x + (Math.random() - 0.5) * 2, terrainHeight(RABBIT_POS.x, RABBIT_POS.z) + 0.6, RABBIT_POS.z + (Math.random() - 0.5) * 2, ['#ff8fbf', '#7ee081', '#ffd23f', '#ffffff'][i], 26, { speed: 2.5 });

@@ -16,6 +16,7 @@ import { useGLTF } from '@react-three/drei';
 import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry.js';
 import type { AnettRig } from './AnettModel';
 import RIG from './anetRig.json';
+import { HeadAccessories } from './Accessories';
 
 export const ANET_HD_URL = `${import.meta.env.BASE_URL}models/anet.glb`;
 export const ANET_HD_ENABLED = typeof location === 'undefined' || !new URLSearchParams(location.search).has('procedural');
@@ -104,7 +105,13 @@ export function AnettHD({ joints, rightHandItem, onReady, backpack }: Props) {
           <group position={RIG.handR.pos as [number, number, number]}>{rightHandItem}</group>,
           bones.elbowR,
         )}
-      {createPortal(<Face joints={joints} mesh={mesh} />, bones.neck)}
+      {createPortal(
+        <>
+          <Face joints={joints} mesh={mesh} />
+          <HeadAccessories />
+        </>,
+        bones.neck,
+      )}
       {backpack && createPortal(<group position={RIG.backpack as [number, number, number]}>{backpack}</group>, bones.spine)}
     </>
   );

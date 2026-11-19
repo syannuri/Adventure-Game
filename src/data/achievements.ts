@@ -14,6 +14,7 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
   puzzle_master: { id: 'puzzle_master', title: 'Flower Wizard', description: 'Solved the colour flower puzzle.', icon: '✿' },
   high_jumper: { id: 'high_jumper', title: 'Mushroom Hopper', description: 'Reached the top of the giant mushrooms.', icon: '▲' },
   flower_singer: { id: 'flower_singer', title: 'Flower Singer', description: "Sang all three songs of Lumi's singing flowers.", icon: '♫' },
+  stylish: { id: 'stylish', title: 'Stylish Explorer', description: "Bought something nice at Kiki's shop.", icon: '✿' },
   bunny_friend: { id: 'bunny_friend', title: 'Bunny Buddy', description: "Found all of Pip's little brothers.", icon: '♥' },
   candy_helper: { id: 'candy_helper', title: 'Candy Hero', description: 'Helped Koko bake the Rainbow Cake.', icon: '❀' },
   sorting_star: { id: 'sorting_star', title: 'Sorting Star', description: 'Sorted every candy into the right jar.', icon: '✚' },

@@ -58,7 +58,12 @@ const EN = {
     L('olli', 'Three treasure chests are hidden near the edges of the forest. Can you find them all?'),
     L('olli', 'And pick up the golden acorns along the paths. Hoo! They shine like little suns.'),
   ],
-  olliDone: [L('olli', 'Hoo-hoo! Splendid work, Anet. The whole forest is proud of you!')],  musicFound: [
+  olliDone: [L('olli', 'Hoo-hoo! Splendid work, Anet. The whole forest is proud of you!')],  kikiHello: [
+    L('kiki', "Chitter-chatter! Hello, I'm Kiki! Welcome to my little shop!"),
+    L('kiki', 'I trade pretty things for golden acorns. Here, a little welcome present: five acorns for you!'),
+  ],
+  kikiAgain: [L('kiki', 'Chitter! Come and see what I have today!')],
+  musicFound: [
     L('anett', 'Wow, these giant flowers can sing! Every flower sings a different note.'),
     L('anett', 'If I touch the magic bud in the middle, they sing a song. Then I step on the flowers in the same order!'),
   ],
@@ -139,7 +144,12 @@ const ID: typeof EN = {
     L('olli', 'Ada tiga peti harta tersembunyi di pinggir hutan. Bisakah kamu menemukan semuanya?'),
     L('olli', 'Ambil juga biji ek emas di sepanjang jalan. Hu! Mereka bersinar seperti matahari kecil.'),
   ],
-  olliDone: [L('olli', 'Hu-hu! Kerja yang luar biasa, Anet. Seluruh hutan bangga padamu!')],  musicFound: [
+  olliDone: [L('olli', 'Hu-hu! Kerja yang luar biasa, Anet. Seluruh hutan bangga padamu!')],  kikiHello: [
+    L('kiki', 'Cicit-cicit! Halo, aku Kiki! Selamat datang di toko kecilku!'),
+    L('kiki', 'Aku menukar barang-barang cantik dengan biji ek emas. Ini hadiah kecil untukmu: lima biji ek!'),
+  ],
+  kikiAgain: [L('kiki', 'Cicit! Ayo lihat barang-barangku hari ini!')],
+  musicFound: [
     L('anett', 'Wah, bunga-bunga raksasa ini bisa bernyanyi! Setiap bunga punya nada yang berbeda.'),
     L('anett', 'Kalau aku sentuh kuncup ajaib di tengah, mereka menyanyikan lagu. Lalu aku injak bunganya dengan urutan yang sama!'),
   ],

@@ -6,7 +6,7 @@ import { useT } from '../../i18n/useT';
 import { worldHud, type WorldHud } from '../../data/worldHud';
 import { Icon } from './Icons';
 
-function Counter({ ico, color, value, total }: { ico: string; color: string; value: number; total: number }) {
+function Counter({ ico, color, value, total, extra }: { ico: string; color: string; value: number; total: number; extra?: string }) {
   const [bump, setBump] = useState(false);
   const prev = useRef(value);
   useEffect(() => {
@@ -24,6 +24,7 @@ function Counter({ ico, color, value, total }: { ico: string; color: string; val
       </span>
       {value}
       <span style={{ opacity: 0.45, fontSize: '0.8em' }}>/{total}</span>
+      {extra && <span className="pouch">{extra}</span>}
     </div>
   );
 }
@@ -93,6 +94,7 @@ export function HUD() {
   const [hint, setHint] = useState<string | null>(null);
   const [side, setSide] = useState<string | null>(null);
   const worldId = useGame((s) => s.worldId);
+  const pouch = useGame((s) => s.save.acorns ?? 0);
   const hud = worldHud(worldId);
 
   useEffect(() => {
@@ -125,7 +127,7 @@ export function HUD() {
         <div className="hud-top">
           <div className="counters">
             <Counter ico={hud.starIcon} color={hud.starColor} value={level.stars.length} total={hud.stars.length} />
-            <Counter ico={hud.coinIcon} color={hud.coinColor} value={level.coins.length} total={hud.coins.length} />
+            <Counter ico={hud.coinIcon} color={hud.coinColor} value={level.coins.length} total={hud.coins.length} extra={worldId === 'enchanted-forest' ? `👜 ${pouch}` : undefined} />
             <Counter ico="◆" color="#3fb7e0" value={level.treasures.length} total={hud.treasures.length} />
           </div>
           <div className="objective passthrough">

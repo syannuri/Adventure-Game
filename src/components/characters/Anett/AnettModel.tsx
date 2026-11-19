@@ -23,6 +23,9 @@ import { RoundedBox } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { smoothstep } from '../../../utils/math';
 import { ANET_HD_ENABLED, AnettHD } from './AnettHD';
+import { BagCharm } from './Accessories';
+import { useGame } from '../../../systems/store';
+import { cosmetic } from '../../../data/cosmetics';
 
 /** If the HD model fails to load, quietly keep the procedural Anet. */
 class HDBoundary extends Component<{ children: React.ReactNode }, { failed: boolean }> {
@@ -478,6 +481,16 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
   });
 
   const movingHair = useMemo(() => createMovingHairMaterial(m.hair), [m.hair]);
+  // backpack colour from Kiki's shop (default khaki)
+  const bagId = useGame((s) => s.save.equipped.bag);
+  useLayoutEffect(() => {
+    const c = cosmetic(bagId)?.color;
+    const base = new THREE.Color(c ?? ANETT_PALETTE.pack);
+    m.pack.color.copy(base);
+    m.packDark.color.copy(c ? base.clone().offsetHSL(0, 0, -0.08) : new THREE.Color(ANETT_PALETTE.packDark));
+    m.packLight.color.copy(c ? base.clone().offsetHSL(0, -0.05, 0.07) : new THREE.Color(ANETT_PALETTE.packLight));
+  }, [bagId, m]);
+
   // sculpted HD model (loads in the background; the procedural model shows until it's ready)
   const [hdReady, setHdReady] = useState(false);
   const onHdReady = useCallback((v: boolean) => setHdReady(v), []);
@@ -667,6 +680,7 @@ export const AnettModel = forwardRef<AnettRig, AnettModelProps>(function AnettMo
   const hdPack = (
     <group>
       <group scale={[0.92, 0.9, 0.92]}>{packBody}</group>
+      <BagCharm />
       {/* shoulder straps for the sculpted body: over each shoulder and down the front */}
       {[1, -1].map((s) => (
         <group key={s}>

@@ -10,6 +10,13 @@ export interface SaveData {
   bestCoins: Record<string, number>;
   seenIntro: boolean;
   settings: Settings;
+  /** golden acorns kept in Anet's pouch (spent at Kiki's shop) */
+  acorns: number;
+  /** cosmetics bought at the shop, and which one is worn in each slot */
+  owned: string[];
+  equipped: Record<string, string>;
+  /** Kiki gives a little welcome gift on the first visit */
+  metKiki: boolean;
 }
 
 export interface Settings {
@@ -30,6 +37,10 @@ export const defaultSave = (): SaveData => ({
   bestCoins: {},
   seenIntro: false,
   settings: { musicVolume: 0.6, sfxVolume: 0.8, quality: detectQuality(), language: 'id' },
+  acorns: 0,
+  owned: [],
+  equipped: {},
+  metKiki: false,
 });
 
 function detectQuality(): 'high' | 'low' {

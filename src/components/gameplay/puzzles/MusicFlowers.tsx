@@ -21,6 +21,7 @@ import { forestDialogue as D } from '../../../data/forestDialogue';
 import { ACHIEVEMENTS } from '../../../data/achievements';
 import { tr } from '../../../i18n';
 import { damp } from '../../../utils/math';
+import { rewardAcorns } from '../shop/KikiShopQuest';
 
 const COLORS = ['#ff5a6e', '#ffa94d', '#ffd23f', '#6fd36b', '#4aa8ff'];
 const SEMITONES = [0, 2, 4, 7, 9]; // C D E G A: a pentatonic scale, every order sounds nice
@@ -162,6 +163,7 @@ export function MusicFlowers() {
                 music.phase = 'won';
                 g.playEmote('dance', 2.6);
                 g.unlockAchievement('flower_singer', ACHIEVEMENTS.flower_singer.title, ACHIEVEMENTS.flower_singer.icon);
+                window.setTimeout(() => rewardAcorns(5), 1200);
                 // the flowers play a happy run up and down
                 [0, 1, 2, 3, 4, 3, 2, 4].forEach((n, k) => window.setTimeout(() => sing(n, clock.current, 0.8), 500 + k * 160));
                 MUSIC_FLOWERS.forEach((ff) => spawnBurst(ff.x, terrainHeight(ff.x, ff.z) + 1.4, ff.z, ff.color, 24, { speed: 2.5 }));
