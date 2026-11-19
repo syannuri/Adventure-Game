@@ -31,6 +31,8 @@ export interface WorldHud {
   };
   objective: () => Objective;
   hint: () => string;
+  /** optional side-quest line shown under the mission */
+  side?: () => string | null;
 }
 
 const level = () => useGame.getState().level;
@@ -59,6 +61,10 @@ export const WORLD_HUD: Record<string, WorldHud> = {
       return forestObjective(l.stage as ForestStage, l.stars, l.puzzleSolved, matchedCount(l.flowers));
     },
     hint: () => FOREST_HINTS()[level().stage as ForestStage] ?? '',
+    side: () => {
+      const l = level();
+      return l.bunnyQuest === 'active' ? '🐰 ' + tr().hud.bunnies(l.bunnies.length, 3) : null;
+    },
   },
   'candy-village': {
     index: 2,

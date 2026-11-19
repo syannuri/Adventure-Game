@@ -40,6 +40,9 @@ interface LevelState {
   /** candy sorting puzzle (World 2): candies already in the right jar, and the candy Anet is carrying */
   sorted: string[];
   holding: string | null;
+  /** World 1 side quest: Pip's little brothers playing hide-and-seek */
+  bunnyQuest: 'none' | 'active' | 'done';
+  bunnies: string[];
   startedAt: number;
   lastProgressAt: number;
 }
@@ -95,6 +98,8 @@ const freshLevel = (worldId: string | null = null): LevelState => ({
   puzzleSolved: false,
   sorted: [],
   holding: null,
+  bunnyQuest: 'none',
+  bunnies: [],
   startedAt: performance.now(),
   lastProgressAt: performance.now(),
 });

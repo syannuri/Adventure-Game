@@ -58,7 +58,22 @@ const EN = {
     L('olli', 'Three treasure chests are hidden near the edges of the forest. Can you find them all?'),
     L('olli', 'And pick up the golden acorns along the paths. Hoo! They shine like little suns.'),
   ],
-  olliDone: [L('olli', 'Hoo-hoo! Splendid work, Anet. The whole forest is proud of you!')],
+  olliDone: [L('olli', 'Hoo-hoo! Splendid work, Anet. The whole forest is proud of you!')],  bunnyIntro: [
+    L('pip', 'Oh, Anet! My three little brothers are playing hide-and-seek, and now they won\'t come home!'),
+    L('pip', 'They giggle when someone comes close. Listen carefully: the louder the giggle, the closer you are!'),
+    L('anett', "I'm good at hide-and-seek! I'll find them all, Pip!"),
+  ],
+  bunnyHints: {
+    'bunny-bush': 'One loves hiding behind a big bush, to the left of where you came into the forest.',
+    'bunny-log': 'One always crawls into the fallen log on the sunny east side.',
+    'bunny-tree': 'One is hiding behind the giant lantern tree, near the owl.',
+  } as Record<string, string>,
+  bunnyReminder: (n: number, t: number) => `You found ${n} of ${t}. Listen for the giggles!`,
+  bunnyAllFound: 'You found everyone! Bring them back to me, please!',
+  bunnyThanks: [
+    L('pip', 'My little brothers! You found all three! Thank you, Anet!'),
+    L('pip', 'Hop hop hooray! You are the best hide-and-seek player in the whole forest!'),
+  ],
 };
 
 const ID: typeof EN = {
@@ -115,7 +130,22 @@ const ID: typeof EN = {
     L('olli', 'Ada tiga peti harta tersembunyi di pinggir hutan. Bisakah kamu menemukan semuanya?'),
     L('olli', 'Ambil juga biji ek emas di sepanjang jalan. Hu! Mereka bersinar seperti matahari kecil.'),
   ],
-  olliDone: [L('olli', 'Hu-hu! Kerja yang luar biasa, Anet. Seluruh hutan bangga padamu!')],
+  olliDone: [L('olli', 'Hu-hu! Kerja yang luar biasa, Anet. Seluruh hutan bangga padamu!')],  bunnyIntro: [
+    L('pip', 'Oh, Anet! Tiga adik kecilku sedang main petak umpet, dan sekarang mereka tidak mau pulang!'),
+    L('pip', 'Mereka suka cekikikan kalau ada yang mendekat. Dengarkan baik-baik: makin keras cekikikannya, makin dekat kamu!'),
+    L('anett', 'Aku jago main petak umpet! Aku akan menemukan mereka semua, Pip!'),
+  ],
+  bunnyHints: {
+    'bunny-bush': 'Satu suka bersembunyi di balik semak besar, di sebelah kiri tempat kamu masuk ke hutan.',
+    'bunny-log': 'Satu selalu masuk ke batang kayu tumbang di sisi timur yang cerah.',
+    'bunny-tree': 'Satu bersembunyi di balik pohon lentera raksasa, dekat burung hantu.',
+  },
+  bunnyReminder: (n, t) => `Kamu sudah menemukan ${n} dari ${t}. Dengarkan cekikikannya!`,
+  bunnyAllFound: 'Semuanya sudah ketemu! Tolong bawa mereka kembali padaku!',
+  bunnyThanks: [
+    L('pip', 'Adik-adikku! Kamu menemukan ketiganya! Terima kasih, Anet!'),
+    L('pip', 'Hop hop horee! Kamu pemain petak umpet terhebat di seluruh hutan!'),
+  ],
 };
 
 /** Dialogue in the current language. */
