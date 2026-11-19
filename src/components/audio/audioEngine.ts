@@ -25,7 +25,8 @@ export type SfxName =
   | 'stepDirt'
   | 'stepWood'
   | 'tapPlay'
-  | 'giggle';
+  | 'giggle'
+  | 'note';
 
 interface Song {
   bpm: number;
@@ -495,6 +496,11 @@ class AudioEngine {
         break;
       case 'pop':
         this.tone('sine', 420 * p, 900 * p, t, 0.1, 0.14 * v, out);
+        break;
+      case 'note':
+        // one sung note of the singing flowers: a bell with a soft sine underneath (pitch = semitone ratio from C5)
+        this.bell(mtof(72) * p, t, 0.16 * v, out);
+        this.tone('sine', mtof(72) * p, mtof(72) * p, t, 0.35, 0.08 * v, out);
         break;
       case 'giggle':
         // a little bunny "hee-hee-hee": quick wobbly chirps

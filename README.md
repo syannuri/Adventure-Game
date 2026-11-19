@@ -68,6 +68,12 @@ Optional extras: 22 golden acorns, 3 hidden treasure chests (Olli the owl gives 
 - Each found bunny hops out and follows Anet in a line. Bring all three back to Pip for the *Bunny Buddy* badge.
 - The HUD shows "Pip's little brothers n / 3" under the mission.
 
+**Lumi's singing flowers (memory game):**
+- North of Lumi's glade, five giant flowers stand in a ring around a magic bud. Each sings its own note (C D E G A).
+- Touch the bud and the flowers sing a song. Then step on the flowers in the same order, like a giant piano.
+- Songs grow from 3 to 4 to 5 notes. A wrong flower just means "let's listen again", with no penalty.
+- After all three songs: the *Flower Singer* badge, and the flowers stay playable for free play.
+
 ## World 2 – Candy Village
 
 **Mission:** help Koko the gingerbread chef find the missing candy ingredients so he can bake the Rainbow Cake.
