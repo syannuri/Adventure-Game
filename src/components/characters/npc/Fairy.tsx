@@ -46,7 +46,7 @@ export function Fairy({ x, y, z }: { x: number; y: number; z: number }) {
     const t = clock.elapsedTime;
     const g = useGame.getState();
     const talking = g.dialogue?.lines[g.dialogue.index]?.speaker === 'lumi';
-    const happy = g.level.stage === 'done';
+    const happy = g.level.stage === 'done' || g.level.stage === 'night';
     body.current.position.y = Math.sin(t * 2.2) * 0.12 + (talking ? Math.abs(Math.sin(t * 9)) * 0.04 : 0) + (happy ? Math.abs(Math.sin(t * 4)) * 0.18 : 0);
     body.current.rotation.z = Math.sin(t * 1.3) * 0.06;
     const flap = Math.sin(t * (happy ? 34 : 24)) * 0.55;
@@ -64,7 +64,7 @@ export function Fairy({ x, y, z }: { x: number; y: number; z: number }) {
     armR.current.rotation.z = happy ? -2.4 + Math.sin(t * 8) * 0.3 : talking ? -0.6 + Math.sin(t * 5) * 0.3 : -0.3;
   });
 
-  const happy = useGame((s) => s.level.stage === 'done');
+  const happy = useGame((s) => s.level.stage === 'done' || s.level.stage === 'night');
 
   return (
     <group ref={root} position={[x, y, z]} scale={1.45}>

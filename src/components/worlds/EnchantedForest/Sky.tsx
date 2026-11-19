@@ -7,7 +7,7 @@ import { mulberry32 } from '../../../utils/math';
 /** Golden-hour sun direction (shared by the sky glow and the sun light). */
 export const SUN_DIR = new THREE.Vector3(0.68, 0.42, -0.6).normalize();
 
-export function Sky({ top = '#4f9fe0', horizon = '#ffe6c4', sunDir = SUN_DIR }) {
+export function Sky({ top = '#4f9fe0', horizon = '#ffe6c4', sunDir = SUN_DIR, night = false }) {
   const mat = useMemo(
     () =>
       new THREE.ShaderMaterial({
@@ -38,12 +38,12 @@ export function Sky({ top = '#4f9fe0', horizon = '#ffe6c4', sunDir = SUN_DIR }) 
       <mesh material={mat} renderOrder={-10}>
         <sphereGeometry args={[420, 32, 16]} />
       </mesh>
-      <Clouds />
+      <Clouds night={night} />
     </>
   );
 }
 
-function Clouds() {
+function Clouds({ night = false }: { night?: boolean }) {
   const group = useRef<THREE.Group>(null!);
   const ref = useRef<THREE.InstancedMesh>(null!);
   const puffs = useMemo(() => {
@@ -70,7 +70,7 @@ function Clouds() {
     }
     return out;
   }, []);
-  const mat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#ffffff', emissive: '#e9f1ff', emissiveIntensity: 0.55, roughness: 1, fog: false }), []);
+  const mat = useMemo(() => new THREE.MeshStandardMaterial({ color: night ? '#3a4676' : '#ffffff', emissive: night ? '#27325c' : '#e9f1ff', emissiveIntensity: night ? 0.35 : 0.55, roughness: 1, fog: false }), [night]);
   const geo = useMemo(() => new THREE.SphereGeometry(1, 14, 10), []);
   useLayoutEffect(() => {
     puffs.forEach((m, i) => ref.current.setMatrixAt(i, m));

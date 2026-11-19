@@ -104,6 +104,13 @@ Anet high up onto a leafy branch, where a glowing lantern treasure waits (+5 aco
 quack quack!". Walking up to the right animal answers each one: the duck, the butterfly, the squirrel. Solving all
 three gives +5 acorns and the *Clever Explorer* badge. The HUD shows the riddle number while one is open.
 
+**Night forest (after finishing World 1):** the Enchanted Forest card on the world map gets a *🌙 Night forest*
+button.
+- The forest at night: moonlight, a starry sky, glowing lantern trees and green fireflies everywhere.
+- Lumi's Light Party: catch 10 fireflies in a jar and light the 5 lantern posts beside the paths. Then go back to
+  Lumi and set the fireflies free in a glowing finale (*Light Bringer* badge).
+- All the side quests can be played at night too.
+
 ## World 2 – Candy Village
 
 **Mission:** help Koko the gingerbread chef find the missing candy ingredients so he can bake the Rainbow Cake.

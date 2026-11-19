@@ -29,6 +29,7 @@ import { LilyPads } from '../sidequests/LilyPads';
 import { DucklingQuest } from '../sidequests/DucklingQuest';
 import { SpringMushroom } from '../sidequests/SpringMushroom';
 import { OlliRiddles, olliRiddleLines } from '../sidequests/OlliRiddles';
+import { LanternPosts, NightQuest, nightTalkLumi } from './NightQuest';
 
 const WORLD_ID = 'enchanted-forest';
 const wandY = () => terrainHeight(WAND_POS.x, WAND_POS.z);
@@ -82,6 +83,9 @@ function talkLumi() {
     case 'returnWand':
       g.openDialogue(D().lumiReturn, finale);
       break;
+    case 'night':
+      nightTalkLumi();
+      break;
   }
 }
 
@@ -107,7 +111,7 @@ function talkPip() {
       { speaker: 'pip', text: next ? D().pipHints[next.id] : D().pipAllFound },
     ]);
   } else {
-    g.openDialogue(D().pip[stage === 'meetFairy' ? 'meetFairy' : stage === 'done' ? 'done' : stage]);
+    g.openDialogue(D().pip[stage === 'meetFairy' ? 'meetFairy' : stage === 'done' || stage === 'night' ? 'done' : stage] ?? D().pip.done);
   }
 }
 
@@ -122,6 +126,7 @@ function pickUpWand() {
 }
 
 export function ForestQuest() {
+  const night = useGame((s) => s.night);
   const triggered = useRef(false);
   const lockedSeen = useRef(false);
 
@@ -216,6 +221,8 @@ export function ForestQuest() {
       <DucklingQuest />
       <SpringMushroom />
       <OlliRiddles />
+      <LanternPosts />
+      {night && <NightQuest />}
     </>
   );
 }
