@@ -126,6 +126,14 @@ The 7 twig bundles, tied with a pink ribbon, lie around the forest. The next par
 blueprint. Anet climbs the ladder up and down, and swings on the swing. Progress is saved, and the HUD shows what the
 next part still needs. Badges: *Tree House Builder* and *Swing High*.
 
+**Picnic for the forest friends:** a checked blanket and an empty basket wait in a clearing in the east. Anet finds
+the picnic food lying around the forest: a carrot, bread, a walnut, an apple, and honey once Grumble is a friend.
+A soft beam of light marks each one. Back at the blanket the friends arrive: Pip, a duck, Kiki and Olli, and
+Grumble after his chapter. Each has a thought bubble showing the food they like. Pick a food up from the blanket
+and give it to the right friend. A wrong food is never a failure: the friend kindly describes what they would like,
+and the food goes back. When everyone has eaten there is a dance party (+5 acorns the first time, *Picnic Host*
+badge).
+
 **Olli's animal riddles:** Olli asks three riddles, for example "I am white and round, I swim on the pond and say
 quack quack!". Walking up to the right animal answers each one: the duck, the butterfly, the squirrel. Solving all
 three gives +5 acorns and the *Clever Explorer* badge. The HUD shows the riddle number while one is open.

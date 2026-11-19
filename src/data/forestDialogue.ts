@@ -171,6 +171,34 @@ const EN = {
     ),
   ],
   treeFloor: [L('anett', 'The floor and the ladder are ready! I can climb up the ladder now!')],
+  picnicIntro: (foods: string[]) => [
+    L('anett', 'A picnic blanket and an empty basket! Let us have a picnic with all my forest friends!'),
+    L('anett', `But first I need food: ${foods.join(', ')}. Little beams of light show where the food is!`),
+  ],
+  picnicAllFood: [L('anett', 'I found all the food! Back to the picnic blanket!')],
+  picnicGuests: [
+    L('pip', 'Hop hop! We are here for the picnic! Thank you for inviting us, Anet!'),
+    L('anett', 'Welcome, everyone! Look at the bubbles: I will bring each of you the food you like!'),
+  ],
+  picnicWant: {
+    carrot: 'I would love something orange, long and crunchy!',
+    bread: 'Quack! Something soft and brown, baked from flour, please!',
+    walnut: 'Something hard and round, with a shell to crack!',
+    apple: 'Hoo-hoo! Something red, round and sweet, please.',
+    honey: 'Something yellow, sticky and sweet, made by bees!',
+  } as Record<string, string>,
+  picnicWrong: (food: string, want: string) => `Thank you, but I do not really like ${food}. ${want}`,
+  picnicThanks: {
+    carrot: 'Crunch crunch! My favourite! Thank you, Anet!',
+    bread: 'Quack quack! Yummy bread! Thank you!',
+    walnut: 'Crack! A walnut, my favourite! Thank you!',
+    apple: 'Hoo! A sweet red apple. Thank you, Anet!',
+    honey: 'Mmm, honey! Grumble is so happy! Thank you!',
+  } as Record<string, string>,
+  picnicParty: [
+    L('anett', 'Everyone has their favourite food! This is the best picnic ever!'),
+    L('kiki', 'Hooray for Anet! Let us dance!'),
+  ],
   treeDone: [L('anett', 'My tree house is finished! With fairy lights, a flag and a swing! This is my secret forest home!')],
   raceLose: [L('duck', 'Quack quack! I won this time. That was fun! Race me again whenever you like!')],
 };
@@ -342,6 +370,34 @@ const ID: typeof EN = {
     ),
   ],
   treeFloor: [L('anett', 'Lantai dan tangganya sudah jadi! Sekarang aku bisa naik tangga!')],
+  picnicIntro: (foods) => [
+    L('anett', 'Ada tikar piknik dan keranjang kosong! Ayo piknik bersama semua teman hutanku!'),
+    L('anett', `Tapi pertama aku butuh makanan: ${foods.join(', ')}. Cahaya kecil menunjukkan di mana makanannya!`),
+  ],
+  picnicAllFood: [L('anett', 'Semua makanan sudah ketemu! Ayo kembali ke tikar piknik!')],
+  picnicGuests: [
+    L('pip', 'Hop hop! Kami datang untuk piknik! Terima kasih sudah mengundang kami, Anet!'),
+    L('anett', 'Selamat datang, semuanya! Lihat gelembungnya: aku akan membawakan makanan kesukaan kalian!'),
+  ],
+  picnicWant: {
+    carrot: 'Aku mau yang oranye, panjang, dan renyah!',
+    bread: 'Kwek! Yang empuk dan cokelat, dipanggang dari tepung, ya!',
+    walnut: 'Yang keras dan bulat, ada cangkangnya untuk dipecahkan!',
+    apple: 'Huu-huu! Yang merah, bulat, dan manis, ya.',
+    honey: 'Yang kuning, lengket, dan manis, buatan lebah!',
+  },
+  picnicWrong: (food, want) => `Terima kasih, tapi aku kurang suka ${food}. ${want}`,
+  picnicThanks: {
+    carrot: 'Kriuk kriuk! Kesukaanku! Terima kasih, Anet!',
+    bread: 'Kwek kwek! Roti yang enak! Terima kasih!',
+    walnut: 'Krak! Kenari, kesukaanku! Terima kasih!',
+    apple: 'Huu! Apel merah yang manis. Terima kasih, Anet!',
+    honey: 'Mmm, madu! Kusut senang sekali! Terima kasih!',
+  },
+  picnicParty: [
+    L('anett', 'Semua dapat makanan kesukaannya! Ini piknik terbaik!'),
+    L('kiki', 'Hore untuk Anet! Ayo menari!'),
+  ],
   treeDone: [L('anett', 'Rumah pohonku sudah jadi! Ada lampu warna-warni, bendera, dan ayunan! Ini rumah rahasiaku di hutan!')],
   raceLose: [L('duck', 'Kwek kwek! Kali ini aku menang. Seru sekali! Ayo balapan lagi kapan saja!')],
 };

@@ -24,6 +24,8 @@ export interface SaveData {
   /** leaf race on the forest stream: best time (seconds), most bubbles and how many races */
   leafRace?: { best: number | null; bubbles: number; runs: number; wins: number };
   /** Anet's tree house: how many parts are built, the twig bundles picked up, and whether she found it */
+  /** the first picnic gives a few acorns */
+  picnicDone?: boolean;
   treehouse?: { stage: number; twigs: string[]; seen: boolean };
 }
 
