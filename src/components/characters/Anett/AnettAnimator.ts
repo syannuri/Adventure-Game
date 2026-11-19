@@ -21,6 +21,10 @@ export interface AnimInput {
   overlay: number;
   /** seconds without input (drives the look-around idle variation) */
   idleTime: number;
+  /** 0..1 anticipation crouch just before a jump */
+  crouch?: number;
+  /** horizontal speed while in the air (a running jump becomes a long leap) */
+  airSpeed?: number;
 }
 
 export class AnettAnimator {
@@ -54,12 +58,16 @@ export class AnettAnimator {
     if (wRun > 0) mixPose(loco, loco, POSES.run(t, this.phase), wRun);
 
     // ---- airborne: jump (rising) -> fall (descending)
+    if (inp.crouch && inp.crouch > 0) mixPose(loco, loco, POSES.crouch(t, this.phase), inp.crouch);
     if (inp.airborne) {
       const air = this.tmpB;
-      // rising (arms up, knees tucked) -> apex (tuck, arms in a V) -> falling (arms out, legs reach down)
+      // push-off (stretched, arms swung up) -> apex (knees up a little) -> coming down (legs reach, arms out)
       copyPose(air, POSES.apex(t, this.phase));
-      mixPose(air, air, POSES.jump(t, this.phase), smoothstep(0.8, 4.5, inp.vy));
-      mixPose(air, air, POSES.fall(t, this.phase), smoothstep(-0.8, -4.5, inp.vy));
+      mixPose(air, air, POSES.jump(t, this.phase), smoothstep(1.5, 6, inp.vy));
+      mixPose(air, air, POSES.fall(t, this.phase), smoothstep(-0.5, -4, inp.vy));
+      // jumping while running: a long stride through the air (less of it while landing)
+      const leap = smoothstep(2.5, 5.5, inp.airSpeed ?? 0) * (1 - smoothstep(-2, -6, inp.vy) * 0.6);
+      if (leap > 0) mixPose(air, air, POSES.leap(t, this.phase), leap);
       mixPose(loco, loco, air, 1);
     }
     if (inp.land > 0) mixPose(loco, loco, POSES.land(t, this.phase), inp.land);
@@ -87,7 +95,7 @@ export class AnettAnimator {
     }
 
     // ---- damp current toward target
-    const k = damp(inp.land > 0.3 ? 22 : inp.airborne ? 17 : 13, dt);
+    const k = damp(inp.crouch && inp.crouch > 0.2 ? 30 : inp.land > 0.3 ? 22 : inp.airborne ? 15 : 13, dt);
     dampPose(this.current, this.target, k);
 
     // ---- blink

@@ -45,7 +45,9 @@ export type AnimState =
   | 'lookAround'
   | 'walk'
   | 'run'
+  | 'crouch'
   | 'jump'
+  | 'leap'
   | 'apex'
   | 'fall'
   | 'land'
@@ -131,76 +133,125 @@ export const POSES: Record<AnimState, (t: number, phase: number) => Pose> = {
     return p;
   },
 
-  /** Take-off / rising: arms thrown up high, knees tucked up, chest open, looking up. */
-  jump: (t) => {
+  /**
+   * Anticipation before take-off (a split second): knees bend, hips drop, the body leans forward and
+   * both arms swing back, ready to throw the body up.
+   */
+  crouch: () => {
     const p = emptyPose();
-    p.joints.legL = [-0.85, 0, 0.1];
-    p.joints.kneeL = [1.55, 0, 0];
-    p.joints.legR = [-0.55, 0, -0.1];
-    p.joints.kneeR = [1.35, 0, 0];
-    // arms thrown up overhead in a "V" (hooray!), clear of the face
-    p.joints.shoulderL = [-0.2, 0, 2.05];
-    p.joints.shoulderR = [-0.2, 0, -2.05];
-    p.joints.elbowL = [0, 0, 0.35];
-    p.joints.elbowR = [0, 0, -0.35];
-    p.joints.spine = [-0.16, 0, 0];
-    p.joints.neck = [-0.12, 0, S(t * 3) * 0.03];
-    p.joints.hips = [-0.05, 0, 0];
-    p.mouth = 0.6;
-    p.brow = 0.55;
+    p.joints.legL = [-0.72, 0, 0.06];
+    p.joints.kneeL = [1.3, 0, 0];
+    p.joints.legR = [-0.72, 0, -0.06];
+    p.joints.kneeR = [1.3, 0, 0];
+    p.joints.hips = [0.05, 0, 0];
+    p.joints.spine = [0.4, 0, 0];
+    p.joints.neck = [-0.28, 0, 0];
+    p.joints.shoulderL = [0.75, 0, 0.18];
+    p.joints.shoulderR = [0.75, 0, -0.18];
+    p.joints.elbowL = [-0.25, 0, 0];
+    p.joints.elbowR = [-0.25, 0, 0];
+    p.bodyY = -0.15;
+    p.brow = 0.15;
+    return p;
+  },
+
+  /**
+   * Take-off / rising: the legs have just pushed off (stretched, toes trailing), the arms have swung
+   * forward and up past the shoulders, the chest opens and she looks up where she is going.
+   */
+  jump: () => {
+    const p = emptyPose();
+    p.joints.legL = [-0.22, 0, 0.05];
+    p.joints.kneeL = [0.3, 0, 0];
+    p.joints.legR = [0.08, 0, -0.05];
+    p.joints.kneeR = [0.18, 0, 0];
+    p.joints.shoulderL = [-2.35, 0, 0.22];
+    p.joints.shoulderR = [-2.35, 0, -0.22];
+    p.joints.elbowL = [-0.3, 0, 0];
+    p.joints.elbowR = [-0.3, 0, 0];
+    p.joints.spine = [-0.1, 0, 0];
+    p.joints.neck = [-0.14, 0, 0];
+    p.bodyY = 0.02;
+    p.mouth = 0.3;
+    p.brow = 0.35;
+    return p;
+  },
+
+  /** Top of the jump: knees drawn up a little, arms coming down to the front, weightless for a moment. */
+  apex: () => {
+    const p = emptyPose();
+    p.joints.legL = [-0.78, 0, 0.08];
+    p.joints.kneeL = [1.3, 0, 0];
+    p.joints.legR = [-0.55, 0, -0.08];
+    p.joints.kneeR = [1.15, 0, 0];
+    p.joints.shoulderL = [-1.45, 0, 0.55];
+    p.joints.shoulderR = [-1.45, 0, -0.55];
+    p.joints.elbowL = [-0.45, 0, 0];
+    p.joints.elbowR = [-0.45, 0, 0];
+    p.joints.spine = [0.06, 0, 0];
+    p.joints.neck = [-0.04, 0, 0];
+    p.mouth = 0.45;
+    p.brow = 0.3;
     p.squint = 0.2;
     return p;
   },
 
-  /** Top of the jump: a happy tuck – knees up, arms out in a "V". */
-  apex: (t) => {
-    const p = emptyPose();
-    p.joints.legL = [-1.05, 0, 0.14];
-    p.joints.kneeL = [1.85, 0, 0];
-    p.joints.legR = [-0.95, 0, -0.14];
-    p.joints.kneeR = [1.8, 0, 0];
-    p.joints.shoulderL = [-1.1, 0, 1.75];
-    p.joints.shoulderR = [-1.1, 0, -1.75];
-    p.joints.elbowL = [-0.15, 0, 0.2];
-    p.joints.elbowR = [-0.15, 0, -0.2];
-    p.joints.spine = [0.08, 0, 0];
-    p.joints.neck = [-0.08, 0, S(t * 4) * 0.04];
-    p.mouth = 0.75;
-    p.brow = 0.45;
-    p.squint = 0.45;
-    return p;
-  },
-
-  /** Coming down: arms out wide for balance, legs reaching down for the ground, eyes on the landing. */
+  /** Coming down: legs reach for the ground with soft knees, arms open out for balance, eyes on the landing spot. */
   fall: (t) => {
     const p = emptyPose();
-    const w = S(t * 9) * 0.12;
-    p.joints.legL = [-0.32, 0, 0.1];
+    const w = S(t * 7) * 0.06;
+    p.joints.legL = [-0.28, 0, 0.07];
     p.joints.kneeL = [0.42, 0, 0];
-    p.joints.legR = [-0.12, 0, -0.1];
-    p.joints.kneeR = [0.3, 0, 0];
-    p.joints.shoulderL = [-0.35, 0, 1.45 + w];
-    p.joints.shoulderR = [-0.35, 0, -1.45 - w];
-    p.joints.elbowL = [-0.35, 0, 0.15];
-    p.joints.elbowR = [-0.35, 0, -0.15];
-    p.joints.spine = [0.14, 0, 0];
+    p.joints.legR = [-0.12, 0, -0.07];
+    p.joints.kneeR = [0.32, 0, 0];
+    p.joints.shoulderL = [-0.55, 0, 1.0 + w];
+    p.joints.shoulderR = [-0.55, 0, -1.0 - w];
+    p.joints.elbowL = [-0.35, 0, 0];
+    p.joints.elbowR = [-0.35, 0, 0];
+    p.joints.spine = [0.12, 0, 0];
     p.joints.neck = [0.14, 0, 0];
-    p.mouth = 0.4;
-    p.brow = 0.4;
+    p.mouth = 0.3;
+    p.brow = 0.3;
     return p;
   },
 
+  /**
+   * Running jump: a long stride in the air – the front leg reaches forward, the back leg trails, and
+   * the arms swing opposite to the legs like in a real leap.
+   */
+  leap: (t) => {
+    const p = emptyPose();
+    p.joints.legL = [-1.05, 0, 0.04];
+    p.joints.kneeL = [0.75, 0, 0];
+    p.joints.legR = [0.5, 0, -0.04];
+    p.joints.kneeR = [0.85, 0, 0];
+    p.joints.shoulderL = [0.65, 0, 0.3];
+    p.joints.shoulderR = [-1.35, 0, -0.3];
+    p.joints.elbowL = [-0.5, 0, 0];
+    p.joints.elbowR = [-0.7, 0, 0];
+    p.joints.spine = [0.18, 0.08, 0];
+    p.joints.hips = [0, -0.12, 0];
+    p.joints.neck = [-0.1, -0.06, S(t * 3) * 0.02];
+    p.mouth = 0.35;
+    p.brow = 0.3;
+    return p;
+  },
+
+  /** Landing: knees bend to soak up the fall, hips drop, the body leans forward and the arms reach out in front. */
   land: () => {
     const p = emptyPose();
-    p.joints.legL = [-0.55, 0, 0.06];
-    p.joints.kneeL = [1.05, 0, 0];
-    p.joints.legR = [-0.55, 0, -0.06];
-    p.joints.kneeR = [1.05, 0, 0];
-    p.joints.spine = [0.32, 0, 0];
-    p.joints.neck = [-0.2, 0, 0];
-    p.joints.shoulderL = [-0.5, 0, 0.45];
-    p.joints.shoulderR = [-0.5, 0, -0.45];
-    p.bodyY = -0.09;
+    p.joints.legL = [-0.8, 0, 0.07];
+    p.joints.kneeL = [1.4, 0, 0];
+    p.joints.legR = [-0.8, 0, -0.07];
+    p.joints.kneeR = [1.4, 0, 0];
+    p.joints.hips = [0.04, 0, 0];
+    p.joints.spine = [0.42, 0, 0];
+    p.joints.neck = [-0.25, 0, 0];
+    p.joints.shoulderL = [-0.95, 0, 0.35];
+    p.joints.shoulderR = [-0.95, 0, -0.35];
+    p.joints.elbowL = [-0.4, 0, 0];
+    p.joints.elbowR = [-0.4, 0, 0];
+    p.bodyY = -0.15;
     return p;
   },
 
