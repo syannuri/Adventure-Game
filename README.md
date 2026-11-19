@@ -134,6 +134,13 @@ and give it to the right friend. A wrong food is never a failure: the friend kin
 and the food goes back. When everyone has eaten there is a dance party (+5 acorns the first time, *Picnic Host*
 badge).
 
+**Rain and the rainbow (daytime):** about a minute after arriving, a gentle rain shower passes over the forest. The
+sky turns grey, the light dims, rain falls with a soft rain sound and puddles form on the paths. When it stops,
+the camera looks up at a big rainbow in the sky, but its colours are pale: seven colour drops fell into the
+forest. Find red, orange, yellow, green, blue, indigo and violet; each one is named when it is found and lights up
+its band of the rainbow (+5 acorns the first time, *Rainbow Hunter* badge). Jumping into puddles makes a big
+splash: five different puddles give the *Puddle Jumper* badge.
+
 **Olli's animal riddles:** Olli asks three riddles, for example "I am white and round, I swim on the pond and say
 quack quack!". Walking up to the right animal answers each one: the duck, the butterfly, the squirrel. Solving all
 three gives +5 acorns and the *Clever Explorer* badge. The HUD shows the riddle number while one is open.

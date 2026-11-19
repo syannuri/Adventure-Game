@@ -220,6 +220,8 @@ export const en = {
     sky_hopper: { title: 'Spring Jumper', description: 'Bounced up to the lantern treasure in the giant tree.' },
     forest_champion: { title: 'Forest Champion', description: 'Won the Great Forest Match against Grumble.' },
     kusut_friend: { title: 'Monster Friend', description: 'Made friends with Grumble the messy monster.' },
+    rainbow_hunter: { title: 'Rainbow Hunter', description: 'Found all seven colours of the rainbow.' },
+    puddle_jumper: { title: 'Puddle Jumper', description: 'Jumped into five different puddles after the rain.' },
     picnic_host: { title: 'Picnic Host', description: 'Gave every friend their favourite food at the picnic.' },
     tree_house: { title: 'Tree House Builder', description: 'Built a whole tree house in the oak tree.' },
     swing_high: { title: 'Swing High', description: 'Had a swing on the tree-house swing.' },
@@ -330,6 +332,13 @@ export const en = {
     go: 'Go!',
     completeTitle: 'Forest Champion!',
     completeHelped: 'You won the Great Forest Match, and Grumble became everyone’s friend!',
+  },
+  rain: {
+    startTitle: 'Pitter-patter!',
+    startText: 'A little rain shower',
+    raining: 'It is raining…',
+    colorCount: (n: number, t: number) => `Rainbow colours ${n} / ${t}`,
+    colors: { red: 'Red!', orange: 'Orange!', yellow: 'Yellow!', green: 'Green!', blue: 'Blue!', indigo: 'Indigo!', violet: 'Violet!' } as Record<string, string>,
   },
   picnic: {
     foods: { carrot: 'carrot', bread: 'bread', walnut: 'walnut', apple: 'apple', honey: 'honey' } as Record<string, string>,

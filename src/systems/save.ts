@@ -26,6 +26,8 @@ export interface SaveData {
   /** Anet's tree house: how many parts are built, the twig bundles picked up, and whether she found it */
   /** the first picnic gives a few acorns */
   picnicDone?: boolean;
+  /** the first full rainbow gives a few acorns */
+  rainbowDone?: boolean;
   treehouse?: { stage: number; twigs: string[]; seen: boolean };
 }
 
