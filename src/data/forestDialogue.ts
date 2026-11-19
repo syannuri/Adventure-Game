@@ -133,6 +133,19 @@ const EN = {
     L('pip', 'My little brothers! You found all three! Thank you, Anet!'),
     L('pip', 'Hop hop hooray! You are the best hide-and-seek player in the whole forest!'),
   ],
+  gardenIntro: [
+    L('anett', 'A little garden! Three flower beds and a basket of magic seeds!'),
+    L('anett', 'First I plant a seed. Then I water it with the watering can on the tree stump.'),
+    L('anett', 'Every time a plant grows, it gets thirsty again. I can fill the can at the pond!'),
+  ],
+  gardenNoCan: [L('anett', 'The plant is thirsty! I need the watering can from the tree stump.')],
+  gardenEmpty: [L('anett', 'Oh, the watering can is empty! I can fill it with water at the pond.')],
+  gardenBloom: {
+    sunflower: [L('anett', 'Wow! A giant sunflower, even taller than me!')],
+    berry: [L('anett', 'Yum! A berry bush full of sweet red berries!')],
+    rainbow: [L('anett', 'Ooh! A magic rainbow flower! It sparkles in every colour!')],
+  } as Record<string, DialogueLine[]>,
+  gardenAll: [L('anett', 'All three plants bloomed! My garden is so beautiful! A little bee came to visit too!')],
 };
 
 const ID: typeof EN = {
@@ -264,6 +277,19 @@ const ID: typeof EN = {
     L('pip', 'Adik-adikku! Kamu menemukan ketiganya! Terima kasih, Anet!'),
     L('pip', 'Hop hop horee! Kamu pemain petak umpet terhebat di seluruh hutan!'),
   ],
+  gardenIntro: [
+    L('anett', 'Ada kebun kecil! Tiga petak tanah dan sekeranjang biji ajaib!'),
+    L('anett', 'Pertama aku tanam bijinya. Lalu aku siram dengan kaleng penyiram di atas tunggul pohon.'),
+    L('anett', 'Setiap kali tanaman tumbuh, dia haus lagi. Aku bisa mengisi kalengnya di kolam!'),
+  ],
+  gardenNoCan: [L('anett', 'Tanamannya haus! Aku perlu kaleng penyiram dari tunggul pohon.')],
+  gardenEmpty: [L('anett', 'Oh, kaleng penyiramnya kosong! Aku bisa mengisinya dengan air di kolam.')],
+  gardenBloom: {
+    sunflower: [L('anett', 'Wah! Bunga matahari raksasa, lebih tinggi dariku!')],
+    berry: [L('anett', 'Nyam! Semak beri penuh buah beri merah yang manis!')],
+    rainbow: [L('anett', 'Ooh! Bunga pelangi ajaib! Berkilau dengan semua warna!')],
+  },
+  gardenAll: [L('anett', 'Ketiga tanaman sudah mekar! Kebunku indah sekali! Ada lebah kecil yang datang berkunjung juga!')],
 };
 
 /** Dialogue in the current language. */

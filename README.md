@@ -100,6 +100,13 @@ its name in both Bahasa Indonesia and English. Filling the book unlocks *Sticker
 **Spring mushroom:** under the giant lantern tree in the east stands a wobbly blue mushroom. Landing on it bounces
 Anet high up onto a leafy branch, where a glowing lantern treasure waits (+5 acorns, *Spring Jumper* badge).
 
+**Anet's magic garden:** in a clearing east of the glade there are three raised beds: a sunflower, a berry bush and a
+rainbow flower. Plant a seed, take the watering can from the tree stump and water it. The can is filled at the pond
+and holds water for three plants. A watered plant grows one step (seed, sprout, bud, bloom) after a short wait, shown
+by a ring of green dots, and then it is thirsty again (a blue drop floats above it). The garden is saved and keeps
+growing while Anet is away. A blooming plant can be picked for +3 acorns and planted again. A bee visits the
+flowers and goes in the sticker book. Badges: *Little Gardener* (first bloom) and *Rainbow Garden* (all three).
+
 **Olli's animal riddles:** Olli asks three riddles, for example "I am white and round, I swim on the pond and say
 quack quack!". Walking up to the right animal answers each one: the duck, the butterfly, the squirrel. Solving all
 three gives +5 acorns and the *Clever Explorer* badge. The HUD shows the riddle number while one is open.

@@ -19,6 +19,13 @@ export const HOUSE = { x: -5.6, z: 1.2 };
 export const MUSIC = { x: -1, z: -9.6, r: 2.3 };
 /** Kiki the squirrel's little shop stall beside the path into the glade (facing the path). */
 export const SHOP = { x: -3.6, z: 4.8, rot: Math.PI / 2 };
+/**
+ * Anet's magic garden: three raised beds (sunflower, berry bush, rainbow flower) in a clearing east
+ * of the glade, a tree stump with the watering can, and water from the pond nearby.
+ */
+export const GARDEN = { x: 8.5, z: -1.5, r: 3.4 };
+export const GARDEN_BEDS = [-1.7, 0, 1.7].map((dx, i) => ({ i, x: GARDEN.x + dx, z: GARDEN.z }));
+export const GARDEN_STUMP = { x: GARDEN.x - 3.3, z: GARDEN.z + 1.9 };
 
 /**
  * Colour flower puzzle guarding the wand: a stone tablet with three gems, and three magic flowers in
@@ -311,15 +318,17 @@ function scatter(seed: number, count: number, rMin: number, rMax: number, gap = 
   return out;
 }
 
-export const FLOWERS = scatter(11, 900, 2, 40);
-export const GRASS = scatter(23, 5200, 0, 44, -0.4);
-export const MUSHROOMS = scatter(31, 70, 4, 36, 0.2);
-export const ROCKS = scatter(41, 26, 6, 38, 0.6);
+/** keep the garden clearing free (filtered afterwards so nothing else moves) */
+const notInGarden = <T extends { x: number; z: number }>(list: T[], extra = 0) => list.filter((p) => Math.hypot(p.x - GARDEN.x, p.z - GARDEN.z) > GARDEN.r + extra);
+export const FLOWERS = notInGarden(scatter(11, 900, 2, 40));
+export const GRASS = notInGarden(scatter(23, 5200, 0, 44, -0.4), -1.2);
+export const MUSHROOMS = notInGarden(scatter(31, 70, 4, 36, 0.2));
+export const ROCKS = notInGarden(scatter(41, 26, 6, 38, 0.6), 0.6);
 /** Ground detail: bushes, pebbles, ferns and fallen leaves. */
-export const BUSHES = scatter(53, 120, 5, 38, 0.5);
-export const PEBBLES = scatter(61, 320, 1, 40, -0.7);
-export const FERNS = scatter(67, 160, 4, 40, 0.3);
-export const LEAVES = scatter(71, 650, 1, 40, -1.2);
+export const BUSHES = notInGarden(scatter(53, 120, 5, 38, 0.5), 0.6);
+export const PEBBLES = notInGarden(scatter(61, 320, 1, 40, -0.7));
+export const FERNS = notInGarden(scatter(67, 160, 4, 40, 0.3));
+export const LEAVES = notInGarden(scatter(71, 650, 1, 40, -1.2), -1);
 
 /** Fallen logs (decoration + obstacles). */
 export const LOGS = [
@@ -357,6 +366,8 @@ export function buildForestPhysics(): WorldPhysics {
     { x: SHOP.x, z: SHOP.z, r: 0.95 }, // Kiki's shop stall
     { x: MAMA_DUCK.x, z: MAMA_DUCK.z, r: 0.35 },
     ...LANTERN_POSTS.map((l) => ({ x: l.x, z: l.z, r: 0.18 })),
+    ...GARDEN_BEDS.map((b) => ({ x: b.x, z: b.z, r: 0.5 })),
+    { x: GARDEN_STUMP.x, z: GARDEN_STUMP.z, r: 0.4 },
   ];
   return { height: terrainHeight, colliders, platforms: [...PLATFORMS, ...LILY_PLATFORMS, ...SPRING_PLATFORMS], boundaryRadius: 40, surfaceAt: (x, z) => (distToPath(x, z) < 1.6 ? 'dirt' : 'grass') };
 }

@@ -19,6 +19,17 @@ export interface SaveData {
   metKiki: boolean;
   /** animal stickers collected in the sticker book */
   stickers: string[];
+  /** Anet's magic garden in the forest (keeps growing while she is away) */
+  garden?: GardenSave;
+}
+
+export interface GardenSave {
+  /** stage: 0 empty, 1 seed, 2 sprout, 3 bud, 4 bloom; growUntil: watered and growing until this time */
+  beds: { stage: number; growUntil: number | null }[];
+  /** plant kinds that have bloomed at least once */
+  bloomed: string[];
+  harvests: number;
+  seen: boolean;
 }
 
 export interface Settings {
