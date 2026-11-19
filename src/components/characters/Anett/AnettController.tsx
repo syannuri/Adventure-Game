@@ -122,6 +122,9 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
         if (s.action.time > s.action.duration) s.action = null;
       }
       if (g.dialogue && g.dialogue.lines[g.dialogue.index]?.speaker === 'anett') ra = 'talk';
+      // the ride can ask for its own pose (climbing a ladder), driven by its own step phase
+      if (r.pose) ra = r.pose;
+      if (r.phase !== undefined) animator.phase = r.phase;
       animator.update(rig.current, dt, { speed: 0, airborne: false, vy: 0, land: 0, action: ra, overlay: 0, idleTime: 0 });
       player.velocity.set(0, 0, 0);
       player.grounded = true;

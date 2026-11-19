@@ -35,6 +35,18 @@ const TOP = GY + T.h;
 const LADDER_FOOT = { x: T.x, z: T.z - 3.3 };
 const LADDER_TOP = { x: T.x, z: T.z - 1.9 };
 const SIGN = { x: T.x - 2.7, z: T.z - 3.5 };
+/** climbing: number of steps, seconds per rung, time to step between ladder and deck */
+const RUNGS = 7;
+const STEP_T = 0.4;
+const DECK_T = 0.45;
+/** how far in front of the ladder Anet's feet are while she holds on */
+const HOLD = 0.32;
+/** the ladder leans on the deck: its z at a given height */
+const ladderZ = (y: number) => LADDER_FOOT.z + ((y - GY) / T.h) * 1.4;
+const smooth = (a: number, b: number, x: number) => {
+  const k = Math.min(1, Math.max(0, (x - a) / (b - a)));
+  return k * k * (3 - 2 * k);
+};
 const SWING = { x: T.x + 3.2, z: T.z, anchorY: GY + 4.4, len: 3.75 };
 
 const fresh = () => ({ stage: 0, twigs: [] as string[], seen: false });
@@ -113,6 +125,7 @@ export function TreeHouse() {
   const twigs = useGame((s) => s.save.treehouse?.twigs);
   const swing = useRef<THREE.Group>(null!);
   const popAt = useRef(-10);
+  const lastRung = useRef(-1);
   const lastStage = useRef(stage);
   const partRefs = useRef<(THREE.Group | null)[]>([]);
   if (lastStage.current !== stage) {
@@ -212,15 +225,36 @@ export function TreeHouse() {
     let swingA = Math.sin(t * 0.9) * 0.05;
     if (act.kind && !busy) act.t += dt;
     if (act.kind === 'up' || act.kind === 'down') {
-      const k = Math.min(1, act.t / 1.5);
-      const e = k * k * (3 - 2 * k);
-      const f = act.kind === 'up' ? e : 1 - e;
-      player.ride = { x: T.x, y: GY + f * (TOP - GY) + Math.abs(Math.sin(act.t * 9)) * 0.04, z: LADDER_FOOT.z + 0.05 + f * (LADDER_TOP.z - 0.35 - LADDER_FOOT.z - 0.05), facing: 0 };
-      if (act.kind === 'up' && Math.floor(act.t * 6) !== Math.floor((act.t - dt) * 6)) audio.sfx('stepWood', { volume: 0.6, pitch: 1.2 });
-      if (k >= 1) {
+      // rung by rung: each step lifts (or lowers) the body one rung, with a little pause between steps;
+      // up there she steps off onto the deck, and going down she first steps back onto the ladder
+      const climbT = RUNGS * STEP_T;
+      const up = act.kind === 'up';
+      const tc = up ? act.t : act.t - DECK_T;
+      const k = Math.min(1, Math.max(0, tc / climbT));
+      const step = Math.min(RUNGS - 1, Math.floor(k * RUNGS));
+      const within = k * RUNGS - step;
+      const eased = smooth(0.2, 0.85, within);
+      const f = up ? (step + eased) / RUNGS : 1 - (step + eased) / RUNGS;
+      const y = GY + f * (TOP - GY);
+      const phase = (step + within) * Math.PI;
+      const onDeck = up ? act.t > climbT : act.t < DECK_T;
+      if (onDeck) {
+        // stepping between the top of the ladder and the deck
+        const d = up ? Math.min(1, (act.t - climbT) / DECK_T) : 1 - Math.min(1, act.t / DECK_T);
+        player.ride = { x: T.x, y: TOP, z: ladderZ(TOP) - HOLD + d * (LADDER_TOP.z - (ladderZ(TOP) - HOLD)), facing: up ? d * Math.PI : 0, pose: 'walk', phase: d * Math.PI * 2 };
+      } else {
+        player.ride = { x: T.x, y, z: ladderZ(y) - HOLD, facing: 0, pose: 'climb', phase };
+      }
+      if (!onDeck && Math.floor(k * RUNGS) !== lastRung.current) {
+        lastRung.current = Math.floor(k * RUNGS);
+        audio.sfx('stepWood', { volume: 0.55, pitch: 1.1 + Math.random() * 0.15 });
+      }
+      const total = climbT + DECK_T;
+      if (act.t >= total) {
         player.ride = null;
-        if (act.kind === 'up') player.teleport(LADDER_TOP.x, TOP, LADDER_TOP.z, Math.PI);
-        else player.teleport(LADDER_FOOT.x, GY, LADDER_FOOT.z - 0.4, Math.PI);
+        lastRung.current = -1;
+        if (up) player.teleport(LADDER_TOP.x, TOP, LADDER_TOP.z, Math.PI);
+        else player.teleport(LADDER_FOOT.x, GY, LADDER_FOOT.z - 0.55, Math.PI);
         act.kind = null;
       }
     } else if (act.kind === 'swing') {
