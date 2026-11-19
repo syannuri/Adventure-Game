@@ -124,6 +124,7 @@ function Acorn({ spot, total, theme }: { spot: Spot; total: number; theme: Theme
       const g = useGame.getState();
       if (g.screen !== 'playing') return;
       g.collect('coins', spot.id);
+      if (theme === 'forest') g.addAcorns(1); // golden acorns are kept for Kiki's shop
       audio.sfx('coin', { pitch: 1 + (g.level.coins.length % 5) * 0.06 });
       spawnBurst(spot.x, ref.current.position.y, spot.z, theme === 'candy' ? '#ff8fa8' : '#ffd36b', 16, { speed: 2, up: 1.5, life: 0.7 });
       const ach = theme === 'candy' ? 'candy_collector' : 'coin_collector';

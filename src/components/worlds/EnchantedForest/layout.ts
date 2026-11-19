@@ -17,6 +17,8 @@ export const WAND_POS = { x: 26.2, z: -15.5 };
 export const HOUSE = { x: -5.6, z: 1.2 };
 /** Lumi's singing flowers: a ring of five giant flowers (step on them) around a magic bud. */
 export const MUSIC = { x: -1, z: -9.6, r: 2.3 };
+/** Kiki the squirrel's little shop stall beside the path into the glade (facing the path). */
+export const SHOP = { x: -3.6, z: 4.8, rot: Math.PI / 2 };
 
 /**
  * Colour flower puzzle guarding the wand: a stone tablet with three gems, and three magic flowers in
@@ -240,6 +242,7 @@ function scatter(seed: number, count: number, rMin: number, rMax: number, gap = 
     if (Math.hypot(x - POND.x, z - POND.z) < POND.r + 0.5) continue;
     if (Math.hypot(x - PUZZLE_TABLET.x, z - PUZZLE_TABLET.z) < 2.6) continue; // keep the flower puzzle clear
     if (Math.hypot(x - MUSIC.x, z - MUSIC.z) < MUSIC.r + 1.3) continue; // and the singing flowers
+    if (Math.hypot(x - SHOP.x, z - SHOP.z) < 2.2) continue; // and Kiki's shop
     if (TREES.some((t) => Math.hypot(t.x - x, t.z - z) < 0.9 * t.s)) continue;
     out.push({ x, z, s: 0.6 + rnd() * 0.8, r: rnd() * Math.PI * 2, c: rnd() });
   }
@@ -289,6 +292,7 @@ export function buildForestPhysics(): WorldPhysics {
     { x: HOUSE.x, z: HOUSE.z, r: 1.55 },
     { x: OWL_POS.x, z: OWL_POS.z, r: 0.6 },
     { x: MUSIC.x, z: MUSIC.z, r: 0.35 }, // the magic bud in the middle of the singing flowers
+    { x: SHOP.x, z: SHOP.z, r: 0.95 }, // Kiki's shop stall
   ];
   return { height: terrainHeight, colliders, platforms: PLATFORMS, boundaryRadius: 40, surfaceAt: (x, z) => (distToPath(x, z) < 1.6 ? 'dirt' : 'grass') };
 }

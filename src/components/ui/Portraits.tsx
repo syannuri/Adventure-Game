@@ -17,7 +17,35 @@ export const SPEAKERS: Record<DialogueLine['speaker'], { name: string; color: st
   pip: { name: 'Pip the Rabbit', color: '#2f8ad8' },
   olli: { name: 'Olli the Owl', color: '#9a6b4a' },
   koko: { name: 'Koko the Chef', color: '#b8692f' },
+  kiki: { name: 'Kiki the Squirrel', color: '#d9772b' },
 };
+
+/** Kiki the squirrel shopkeeper: orange fur, big fluffy tail, holding an acorn. */
+export function KikiPortrait() {
+  return (
+    <svg viewBox="0 0 100 100">
+      <rect width="100" height="100" fill="#e8f6dc" />
+      <path d="M70 100 C96 86 98 46 80 30 C70 22 60 30 66 42 C74 56 70 80 56 100Z" fill="#e08a3c" />
+      <path d="M74 92 C90 80 90 52 80 40" stroke="#f3b87a" strokeWidth="5" fill="none" strokeLinecap="round" />
+      <ellipse cx="44" cy="88" rx="22" ry="18" fill="#e08a3c" />
+      <ellipse cx="44" cy="90" rx="12" ry="11" fill="#fbe2c2" />
+      <circle cx="44" cy="54" r="22" fill="#e08a3c" />
+      <path d="M26 40 L24 22 L36 34Z M62 40 L64 22 L52 34Z" fill="#e08a3c" />
+      <path d="M28 37 L27 27 L34 34Z M60 37 L61 27 L54 34Z" fill="#ffb3a7" />
+      <ellipse cx="44" cy="62" rx="12" ry="9" fill="#fbe2c2" />
+      <circle cx="36" cy="52" r="4" fill="#2a160c" />
+      <circle cx="52" cy="52" r="4" fill="#2a160c" />
+      <circle cx="37.3" cy="50.7" r="1.3" fill="#fff" />
+      <circle cx="53.3" cy="50.7" r="1.3" fill="#fff" />
+      <ellipse cx="44" cy="59" rx="3" ry="2.2" fill="#6b3a26" />
+      <path d="M39 64 Q44 68 49 64" stroke="#6b3a26" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+      <ellipse cx="30" cy="60" rx="4" ry="2.5" fill="#ff9e8f" opacity="0.7" />
+      <ellipse cx="58" cy="60" rx="4" ry="2.5" fill="#ff9e8f" opacity="0.7" />
+      <ellipse cx="44" cy="80" rx="7" ry="8" fill="#c8862c" />
+      <path d="M37 76 Q44 70 51 76 L51 78 Q44 74 37 78Z" fill="#7a4a22" />
+    </svg>
+  );
+}
 
 /** Koko the gingerbread chef: cookie face with icing details and a tall chef's hat. */
 export function KokoPortrait() {
@@ -179,5 +207,7 @@ export function Portrait({ speaker }: { speaker: DialogueLine['speaker'] }) {
       return <OlliPortrait />;
     case 'koko':
       return <KokoPortrait />;
+    case 'kiki':
+      return <KikiPortrait />;
   }
 }

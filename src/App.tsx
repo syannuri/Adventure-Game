@@ -8,6 +8,7 @@ import { installKeyboard, resetEdges } from './systems/input';
 import { AboutAnett, MainMenu, SettingsPanel, WorldSelect } from './components/ui/Menus';
 import { StoryIntro } from './components/ui/StoryIntro';
 import { MenuBackdrop } from './components/ui/MenuBackdrop';
+import { ShopPanel } from './components/ui/ShopPanel';
 import { audio } from './components/audio/audioEngine';
 import { DICTS } from './i18n';
 
@@ -119,6 +120,14 @@ export default function App() {
           {screen === 'story' && <StoryIntro />}
           {overlay === 'settings' && <SettingsPanel onClose={() => setOverlay(null)} />}
           {overlay === 'about' && <AboutAnett onClose={() => setOverlay(null)} />}
+          {overlay === 'shop' && (
+            <ShopPanel
+              onClose={() => {
+                setOverlay(null);
+                useGame.getState().setPaused(false);
+              }}
+            />
+          )}
         </div>
       </div>
     </>

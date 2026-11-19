@@ -2,12 +2,13 @@ import { create } from 'zustand';
 import { loadSave, writeSave, type SaveData, type Settings } from './save';
 import { audio } from '../components/audio/audioEngine';
 import { setLangSource, tr } from '../i18n';
+import { COSMETICS } from '../data/cosmetics';
 
 export type Screen = 'menu' | 'story' | 'worlds' | 'playing' | 'complete';
-export type Overlay = null | 'settings' | 'about';
+export type Overlay = null | 'settings' | 'about' | 'shop';
 
 export interface DialogueLine {
-  speaker: 'anett' | 'lumi' | 'pip' | 'olli' | 'koko';
+  speaker: 'anett' | 'lumi' | 'pip' | 'olli' | 'koko' | 'kiki';
   text: string;
 }
 
@@ -85,6 +86,12 @@ interface GameState {
   completeWorld: (worldId: string, coinsFound: number) => void;
   updateSettings: (s: Partial<Settings>) => void;
   markIntroSeen: () => void;
+  /** golden acorns in the pouch (kept between games) */
+  addAcorns: (n: number) => void;
+  buyCosmetic: (id: string) => boolean;
+  equipCosmetic: (id: string) => void;
+  unequipSlot: (slot: string) => void;
+  setMetKiki: () => void;
   resetProgress: () => void;
 }
 
@@ -212,6 +219,41 @@ export const useGame = create<GameState>((set, get) => ({
     set({ save });
     audio.setVolumes(save.settings.musicVolume, save.settings.sfxVolume);
   },
+  addAcorns: (n) => {
+    const save = { ...get().save, acorns: Math.max(0, (get().save.acorns ?? 0) + n) };
+    writeSave(save);
+    set({ save });
+  },
+  buyCosmetic: (id) => {
+    const s = get().save;
+    const item = COSMETICS.find((c) => c.id === id);
+    if (!item || s.owned.includes(id) || s.acorns < item.price) return false;
+    const save = { ...s, acorns: s.acorns - item.price, owned: [...s.owned, id], equipped: { ...s.equipped, [item.slot]: id } };
+    writeSave(save);
+    set({ save });
+    return true;
+  },
+  equipCosmetic: (id) => {
+    const s = get().save;
+    const item = COSMETICS.find((c) => c.id === id);
+    if (!item || !s.owned.includes(id)) return;
+    const save = { ...s, equipped: { ...s.equipped, [item.slot]: id } };
+    writeSave(save);
+    set({ save });
+  },
+  unequipSlot: (slot) => {
+    const s = get().save;
+    const equipped = { ...s.equipped };
+    delete equipped[slot];
+    const save = { ...s, equipped };
+    writeSave(save);
+    set({ save });
+  },
+  setMetKiki: () => {
+    const save = { ...get().save, metKiki: true };
+    writeSave(save);
+    set({ save });
+  },
   markIntroSeen: () => {
     const save = { ...get().save, seenIntro: true };
     writeSave(save);
@@ -234,6 +276,10 @@ function loadSaveDefaultsWith(settings: Settings): SaveData {
     bestCoins: {},
     seenIntro: false,
     settings,
+    acorns: 0,
+    owned: [],
+    equipped: {},
+    metKiki: false,
   };
 }
 

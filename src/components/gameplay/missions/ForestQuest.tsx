@@ -24,6 +24,7 @@ import { player } from '../../../systems/playerState';
 import { FlowerPuzzle } from '../puzzles/FlowerPuzzle';
 import { BunnyHideSeek, pipBunnyLines, startBunnyQuest } from '../sidequests/BunnyHideSeek';
 import { MusicFlowers } from '../puzzles/MusicFlowers';
+import { KikiShopQuest } from '../shop/KikiShopQuest';
 
 const WORLD_ID = 'enchanted-forest';
 const wandY = () => terrainHeight(WAND_POS.x, WAND_POS.z);
@@ -203,6 +204,7 @@ export function ForestQuest() {
       <FlowerPuzzle />
       <BunnyHideSeek />
       <MusicFlowers />
+      <KikiShopQuest />
     </>
   );
 }
