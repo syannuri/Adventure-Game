@@ -22,6 +22,7 @@ import { Wand } from '../collectibles/Wand';
 import { ACHIEVEMENTS } from '../../../data/achievements';
 import { player } from '../../../systems/playerState';
 import { FlowerPuzzle } from '../puzzles/FlowerPuzzle';
+import { BunnyHideSeek, pipBunnyLines, startBunnyQuest } from '../sidequests/BunnyHideSeek';
 
 const WORLD_ID = 'enchanted-forest';
 const wandY = () => terrainHeight(WAND_POS.x, WAND_POS.z);
@@ -80,7 +81,19 @@ function talkLumi() {
 
 function talkPip() {
   const g = useGame.getState();
-  const { stage, stars } = g.level;
+  const { stage, stars, bunnyQuest } = g.level;
+  // side quest: Pip's little brothers are playing hide-and-seek
+  if (bunnyQuest === 'none' && stage !== 'done') {
+    g.openDialogue(D().bunnyIntro, startBunnyQuest);
+    return;
+  }
+  if (bunnyQuest === 'active') {
+    const lines = pipBunnyLines();
+    const next = STARS.find((s) => !stars.includes(s.id));
+    if (stage === 'collectStars' && next) lines.push({ speaker: 'pip', text: D().pipHints[next.id] });
+    g.openDialogue(lines);
+    return;
+  }
   if (stage === 'collectStars') {
     const next = STARS.find((s) => !stars.includes(s.id));
     g.openDialogue([
@@ -187,6 +200,7 @@ export function ForestQuest() {
     <>
       <WandSpot />
       <FlowerPuzzle />
+      <BunnyHideSeek />
     </>
   );
 }

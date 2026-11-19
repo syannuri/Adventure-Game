@@ -91,6 +91,7 @@ export function HUD() {
   const setPaused = useGame((s) => s.setPaused);
   const [objText, setObjText] = useState('');
   const [hint, setHint] = useState<string | null>(null);
+  const [side, setSide] = useState<string | null>(null);
   const worldId = useGame((s) => s.worldId);
   const hud = worldHud(worldId);
 
@@ -98,6 +99,7 @@ export function HUD() {
     const iv = setInterval(() => {
       const g = useGame.getState();
       setObjText(hud.objective().text);
+      setSide(hud.side?.() ?? null);
       const idle = performance.now() - g.level.lastProgressAt;
       setHint(!g.dialogue && !g.cinematic && idle > 45000 && g.level.stage !== 'done' ? hud.hint() || null : null);
     }, 300);
@@ -129,6 +131,7 @@ export function HUD() {
           <div className="objective passthrough">
             <small>{t.hud.mission}</small>
             <span className="objective-text">{objText}</span>
+            {side && <span className="objective-side">{side}</span>}
           </div>
           <div className="hud-right">
             <button

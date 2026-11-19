@@ -833,3 +833,5 @@ canvas { display: block; touch-action: none; }
 @media (max-width: 380px) {
   .home-pill { font-size: 13px; }
 }
+
+.objective-side { display: block; margin-top: 2px; font-size: 0.82em; font-weight: 800; color: #b3125e; }

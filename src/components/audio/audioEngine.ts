@@ -24,7 +24,8 @@ export type SfxName =
   | 'stepGrass'
   | 'stepDirt'
   | 'stepWood'
-  | 'tapPlay';
+  | 'tapPlay'
+  | 'giggle';
 
 interface Song {
   bpm: number;
@@ -494,6 +495,10 @@ class AudioEngine {
         break;
       case 'pop':
         this.tone('sine', 420 * p, 900 * p, t, 0.1, 0.14 * v, out);
+        break;
+      case 'giggle':
+        // a little bunny "hee-hee-hee": quick wobbly chirps
+        [1500, 1720, 1420, 1650].forEach((f, i) => this.tone('sine', f * p, f * 1.25 * p, t + i * 0.1, 0.06, 0.06 * v, out));
         break;
       case 'click':
         this.tone('triangle', 660 * p, 880 * p, t, 0.08, 0.1 * v, out);

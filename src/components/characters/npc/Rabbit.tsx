@@ -6,7 +6,7 @@ import { useGame } from '../../../systems/store';
 import { player } from '../../../systems/playerState';
 import { angleDelta, damp } from '../../../utils/math';
 
-export function Rabbit({ x, y, z, npc = true, scale = 1, wander = 0 }: { x: number; y: number; z: number; npc?: boolean; scale?: number; wander?: number }) {
+export function Rabbit({ x, y, z, npc = true, scale = 1, wander = 0, controlled = false, scarf }: { x: number; y: number; z: number; npc?: boolean; scale?: number; wander?: number; /** a parent group moves and turns it */ controlled?: boolean; scarf?: string }) {
   const root = useRef<THREE.Group>(null!);
   const body = useRef<THREE.Group>(null!);
   const earL = useRef<THREE.Group>(null!);
@@ -25,7 +25,9 @@ export function Rabbit({ x, y, z, npc = true, scale = 1, wander = 0 }: { x: numb
     earL.current.rotation.x = -0.15 + (Math.sin(t * 7) > 0.92 ? 0.35 : 0) + (talking ? Math.sin(t * 10) * 0.12 : 0);
     earR.current.rotation.x = -0.1 + (Math.sin(t * 5.3 + 1) > 0.95 ? 0.4 : 0);
     body.current.scale.y = 1 + Math.sin(t * 3) * 0.02;
-    if (wander) {
+    if (controlled) {
+      // position and facing come from the parent group
+    } else if (wander) {
       const a = t * 0.15;
       root.current.position.set(x + Math.cos(a) * wander, y, z + Math.sin(a * 1.3) * wander);
       root.current.rotation.y = Math.atan2(-Math.sin(a), Math.cos(a * 1.3) * 1.3);
@@ -59,10 +61,10 @@ export function Rabbit({ x, y, z, npc = true, scale = 1, wander = 0 }: { x: numb
             <meshStandardMaterial color={furLight} />
           </mesh>
         ))}
-        {npc && (
+        {(npc || scarf) && (
           <mesh position={[0, 0.4, 0.02]} rotation={[Math.PI / 2 + 0.15, 0, 0]}>
             <torusGeometry args={[0.13, 0.04, 10, 24]} />
-            <meshStandardMaterial color="#5aa8ff" roughness={0.8} />
+            <meshStandardMaterial color={scarf ?? '#5aa8ff'} roughness={0.8} />
           </mesh>
         )}
         <group position={[0, 0.55, 0.04]}>

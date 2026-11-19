@@ -61,6 +61,13 @@ Requirements: Node 18+ (developed on Node 22). Runs in any modern browser with W
 
 Optional extras: 22 golden acorns, 3 hidden treasure chests (Olli the owl gives hints), and achievements.
 
+**Side quest – hide-and-seek with Pip's little brothers:**
+- Talk to Pip and he asks for help: three little bunnies (pink, green and yellow scarves) are hiding behind a bush, in
+  the fallen log and behind the giant lantern tree.
+- The closer Anet gets, the louder and faster they giggle, and their ears peek out. Pip gives a hint for the next one.
+- Each found bunny hops out and follows Anet in a line. Bring all three back to Pip for the *Bunny Buddy* badge.
+- The HUD shows "Pip's little brothers n / 3" under the mission.
+
 ## World 2 – Candy Village
 
 **Mission:** help Koko the gingerbread chef find the missing candy ingredients so he can bake the Rainbow Cake.
