@@ -20,6 +20,8 @@ export interface Platform {
   r: number;
   /** absolute world height of the walkable top */
   top: number;
+  /** bouncy (spring mushroom): landing on it launches Anet up with this speed */
+  bounce?: number;
 }
 
 export interface WorldPhysics {
@@ -60,6 +62,18 @@ export function groundHeightAt(x: number, z: number, feetY: number) {
   }
   return g;
 }
+
+/** Upward launch speed if the feet are on a bouncy platform (0 otherwise). */
+export function bounceAt(x: number, z: number, feetY: number) {
+  for (const p of world.platforms) {
+    if (!p.bounce) continue;
+    if ((x - p.x) ** 2 + (z - p.z) ** 2 < p.r * p.r && Math.abs(feetY - p.top) < 0.08) return p.bounce;
+  }
+  return 0;
+}
+
+/** Last time a spring mushroom launched Anet (drives its squash animation). */
+export const bounceEvent = { t: -10, x: 0, z: 0 };
 
 /** Surface under the feet: platforms (stumps, mushroom caps, rocks) sound like wood, else ask the world. */
 export function surfaceAt(x: number, z: number, feetY: number): Surface {

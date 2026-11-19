@@ -46,6 +46,10 @@ interface LevelState {
   bunnies: string[];
   /** lily-pad hop: golden lotus picked */
   lotus: boolean;
+  /** spring mushroom: lantern treasure opened */
+  lantern: boolean;
+  /** Olli's riddles: -1 not started, 0..2 current riddle, 3 all solved */
+  riddle: number;
   /** duckling escort side quest */
   duckQuest: 'none' | 'active' | 'done';
   ducklings: string[];
@@ -115,6 +119,8 @@ const freshLevel = (worldId: string | null = null): LevelState => ({
   bunnyQuest: 'none',
   bunnies: [],
   lotus: false,
+  lantern: false,
+  riddle: -1,
   duckQuest: 'none',
   ducklings: [],
   startedAt: performance.now(),

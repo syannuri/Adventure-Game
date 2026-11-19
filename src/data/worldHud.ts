@@ -12,6 +12,7 @@ import { matchedCount } from '../components/gameplay/puzzles/FlowerPuzzle';
 import { tr } from '../i18n';
 import { musicStatus } from '../components/gameplay/puzzles/MusicFlowers';
 import { duckStatus } from '../components/gameplay/sidequests/DucklingQuest';
+import { riddleStatus } from '../components/gameplay/sidequests/OlliRiddles';
 import type { ForestStage } from '../systems/store';
 
 export interface WorldHud {
@@ -65,7 +66,7 @@ export const WORLD_HUD: Record<string, WorldHud> = {
     hint: () => FOREST_HINTS()[level().stage as ForestStage] ?? '',
     side: () => {
       const l = level();
-      const parts = [musicStatus(), duckStatus(), l.bunnyQuest === 'active' ? '🐰 ' + tr().hud.bunnies(l.bunnies.length, 3) : null].filter(Boolean);
+      const parts = [musicStatus(), riddleStatus(), duckStatus(), l.bunnyQuest === 'active' ? '🐰 ' + tr().hud.bunnies(l.bunnies.length, 3) : null].filter(Boolean);
       return parts.length ? parts.join('  ·  ') : null;
     },
   },

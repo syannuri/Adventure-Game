@@ -58,7 +58,22 @@ const EN = {
     L('olli', 'Three treasure chests are hidden near the edges of the forest. Can you find them all?'),
     L('olli', 'And pick up the golden acorns along the paths. Hoo! They shine like little suns.'),
   ],
-  olliDone: [L('olli', 'Hoo-hoo! Splendid work, Anet. The whole forest is proud of you!')],  duckIntro: [
+  olliDone: [L('olli', 'Hoo-hoo! Splendid work, Anet. The whole forest is proud of you!')],  springFound: [L('anett', 'A blue mushroom that wobbles like jelly! If I jump on it, maybe it bounces me up to that lantern in the tree!')],
+  lanternOpen: [L('anett', 'A lantern treasure, high up in the tree! It is full of golden acorns!')],
+  riddleIntro: [
+    L('olli', 'Hoo-hoo! Do you like riddles, Anet? I have three animal riddles for you.'),
+    L('olli', 'Listen carefully, then go and find the animal. When you are close to it, you have the answer!'),
+  ],
+  riddles: [
+    'I am white and round, I swim on the pond, and I say "quack quack"! Who am I?',
+    'I have colourful wings, I flutter from flower to flower, and I was once a caterpillar! Who am I?',
+    'I have a big fluffy tail, I love acorns, and I have a little shop in the forest! Who am I?',
+  ],
+  riddleAnswers: ['the duck', 'the butterfly', 'the squirrel'],
+  riddleRight: (answer: string) => [L('olli', `Hoo! Correct, it is ${answer}! Here comes the next riddle…`)],
+  riddleCorrect: (answer: string) => [L('olli', `Hoo! Correct, it is ${answer}!`)],
+  riddleDone: [L('olli', 'Hoo-hoo-hooray! You solved every riddle. You are a very clever explorer! Here, some acorns for you.')],
+  duckIntro: [
     L('duck', 'Quack quack! Oh dear, oh dear! My four little ducklings wandered off into the forest!'),
     L('duck', 'They peep when they are scared. Can you find them and bring them home to the pond?'),
     L('anett', "Of course, Mama Duck! I'll bring them all back!"),
@@ -163,7 +178,22 @@ const ID: typeof EN = {
     L('olli', 'Ada tiga peti harta tersembunyi di pinggir hutan. Bisakah kamu menemukan semuanya?'),
     L('olli', 'Ambil juga biji ek emas di sepanjang jalan. Hu! Mereka bersinar seperti matahari kecil.'),
   ],
-  olliDone: [L('olli', 'Hu-hu! Kerja yang luar biasa, Anet. Seluruh hutan bangga padamu!')],  duckIntro: [
+  olliDone: [L('olli', 'Hu-hu! Kerja yang luar biasa, Anet. Seluruh hutan bangga padamu!')],  springFound: [L('anett', 'Jamur biru yang bergoyang seperti agar-agar! Kalau aku melompat di atasnya, mungkin aku terpental sampai ke lentera di pohon itu!')],
+  lanternOpen: [L('anett', 'Harta lentera di atas pohon! Isinya biji ek emas!')],
+  riddleIntro: [
+    L('olli', 'Hu-hu! Kamu suka teka-teki, Anet? Aku punya tiga teka-teki hewan untukmu.'),
+    L('olli', 'Dengarkan baik-baik, lalu cari hewannya. Kalau kamu sudah dekat dengannya, berarti jawabanmu benar!'),
+  ],
+  riddles: [
+    'Aku putih dan bulat, aku berenang di kolam, dan aku bilang "kwek kwek"! Siapakah aku?',
+    'Sayapku berwarna-warni, aku terbang dari bunga ke bunga, dan dulu aku seekor ulat! Siapakah aku?',
+    'Ekorku besar dan lebat, aku suka biji ek, dan aku punya toko kecil di hutan! Siapakah aku?',
+  ],
+  riddleAnswers: ['bebek', 'kupu-kupu', 'tupai'],
+  riddleRight: (answer) => [L('olli', `Hu! Benar, jawabannya ${answer}! Ini teka-teki berikutnya…`)],
+  riddleCorrect: (answer) => [L('olli', `Hu! Benar, jawabannya ${answer}!`)],
+  riddleDone: [L('olli', 'Hu-hu-horee! Kamu menjawab semua teka-teki. Kamu penjelajah yang pintar sekali! Ini biji ek untukmu.')],
+  duckIntro: [
     L('duck', 'Kwek kwek! Aduh, aduh! Empat anak bebekku tersesat ke dalam hutan!'),
     L('duck', 'Kalau takut, mereka bercicit. Maukah kamu mencari dan mengantar mereka pulang ke kolam?'),
     L('anett', 'Tentu, Mama Bebek! Aku akan membawa mereka semua pulang!'),
