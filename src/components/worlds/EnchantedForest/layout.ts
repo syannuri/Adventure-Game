@@ -31,6 +31,20 @@ export const GARDEN_STUMP = { x: GARDEN.x - 3.3, z: GARDEN.z + 1.9 };
  * the forest and golden acorns. The platform is 3 m up; the ladder faces the path (north).
  */
 export const TREEHOUSE = { x: 0.5, z: 28, r: 2.4, h: 3.0, clear: 4.6 };
+/** Si Kusut chapter: thorny bushes on the paths, where Grumble hides in the chase, and the match arena. */
+export const BRAMBLES = [
+  { id: 'bramble-1', x: 14, z: -9 },
+  { id: 'bramble-2', x: -13, z: -7 },
+  { id: 'bramble-3', x: 8, z: 4 },
+];
+export const KUSUT_START = { x: 3, z: -4.5 };
+export const KUSUT_SPOTS = [
+  { x: 12.5, z: 0.5 },
+  { x: 6, z: -15.5 },
+  { x: -8, z: -12.5 },
+  { x: -26.5, z: -15.5 },
+];
+export const ARENA = { x: -20.5, z: -19.5, r: 5.5 };
 /** bundles of twigs lying around the forest */
 export const TWIGS = [
   [4, 23],

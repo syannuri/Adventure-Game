@@ -302,6 +302,18 @@ export function WorldSelect() {
                   {t.night.button}
                 </button>
               )}
+              {done && w.id === 'enchanted-forest' && (
+                <button
+                  className="kusut-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    click();
+                    startWorld(w.id, { kusut: true });
+                  }}
+                >
+                  {t.kusut.button}
+                </button>
+              )}
             </div>
           );
         })}

@@ -15,8 +15,9 @@ export function LevelComplete() {
   const COINS = hud.coins;
   const TREASURES = hud.treasures;
   const night = useGame((s) => s.night);
+  const kusut = useGame((s) => s.kusut);
   const base = t.complete.byWorld[worldId] ?? t.complete.byWorld['enchanted-forest'];
-  const w = night ? { ...base, title: t.night.completeTitle, helped: t.night.completeHelped } : base;
+  const w = night ? { ...base, title: t.night.completeTitle, helped: t.night.completeHelped } : kusut ? { ...base, title: t.kusut.completeTitle, helped: t.kusut.completeHelped } : base;
   const coins = level.coins.length;
   const chests = level.treasures.length;
   // 1 star for finishing the mission, +1 for finding most coins, +1 for every treasure
@@ -38,7 +39,7 @@ export function LevelComplete() {
       </div>
       <div className="card panel">
         <p style={{ margin: 0, fontSize: 22, fontWeight: 800, color: 'var(--purple-dark)' }}>{w.helped}</p>
-        <p style={{ margin: '4px 0 10px', fontSize: 18, display: night ? 'none' : undefined }}>
+        <p style={{ margin: '4px 0 10px', fontSize: 18, display: night || kusut ? 'none' : undefined }}>
           {t.complete.earnedBefore}
           <b style={{ color: '#d18f00' }}>{t.complete.magicStar}</b>
           {t.complete.earnedAfter(save.magicStars)}
@@ -72,7 +73,7 @@ export function LevelComplete() {
           <button className="btn big yellow" onClick={() => setScreen('worlds')}>
             {t.complete.continue}
           </button>
-          <button className="btn ghost" onClick={() => startWorld(worldId, { night })}>
+          <button className="btn ghost" onClick={() => startWorld(worldId, { night, kusut })}>
             {t.complete.playAgain}
           </button>
         </div>

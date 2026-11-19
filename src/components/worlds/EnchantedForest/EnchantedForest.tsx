@@ -61,6 +61,7 @@ export function EnchantedForest() {
   const high = quality === 'high';
   const spawn = useMemo(() => ({ ...SPAWN }), []);
   const night = useGame((s) => s.night);
+  const kusut = useGame((s) => s.kusut);
   const fog = night ? NIGHT_FOG : FOG;
 
   return (
@@ -98,7 +99,7 @@ export function EnchantedForest() {
       <Rabbit x={6} y={terrainHeight(6, -18)} z={-18} npc={false} scale={0.6} wander={2} />
       <Owl x={OWL_POS.x} y={terrainHeight(OWL_POS.x, OWL_POS.z) - 0.05} z={OWL_POS.z} />
 
-      <Collectibles stars={night ? NO_STARS : STARS} coins={COINS} treasures={TREASURES} />
+      <Collectibles stars={night || kusut ? NO_STARS : STARS} coins={COINS} treasures={TREASURES} />
       <ForestQuest />
       <InteractionSystem />
       <AnettController spawn={spawn} />

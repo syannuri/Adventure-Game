@@ -1,5 +1,5 @@
 /** Sticker pictures for the sticker book (reusing the dialogue portraits where they exist). */
-import { KikiPortrait, KokoPortrait, LumiPortrait, OlliPortrait, PipPortrait } from './Portraits';
+import { KikiPortrait, KokoPortrait, KusutPortrait, LumiPortrait, OlliPortrait, PipPortrait } from './Portraits';
 
 export function DuckPortrait() {
   return (
@@ -153,6 +153,8 @@ export function StickerArt({ id }: { id: string }) {
       return <BatPortrait />;
     case 'bee':
       return <BeePortrait />;
+    case 'kusut':
+      return <KusutPortrait happy />;
     default:
       return <KokoPortrait />;
   }

@@ -33,6 +33,7 @@ import { LeafRace } from '../sidequests/LeafRace';
 import { TreeHouse } from '../sidequests/TreeHouse';
 import { OlliRiddles, olliRiddleLines } from '../sidequests/OlliRiddles';
 import { LanternPosts, NightQuest, nightTalkLumi } from './NightQuest';
+import { KusutQuest, kusutTalkLumi } from './KusutQuest';
 
 const WORLD_ID = 'enchanted-forest';
 const wandY = () => terrainHeight(WAND_POS.x, WAND_POS.z);
@@ -89,6 +90,9 @@ function talkLumi() {
     case 'night':
       nightTalkLumi();
       break;
+    case 'kusut':
+      kusutTalkLumi();
+      break;
   }
 }
 
@@ -114,7 +118,7 @@ function talkPip() {
       { speaker: 'pip', text: next ? D().pipHints[next.id] : D().pipAllFound },
     ]);
   } else {
-    g.openDialogue(D().pip[stage === 'meetFairy' ? 'meetFairy' : stage === 'done' || stage === 'night' ? 'done' : stage] ?? D().pip.done);
+    g.openDialogue(D().pip[stage === 'meetFairy' ? 'meetFairy' : stage === 'done' || stage === 'night' || stage === 'kusut' ? 'done' : stage] ?? D().pip.done);
   }
 }
 
@@ -130,6 +134,7 @@ function pickUpWand() {
 
 export function ForestQuest() {
   const night = useGame((s) => s.night);
+  const kusut = useGame((s) => s.kusut);
   const triggered = useRef(false);
   const lockedSeen = useRef(false);
 
@@ -229,6 +234,7 @@ export function ForestQuest() {
       <OlliRiddles />
       <LanternPosts />
       {night && <NightQuest />}
+      {kusut && <KusutQuest />}
     </>
   );
 }

@@ -16,6 +16,7 @@ export const STICKERS: StickerDef[] = [
   { id: 'butterfly', world: 'enchanted-forest', near: 2.2 },
   { id: 'bunny', world: 'enchanted-forest', near: 2.4 },
   { id: 'bee', world: 'enchanted-forest', near: 2.4 },
+  { id: 'kusut', world: 'enchanted-forest', near: 3.0 },
   { id: 'gingerbread', world: 'candy-village', near: 3.0 },
   { id: 'dragon', world: 'crystal-cave', near: 3.0 },
   { id: 'bat', world: 'crystal-cave', near: 2.6 },

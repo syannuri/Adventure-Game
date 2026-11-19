@@ -910,3 +910,26 @@ canvas { display: block; touch-action: none; }
 .race-ahead { color: #2f8a3a; }
 .race-behind { color: #c46a1a; }
 @media (max-width: 640px) { .race-box { top: 132px; min-width: 0; } .race-line { font-size: 18px; } }
+
+/* Si Kusut match */
+.match-board { position: absolute; left: 50%; top: 104px; transform: translateX(-50%); display: grid; grid-template-columns: auto auto auto auto; align-items: center; gap: 4px 12px; background: rgba(255, 255, 255, 0.9); border-radius: 18px; padding: 6px 18px 8px; font-weight: 800; color: #4b2a7a; box-shadow: var(--shadow); z-index: 6; white-space: nowrap; }
+.match-board .score { font-size: 24px; }
+.match-board .who.anet { color: #d9661f; }
+.match-board .who.kusut { color: #7a3fb8; }
+.match-board small { grid-column: 1 / -1; text-align: center; font-size: 14px; color: #6a5a8a; }
+.match-board .dots { display: flex; gap: 4px; }
+.match-board .dots i { width: 12px; height: 12px; border-radius: 50%; background: #e3dcef; }
+.match-board .dots i.won { background: #f2a900; }
+.match-board .dots i.lost { background: #9a6be0; }
+.race-box.low { top: 176px; }
+.tug-bar { position: relative; height: 16px; margin: 10px 40px 0; border-radius: 10px; background: linear-gradient(90deg, #ffd9b8, #ece0ff); }
+.tug-mid { position: absolute; left: 50%; top: -4px; bottom: -4px; width: 3px; background: #4b2a7a; transform: translateX(-50%); }
+.tug-knot { position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%; background: #e0625a; border: 3px solid #fff; transform: translate(-50%, -50%); transition: left 0.1s linear; }
+.tug-end { position: absolute; top: -2px; font-size: 14px; }
+.tug-end.left { right: calc(100% + 6px); color: #d9661f; }
+.tug-end.right { left: calc(100% + 6px); }
+.tug-btn { position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%); border: 0; border-radius: 999px; padding: 18px 46px; font-family: inherit; font-weight: 800; font-size: 30px; color: #fff; background: linear-gradient(180deg, #ff8a5c, #e0562f); box-shadow: 0 6px 0 #a83a1a; cursor: pointer; z-index: 7; touch-action: manipulation; }
+.tug-btn:active { transform: translateX(-50%) translateY(4px); box-shadow: 0 2px 0 #a83a1a; }
+.kusut-btn { margin-top: 6px; margin-left: 6px; border: 0; border-radius: 999px; padding: 6px 14px; font-family: inherit; font-weight: 800; font-size: 14px; color: #fff; background: linear-gradient(180deg, #a77be8, #6b3fb8); box-shadow: 0 4px 0 #4b2a7a; cursor: pointer; }
+.kusut-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #4b2a7a; }
+@media (max-width: 640px) { .match-board { top: 132px; } .race-box.low { top: 204px; } }

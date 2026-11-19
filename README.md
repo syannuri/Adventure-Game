@@ -137,6 +137,22 @@ button.
   Lumi and set the fireflies free in a glowing finale (*Light Bringer* badge).
 - All the side quests can be played at night too.
 
+**Grumble, the messy monster (after finishing World 1):** the Enchanted Forest card also gets a *👾 Grumble*
+button. Grumble (*Si Kusut*) is a round, fuzzy purple monster: cheeky, never scary.
+1. **Trouble:** Grumble put thorny bushes on three paths and took Lumi's bells. Anet has Lumi's wand: its light
+   shrinks each thorny bush away.
+2. **Chase:** Grumble hides around the forest (the map marker shows where). Catch him four times; each time he
+   gives back a bell and vanishes in a puff of purple smoke.
+3. **The Great Forest Match** in the flower meadow, three games:
+   - a leaf race down the stream against Grumble
+   - catching fireflies (whoever catches more in 30 seconds)
+   - tug of war (press Space / E or tap *PULL!* quickly)
+
+   Win two games to be champion. A score board shows the games won. Losing the match means a friendly rematch, and
+   Grumble gets a little slower every time Anet loses a game, so every child wins in the end.
+4. **Friends:** Grumble only made a mess because he was lonely. He becomes everyone's friend and there is a party.
+   Badges: *Forest Champion* and *Monster Friend*; Grumble goes in the sticker book.
+
 ## World 2 – Candy Village
 
 **Mission:** help Koko the gingerbread chef find the missing candy ingredients so he can bake the Rainbow Cake.
@@ -222,8 +238,9 @@ Keeper, Light Master, Gem Collector, Pillar Climber).
   follow the player, atmospheric fog, bloom, vignette, neutral tone mapping, a gradient sky with sun glow and
   clouds, water shaders and particle systems. A **"Fast" graphics mode** is the default on touch devices: no
   post-processing, lower resolution, fewer grass and flower instances, and no tree shadows.
-- **Child-friendly:** no violence, no enemies, no failure states, no monetization. The language is positive and
-  hints appear when a child seems stuck.
+- **Child-friendly:** no violence, no scary enemies, no punishment and no "game over": a game that is lost can
+  always be tried again (and gets a little easier). No monetization. The language is positive and hints appear
+  when a child seems stuck.
 
 ## Project structure
 
