@@ -9,6 +9,7 @@ import { AboutAnett, MainMenu, SettingsPanel, WorldSelect } from './components/u
 import { StoryIntro } from './components/ui/StoryIntro';
 import { MenuBackdrop } from './components/ui/MenuBackdrop';
 import { ShopPanel } from './components/ui/ShopPanel';
+import { StickerBook } from './components/ui/StickerBook';
 import { audio } from './components/audio/audioEngine';
 import { DICTS } from './i18n';
 
@@ -120,6 +121,7 @@ export default function App() {
           {screen === 'story' && <StoryIntro />}
           {overlay === 'settings' && <SettingsPanel onClose={() => setOverlay(null)} />}
           {overlay === 'about' && <AboutAnett onClose={() => setOverlay(null)} />}
+          {overlay === 'stickers' && <StickerBook onClose={() => setOverlay(null)} />}
           {overlay === 'shop' && (
             <ShopPanel
               onClose={() => {

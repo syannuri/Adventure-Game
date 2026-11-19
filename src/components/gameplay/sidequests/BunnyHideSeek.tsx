@@ -20,6 +20,7 @@ import { ACHIEVEMENTS } from '../../../data/achievements';
 import { tr } from '../../../i18n';
 import { angleDelta, damp } from '../../../utils/math';
 import { rewardAcorns } from '../shop/KikiShopQuest';
+import { setAnimalSpot } from '../../../systems/animalSpots';
 
 /** Hiding spots, worked out from the forest layout so they always sit right behind the object. */
 function hidingSpots() {
@@ -98,6 +99,8 @@ export function BunnyHideSeek() {
       trail.forEach((v) => v.copy(p));
       trailInit.current = true;
     }
+    // a jump in position (game start, splash, teleport) restarts the trail right here
+    if (trail[trailHead.current].distanceTo(p) > 3) trail.forEach((v) => v.copy(p));
     const head = trail[trailHead.current];
     if (t - lastSample.current > 0.05 && head.distanceTo(p) > 0.12) {
       lastSample.current = t;
@@ -124,6 +127,7 @@ export function BunnyHideSeek() {
       const grp = groups.current[i];
       if (!grp) return;
       const found = l.bunnies.includes(b.id);
+      setAnimalSpot('bunny', i, grp.position.x, grp.position.z);
       const gy = terrainHeight(b.x, b.z);
       if (!found) {
         // hiding: tucked down, ears peeking up when Anet is near

@@ -85,6 +85,18 @@ Optional extras: 22 golden acorns, 3 hidden treasure chests (Olli the owl gives 
 - Bought items are worn right away on the 3D model. Each one can be worn or taken off again, and they are saved.
   New badge: *Stylish Explorer*.
 
+**Lily-pad hop:** on the west side of the pond, jump from lily pad to lily pad to a little island with a golden lotus
+(+5 acorns, *Lily Hopper* badge). Missing a pad is just a splash: Anet pops back onto the nearest shore.
+
+**Bring the ducklings home:** Mama Duck waits on the south shore of the pond. Her four ducklings are lost in the
+forest and peep louder as Anet gets close. Found ducklings waddle along behind Anet. Bring all four back and the
+family goes swimming with Papa Duck (+5 acorns, *Duck Helper* badge).
+
+**Animal sticker book:** the first time Anet walks up close to an animal, a camera flash takes its picture for the
+sticker book. Animals: fairy, rabbit, owl, squirrel, duck, duckling, butterfly and bunny in the forest, plus the
+gingerbread chef in Candy Village. Open the book from the main menu (top right) or the pause menu. Each animal shows
+its name in both Bahasa Indonesia and English. Filling the book unlocks *Sticker Collector*.
+
 ## World 2 – Candy Village
 
 **Mission:** help Koko the gingerbread chef find the missing candy ingredients so he can bake the Rainbow Cake.

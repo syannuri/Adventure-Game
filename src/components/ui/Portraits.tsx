@@ -1,6 +1,7 @@
 /** Character portraits for the dialogue system. Anet uses her 3D render; the others are hand-authored SVG. */
 import { useState } from 'react';
 import type { DialogueLine } from '../../systems/store';
+import { DuckPortrait } from './StickerArt';
 
 const ANET_AVATAR = `${import.meta.env.BASE_URL}portraits/anet.webp`;
 
@@ -18,6 +19,7 @@ export const SPEAKERS: Record<DialogueLine['speaker'], { name: string; color: st
   olli: { name: 'Olli the Owl', color: '#9a6b4a' },
   koko: { name: 'Koko the Chef', color: '#b8692f' },
   kiki: { name: 'Kiki the Squirrel', color: '#d9772b' },
+  duck: { name: 'Mama Duck', color: '#3a9ec7' },
 };
 
 /** Kiki the squirrel shopkeeper: orange fur, big fluffy tail, holding an acorn. */
@@ -209,5 +211,7 @@ export function Portrait({ speaker }: { speaker: DialogueLine['speaker'] }) {
       return <KokoPortrait />;
     case 'kiki':
       return <KikiPortrait />;
+    case 'duck':
+      return <DuckPortrait />;
   }
 }

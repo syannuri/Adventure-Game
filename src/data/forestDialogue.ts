@@ -58,7 +58,26 @@ const EN = {
     L('olli', 'Three treasure chests are hidden near the edges of the forest. Can you find them all?'),
     L('olli', 'And pick up the golden acorns along the paths. Hoo! They shine like little suns.'),
   ],
-  olliDone: [L('olli', 'Hoo-hoo! Splendid work, Anet. The whole forest is proud of you!')],  kikiHello: [
+  olliDone: [L('olli', 'Hoo-hoo! Splendid work, Anet. The whole forest is proud of you!')],  duckIntro: [
+    L('duck', 'Quack quack! Oh dear, oh dear! My four little ducklings wandered off into the forest!'),
+    L('duck', 'They peep when they are scared. Can you find them and bring them home to the pond?'),
+    L('anett', "Of course, Mama Duck! I'll bring them all back!"),
+  ],
+  duckReminder: (n: number, t: number) => [L('duck', n ? `Quack! You found ${n} of my ${t} ducklings! Listen for the peeping!` : 'Listen for little peeps! My ducklings are somewhere in the forest.')],
+  duckHints: {
+    'duckling-1': 'One waddled toward the path where you came into the forest.',
+    'duckling-2': 'One followed the path west, past the owl.',
+    'duckling-3': 'One went to the stepping rocks at the back of the forest.',
+    'duckling-4': 'One is near the far north edge, by the acorn path.',
+  } as Record<string, string>,
+  duckThanks: [
+    L('duck', 'My babies! All four of them! Quack quack hooray!'),
+    L('duck', 'Thank you, Anet! Come on, little ones, swimming time!'),
+  ],
+  lilyFound: [L('anett', 'Ooh, lily pads! If I jump from pad to pad, I can reach that little island with the golden flower!')],
+  lilySplash: [L('anett', 'Splash! Brr, a bit wet. Let me try again, one hop at a time!')],
+  lotusPicked: [L('anett', 'A golden lotus! It is full of shiny acorns!')],
+  kikiHello: [
     L('kiki', "Chitter-chatter! Hello, I'm Kiki! Welcome to my little shop!"),
     L('kiki', 'I trade pretty things for golden acorns. Here, a little welcome present: five acorns for you!'),
   ],
@@ -144,7 +163,26 @@ const ID: typeof EN = {
     L('olli', 'Ada tiga peti harta tersembunyi di pinggir hutan. Bisakah kamu menemukan semuanya?'),
     L('olli', 'Ambil juga biji ek emas di sepanjang jalan. Hu! Mereka bersinar seperti matahari kecil.'),
   ],
-  olliDone: [L('olli', 'Hu-hu! Kerja yang luar biasa, Anet. Seluruh hutan bangga padamu!')],  kikiHello: [
+  olliDone: [L('olli', 'Hu-hu! Kerja yang luar biasa, Anet. Seluruh hutan bangga padamu!')],  duckIntro: [
+    L('duck', 'Kwek kwek! Aduh, aduh! Empat anak bebekku tersesat ke dalam hutan!'),
+    L('duck', 'Kalau takut, mereka bercicit. Maukah kamu mencari dan mengantar mereka pulang ke kolam?'),
+    L('anett', 'Tentu, Mama Bebek! Aku akan membawa mereka semua pulang!'),
+  ],
+  duckReminder: (n, t) => [L('duck', n ? `Kwek! Kamu sudah menemukan ${n} dari ${t} anakku! Dengarkan cicitannya!` : 'Dengarkan cicitan kecil! Anak-anakku ada di suatu tempat di hutan.')],
+  duckHints: {
+    'duckling-1': 'Satu berjalan ke arah jalan tempat kamu masuk ke hutan.',
+    'duckling-2': 'Satu mengikuti jalan ke barat, melewati burung hantu.',
+    'duckling-3': 'Satu pergi ke batu-batu pijakan di bagian belakang hutan.',
+    'duckling-4': 'Satu ada di ujung utara, dekat jalan biji ek.',
+  },
+  duckThanks: [
+    L('duck', 'Anak-anakku! Keempatnya! Kwek kwek horee!'),
+    L('duck', 'Terima kasih, Anet! Ayo anak-anak, waktunya berenang!'),
+  ],
+  lilyFound: [L('anett', 'Wah, daun teratai! Kalau aku melompat dari daun ke daun, aku bisa sampai ke pulau kecil dengan bunga emas itu!')],
+  lilySplash: [L('anett', 'Byur! Brr, sedikit basah. Ayo coba lagi, satu lompatan demi satu lompatan!')],
+  lotusPicked: [L('anett', 'Teratai emas! Isinya biji ek yang berkilau!')],
+  kikiHello: [
     L('kiki', 'Cicit-cicit! Halo, aku Kiki! Selamat datang di toko kecilku!'),
     L('kiki', 'Aku menukar barang-barang cantik dengan biji ek emas. Ini hadiah kecil untukmu: lima biji ek!'),
   ],

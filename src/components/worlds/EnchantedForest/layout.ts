@@ -117,6 +117,31 @@ export const PLATFORM_DEFS = [
 
 export const PLATFORMS: Platform[] = PLATFORM_DEFS.map((p) => ({ x: p.x, z: p.z, r: p.r, top: terrainHeight(p.x, p.z) + p.h }));
 
+/** Lily pads across the pond to a little island with a golden lotus (jump from pad to pad). */
+export const LILY_START = { x: 10.5, z: -16 };
+export const LILY_PADS = [
+  { x: 12.2, z: -15.7, r: 0.6 },
+  { x: 13.4, z: -17.4, r: 0.6 },
+  { x: 14.9, z: -18.2, r: 0.6 },
+];
+export const LOTUS_ISLAND = { x: 16.4, z: -17.0, r: 1.0 };
+export const LILY_TOP = WATER_LEVEL + 0.07;
+export const LILY_PLATFORMS: Platform[] = [
+  ...LILY_PADS.map((p) => ({ x: p.x, z: p.z, r: p.r, top: LILY_TOP })),
+  { x: LOTUS_ISLAND.x, z: LOTUS_ISLAND.z, r: LOTUS_ISLAND.r, top: LILY_TOP + 0.12 },
+];
+
+/** Mama duck waits on the south shore; her four ducklings got lost in the forest. */
+export const MAMA_DUCK = { x: 18.2, z: -10.0 };
+export const DUCKLING_SPOTS = [
+  { id: 'duckling-1', x: -3, z: 17 },
+  { id: 'duckling-2', x: -17, z: -10 },
+  { id: 'duckling-3', x: -6, z: -17 },
+  { id: 'duckling-4', x: 6, z: -26 },
+];
+/** where the duck family swims (east part of the pond, clear of the lily pads) */
+export const DUCK_SWIM = { x: POND.x + 2.4, z: POND.z, r: 1.5 };
+
 const top = (i: number) => PLATFORMS[i].top;
 
 export const STARS: Spot[] = [
@@ -278,7 +303,7 @@ export function buildForestPhysics(): WorldPhysics {
     ...TREES.map((t) => ({ x: t.x, z: t.z, r: 0.42 * t.s + 0.15 })),
     ...HERO_TREES.map((t) => ({ x: t.x, z: t.z, r: 0.75 * t.s })),
     ...ROCKS.map((r) => ({ x: r.x, z: r.z, r: 0.5 * r.s })),
-    { x: POND.x, z: POND.z, r: POND.r - 1.1 },
+    { x: POND.x, z: POND.z, r: POND.r - 1.1, water: true },
     { x: WATERFALL.x, z: WATERFALL.z - 1.8, r: 3.2 },
     { x: WATERFALL.x - 4.2, z: WATERFALL.z - 0.6, r: 2.2 },
     { x: WATERFALL.x + 4.2, z: WATERFALL.z - 0.4, r: 2.2 },
@@ -293,6 +318,7 @@ export function buildForestPhysics(): WorldPhysics {
     { x: OWL_POS.x, z: OWL_POS.z, r: 0.6 },
     { x: MUSIC.x, z: MUSIC.z, r: 0.35 }, // the magic bud in the middle of the singing flowers
     { x: SHOP.x, z: SHOP.z, r: 0.95 }, // Kiki's shop stall
+    { x: MAMA_DUCK.x, z: MAMA_DUCK.z, r: 0.35 },
   ];
-  return { height: terrainHeight, colliders, platforms: PLATFORMS, boundaryRadius: 40, surfaceAt: (x, z) => (distToPath(x, z) < 1.6 ? 'dirt' : 'grass') };
+  return { height: terrainHeight, colliders, platforms: [...PLATFORMS, ...LILY_PLATFORMS], boundaryRadius: 40, surfaceAt: (x, z) => (distToPath(x, z) < 1.6 ? 'dirt' : 'grass') };
 }

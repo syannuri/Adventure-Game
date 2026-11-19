@@ -866,3 +866,31 @@ canvas { display: block; touch-action: none; }
 }
 
 .counter .pouch { margin-left: 4px; font-size: 0.72em; font-weight: 800; color: #a35f00; background: rgba(255, 236, 190, 0.9); border-radius: 999px; padding: 0 6px; }
+
+/* camera flash when a sticker photo is taken */
+.snap-flash { position: fixed; inset: 0; z-index: 70; pointer-events: none; background: #fff; animation: snapFlash 0.55s ease-out forwards; }
+@keyframes snapFlash { from { opacity: 0.85; } to { opacity: 0; } }
+
+/* sticker book */
+.home-stickers { position: relative; }
+.home-stickers .badge-n { position: absolute; right: -4px; top: -4px; min-width: 18px; height: 18px; padding: 0 4px; box-sizing: border-box; border-radius: 9px; background: #ff5fa2; color: #fff; font-size: 11px; font-weight: 800; line-height: 18px; text-align: center; }
+.sticker-modal { width: min(660px, 94vw); max-height: 92vh; overflow-y: auto; text-align: center; background: linear-gradient(180deg, #fffaf0, #fff3e0) !important; }
+.sticker-modal h2 { margin-bottom: 0; }
+.sticker-count { font-weight: 800; color: #a35f00; margin-bottom: 6px; }
+.sticker-section h3 { margin: 10px 0 6px; color: #5b3fe0; font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; }
+.sticker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; }
+.sticker { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 6px 10px; border-radius: 16px; border: 2px dashed #d9cbb4; background: rgba(255, 255, 255, 0.5); transform: rotate(var(--tilt)); }
+.sticker.got { border: 4px solid #fff; background: #fff; box-shadow: 0 6px 14px rgba(90, 60, 20, 0.18); animation: stickerIn 0.4s cubic-bezier(0.3, 1.6, 0.5, 1); }
+.sticker .pic { width: 84px; height: 84px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: #f1e9db; }
+.sticker .pic svg { width: 100%; height: 100%; display: block; }
+.sticker .q { font-size: 40px; font-weight: 800; color: #cdbda2; }
+.sticker b { font-size: 15px; color: #3b1a78; line-height: 1.1; }
+.sticker small { font-size: 12px; font-weight: 700; color: #8a7aa8; font-style: italic; }
+.sticker-tip { font-size: 14px; color: #6a5a8a; margin: 12px 0; }
+@keyframes stickerIn { from { transform: scale(0.6) rotate(var(--tilt)); } }
+@media (orientation: landscape) and (max-height: 500px) {
+  .sticker-grid { grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+  .sticker .pic { width: 56px; height: 56px; }
+  .sticker b { font-size: 13px; }
+  .sticker-tip { display: none; }
+}

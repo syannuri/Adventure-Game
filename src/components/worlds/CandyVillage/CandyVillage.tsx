@@ -14,6 +14,7 @@ import { RimLight, SunLight } from '../shared/Lights';
 import { CandyTerrain, ChocolateRiver } from './CandyTerrain';
 import { Bakery, CandyCanes, CandyPlatforms, CookieBridge, CupcakeHouses, GroundSprinkles, Gumdrops, IceCreamTowers, Lollipops, Strawberries } from './CandyProps';
 import { Butterflies } from '../EnchantedForest/Critters';
+import { StickerWatcher } from '../../gameplay/stickers/StickerWatcher';
 import { AnettController } from '../../characters/Anett/AnettController';
 import { Gingerbread } from '../../characters/npc/Gingerbread';
 import { Rabbit } from '../../characters/npc/Rabbit';
@@ -28,6 +29,10 @@ import { audio } from '../../audio/audioEngine';
 import { useGame } from '../../../systems/store';
 
 const FOG = '#f7dcec'; // cotton-candy haze
+const CANDY_STICKERS = [
+  { id: 'gingerbread', x: KOKO_POS.x, z: KOKO_POS.z },
+  { id: 'rabbit', x: PIP_POS.x, z: PIP_POS.z },
+];
 
 function Ambience() {
   useEffect(() => {
@@ -127,6 +132,7 @@ export function CandyVillage() {
       <Bursts />
       <Bursts channel="dust" />
       <Ambience />
+      <StickerWatcher statics={CANDY_STICKERS} />
     </>
   );
 }
