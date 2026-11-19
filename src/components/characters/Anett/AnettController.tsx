@@ -11,7 +11,7 @@ import { AnettAnimator } from './AnettAnimator';
 import type { AnimState } from './AnettAnimations';
 import { input, joystickSpeed } from '../../../systems/input';
 import { cameraState, player } from '../../../systems/playerState';
-import { groundHeightAt, resolveCollisions, surfaceAt } from '../../../systems/physics';
+import { bounceAt, bounceEvent, groundHeightAt, resolveCollisions, surfaceAt } from '../../../systems/physics';
 import { useGame } from '../../../systems/store';
 import { angleDelta, damp } from '../../../utils/math';
 import { audio } from '../../audio/audioEngine';
@@ -180,6 +180,17 @@ export function AnettController({ spawn, onAfterMove }: AnettControllerProps) {
       pos.y = ground;
       s.vy = 0;
       s.grounded = true;
+      // spring mushroom: boing!
+      const spring = bounceAt(pos.x, pos.z, pos.y);
+      if (spring && !locked) {
+        s.vy = spring;
+        s.grounded = false;
+        s.airTime = 0.2;
+        bounceEvent.t = performance.now();
+        bounceEvent.x = pos.x;
+        bounceEvent.z = pos.z;
+        audio.sfx('jump', { pitch: 0.7, volume: 1.2 });
+      }
     } else if (s.grounded && s.vy <= 0 && pos.y - ground < 0.32) {
       pos.y = ground; // stick to slopes / small steps down
       s.vy = 0;

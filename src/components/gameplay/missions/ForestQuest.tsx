@@ -27,6 +27,8 @@ import { MusicFlowers } from '../puzzles/MusicFlowers';
 import { KikiShopQuest } from '../shop/KikiShopQuest';
 import { LilyPads } from '../sidequests/LilyPads';
 import { DucklingQuest } from '../sidequests/DucklingQuest';
+import { SpringMushroom } from '../sidequests/SpringMushroom';
+import { OlliRiddles, olliRiddleLines } from '../sidequests/OlliRiddles';
 
 const WORLD_ID = 'enchanted-forest';
 const wandY = () => terrainHeight(WAND_POS.x, WAND_POS.z);
@@ -155,7 +157,10 @@ export function ForestQuest() {
         approach: 1.6,
         label: () => tr().prompts.talkOlli,
         enabled: () => true,
-        onInteract: () => useGame.getState().openDialogue(st() === 'done' ? D().olliDone : D().olli),
+        onInteract: () => {
+          const riddle = olliRiddleLines();
+          useGame.getState().openDialogue(riddle ?? (st() === 'done' ? D().olliDone : D().olli));
+        },
       }),
       registerInteractable({
         id: 'wand',
@@ -209,6 +214,8 @@ export function ForestQuest() {
       <KikiShopQuest />
       <LilyPads />
       <DucklingQuest />
+      <SpringMushroom />
+      <OlliRiddles />
     </>
   );
 }

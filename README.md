@@ -97,6 +97,13 @@ sticker book. Animals: fairy, rabbit, owl, squirrel, duck, duckling, butterfly a
 gingerbread chef in Candy Village. Open the book from the main menu (top right) or the pause menu. Each animal shows
 its name in both Bahasa Indonesia and English. Filling the book unlocks *Sticker Collector*.
 
+**Spring mushroom:** under the giant lantern tree in the east stands a wobbly blue mushroom. Landing on it bounces
+Anet high up onto a leafy branch, where a glowing lantern treasure waits (+5 acorns, *Spring Jumper* badge).
+
+**Olli's animal riddles:** Olli asks three riddles, for example "I am white and round, I swim on the pond and say
+quack quack!". Walking up to the right animal answers each one: the duck, the butterfly, the squirrel. Solving all
+three gives +5 acorns and the *Clever Explorer* badge. The HUD shows the riddle number while one is open.
+
 ## World 2 – Candy Village
 
 **Mission:** help Koko the gingerbread chef find the missing candy ingredients so he can bake the Rainbow Cake.

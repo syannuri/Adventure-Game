@@ -3,6 +3,8 @@
  * world; moving ones (butterflies, ducks, ducklings, bunnies) update their entries every frame.
  */
 export const animalSpots: Record<string, { x: number; z: number }[]> = {};
+// automated tests read the animal positions from here
+if (typeof window !== 'undefined') (window as unknown as { __anettAnimals: typeof animalSpots }).__anettAnimals = animalSpots;
 
 export function setAnimalSpot(id: string, index: number, x: number, z: number) {
   const list = (animalSpots[id] ??= []);

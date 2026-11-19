@@ -131,6 +131,14 @@ export const LILY_PLATFORMS: Platform[] = [
   { x: LOTUS_ISLAND.x, z: LOTUS_ISLAND.z, r: LOTUS_ISLAND.r, top: LILY_TOP + 0.12 },
 ];
 
+/** Spring mushroom under the giant lantern tree: bounce up onto a branch with a lantern treasure. */
+export const SPRING = { x: 13.5, z: 11.0, r: 0.75, h: 0.65, bounce: 12.5 };
+export const BRANCH = { x: 13.5, z: 9.0, r: 0.95, h: 2.8 };
+export const SPRING_PLATFORMS: Platform[] = [
+  { x: SPRING.x, z: SPRING.z, r: SPRING.r, top: terrainHeight(SPRING.x, SPRING.z) + SPRING.h, bounce: SPRING.bounce },
+  { x: BRANCH.x, z: BRANCH.z, r: BRANCH.r, top: terrainHeight(BRANCH.x, BRANCH.z) + BRANCH.h },
+];
+
 /** Mama duck waits on the south shore; her four ducklings got lost in the forest. */
 export const MAMA_DUCK = { x: 18.2, z: -10.0 };
 export const DUCKLING_SPOTS = [
@@ -320,5 +328,5 @@ export function buildForestPhysics(): WorldPhysics {
     { x: SHOP.x, z: SHOP.z, r: 0.95 }, // Kiki's shop stall
     { x: MAMA_DUCK.x, z: MAMA_DUCK.z, r: 0.35 },
   ];
-  return { height: terrainHeight, colliders, platforms: [...PLATFORMS, ...LILY_PLATFORMS], boundaryRadius: 40, surfaceAt: (x, z) => (distToPath(x, z) < 1.6 ? 'dirt' : 'grass') };
+  return { height: terrainHeight, colliders, platforms: [...PLATFORMS, ...LILY_PLATFORMS, ...SPRING_PLATFORMS], boundaryRadius: 40, surfaceAt: (x, z) => (distToPath(x, z) < 1.6 ? 'dirt' : 'grass') };
 }
