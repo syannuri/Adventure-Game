@@ -40,6 +40,7 @@ export function forestObjective(stage: ForestStage, stars: string[], solved = fa
       return { text: tr().objectives.returnWand, target: FAIRY_POS };
     case 'done':
     case 'night':
+    case 'kusut':
       return { text: tr().objectives.done, target: null };
   }
 }

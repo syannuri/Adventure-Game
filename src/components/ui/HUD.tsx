@@ -1,4 +1,5 @@
 import { RaceHud } from './RaceHud';
+import { MatchHud } from './MatchHud';
 import { useEffect, useRef, useState } from 'react';
 import { useGame } from '../../systems/store';
 import { player } from '../../systems/playerState';
@@ -164,6 +165,7 @@ export function HUD() {
       )}
       {hint && <div className="hint passthrough">💡 {hint}</div>}
       <RaceHud />
+      <MatchHud />
       <div className="toasts passthrough">
         {toasts.map((t) => (
           <div key={t.id} className="toast">

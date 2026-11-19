@@ -21,7 +21,40 @@ export const SPEAKERS: Record<DialogueLine['speaker'], { name: string; color: st
   kiki: { name: 'Kiki the Squirrel', color: '#d9772b' },
   duck: { name: 'Mama Duck', color: '#3a9ec7' },
   dragon: { name: 'Drako the Baby Dragon', color: '#7b5cff' },
+  kusut: { name: 'Grumble', color: '#7a3fb8' },
 };
+
+/** Si Kusut: a round, fuzzy purple monster with little yellow horns and big eyes (cheeky, not scary). */
+export function KusutPortrait({ happy = false }: { happy?: boolean }) {
+  return (
+    <svg viewBox="0 0 100 100">
+      <rect width="100" height="100" fill="#efe4ff" />
+      <path d="M30 30 L26 12 L38 26Z M70 30 L74 12 L62 26Z" fill="#ffd23f" stroke="#c99a10" strokeWidth="1.5" />
+      <path d="M50 18 C28 18 14 34 14 56 C14 78 30 92 50 92 C70 92 86 78 86 56 C86 34 72 18 50 18Z" fill="#9a6be0" />
+      <path d="M16 50 l-6 -3 l5 6 M84 50 l6 -3 l-5 6 M22 34 l-5 -6 l8 3 M78 34 l5 -6 l-8 3 M50 18 l-2 -6 l5 5" stroke="#9a6be0" strokeWidth="5" strokeLinecap="round" />
+      <ellipse cx="38" cy="50" rx="10" ry="12" fill="#fff" />
+      <ellipse cx="62" cy="50" rx="10" ry="12" fill="#fff" />
+      <circle cx="40" cy="52" r="5.5" fill="#2b1b3a" />
+      <circle cx="60" cy="52" r="5.5" fill="#2b1b3a" />
+      <circle cx="42" cy="50" r="1.8" fill="#fff" />
+      <circle cx="62" cy="50" r="1.8" fill="#fff" />
+      {happy ? (
+        <>
+          <path d="M28 36 Q38 32 46 37 M54 37 Q62 32 72 36" stroke="#4b2a7a" strokeWidth="3" fill="none" strokeLinecap="round" />
+          <path d="M36 70 Q50 82 64 70" stroke="#4b2a7a" strokeWidth="4" fill="#ff8fb3" strokeLinecap="round" />
+        </>
+      ) : (
+        <>
+          <path d="M28 34 L46 40 M72 34 L54 40" stroke="#4b2a7a" strokeWidth="3.5" strokeLinecap="round" />
+          <path d="M38 75 Q50 67 62 75" stroke="#4b2a7a" strokeWidth="4" fill="none" strokeLinecap="round" />
+          <path d="M44 72 L46 77 L48 72Z" fill="#fff" />
+        </>
+      )}
+      <circle cx="28" cy="64" r="5" fill="#ff9fc8" opacity="0.6" />
+      <circle cx="72" cy="64" r="5" fill="#ff9fc8" opacity="0.6" />
+    </svg>
+  );
+}
 
 /** Kiki the squirrel shopkeeper: orange fur, big fluffy tail, holding an acorn. */
 export function KikiPortrait() {
@@ -216,5 +249,7 @@ export function Portrait({ speaker }: { speaker: DialogueLine['speaker'] }) {
       return <DuckPortrait />;
     case 'dragon':
       return <DragonPortrait />;
+    case 'kusut':
+      return <KusutPortrait />;
   }
 }

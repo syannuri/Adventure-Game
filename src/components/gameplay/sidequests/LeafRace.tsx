@@ -13,6 +13,7 @@ import { input } from '../../../systems/input';
 import { registerInteractable } from '../interaction/interactions';
 import { POND, RACE_END_S, RACE_START_S, STREAM_HALF, streamAt, terrainHeight } from '../../worlds/EnchantedForest/layout';
 import { Duck } from '../../characters/npc/Duck';
+import { Kusut } from '../../characters/npc/Kusut';
 import { audio } from '../../audio/audioEngine';
 import { spawnBurst, spawnDust } from '../../effects/Bursts';
 import { forestDialogue as D } from '../../../data/forestDialogue';
@@ -77,12 +78,23 @@ const race: Race = { phase: 'idle', t: 0, s: RACE_START_S, lat: 0, speed: 0, duc
 // automated tests read the race from here
 if (typeof window !== 'undefined') Object.assign(window, { __anettRace: race, __anettRaceInfo: { dock: DOCK, bubbles: BUBBLES, rocks: ROCKS } });
 
+/** set by the Si Kusut match: Grumble races instead of the duck and the result goes to the match */
+export const raceControl = { rival: null as null | { speed: number; onFinish: (won: boolean) => void } };
+const rivalSpeed = () => raceControl.rival?.speed ?? DUCK_SPEED;
+
+function begin() {
+  Object.assign(race, { phase: 'count', t: 0, s: RACE_START_S, lat: 0.35, speed: 0, duckS: RACE_START_S, bubbles: BUBBLES.map(() => false), hitAt: -10, time: 0, duckTime: null });
+  audio.sfx('splash', { pitch: 1.3, volume: 0.5 });
+}
+
+/** start a race against Grumble right away (match game one) */
+export function startMatchRace(speed: number, onFinish: (won: boolean) => void) {
+  raceControl.rival = { speed, onFinish };
+  begin();
+}
+
 function startRace() {
   const g = useGame.getState();
-  const begin = () => {
-    Object.assign(race, { phase: 'count', t: 0, s: RACE_START_S, lat: 0.35, speed: 0, duckS: RACE_START_S, bubbles: BUBBLES.map(() => false), hitAt: -10, time: 0, duckTime: null });
-    audio.sfx('splash', { pitch: 1.3, volume: 0.5 });
-  };
   if (!g.save.leafRace) {
     g.setLeafRace({ best: null, bubbles: 0, runs: 0, wins: 0 });
     g.openDialogue(D().raceIntro, begin);
@@ -91,6 +103,18 @@ function startRace() {
 
 function finish() {
   const g = useGame.getState();
+  if (raceControl.rival) {
+    const cb = raceControl.rival.onFinish;
+    const won = race.duckTime == null || race.time <= race.duckTime;
+    raceControl.rival = null;
+    const end = bankAt(RACE_END_S, 1.2);
+    player.ride = null;
+    player.teleport(end.x, terrainHeight(end.x, end.z), end.z, end.facing);
+    g.playEmote(won ? 'celebrate' : 'wave', 2);
+    race.phase = 'idle';
+    cb(won);
+    return;
+  }
   const lr = g.save.leafRace ?? { best: null, bubbles: 0, runs: 0, wins: 0 };
   const n = race.bubbles.filter(Boolean).length;
   const won = race.duckTime == null || race.time <= race.duckTime;
@@ -112,6 +136,7 @@ function finish() {
 export function LeafRace() {
   const leaf = useRef<THREE.Group>(null!);
   const duck = useRef<THREE.Group>(null!);
+  const kusut = useRef<THREE.Group>(null!);
   const bubbleRefs = useRef<(THREE.Group | null)[]>([]);
   const lastHud = useRef(0);
   const BUBBLE_Y = useMemo(() => BUBBLES.map((b) => at(b.s, b.lat).y + 0.55), []);
@@ -125,7 +150,7 @@ export function LeafRace() {
       approach: 0.8,
       label: () => tr().prompts.leafRace,
       verb: 'touch',
-      enabled: () => race.phase === 'idle',
+      enabled: () => race.phase === 'idle' && useGame.getState().level.kusutStage !== 'match',
       onInteract: startRace,
     });
     return () => {
@@ -165,7 +190,7 @@ export function LeafRace() {
         race.s += race.speed * dt;
         // the duck paddles along at a steady speed
         if (race.duckS < RACE_END_S) {
-          race.duckS += DUCK_SPEED * dt;
+          race.duckS += rivalSpeed() * dt;
           if (race.duckS >= RACE_END_S && race.duckTime == null) race.duckTime = race.time;
         }
         if (racing) {
@@ -216,9 +241,18 @@ export function LeafRace() {
     // the duck: waiting by the dock, or racing
     const duckRacing = riding && race.phase !== 'count' && race.duckS < RACE_END_S + 3;
     const dp = duckRacing ? at(Math.min(race.duckS, RACE_END_S + 2.5), -0.7 + Math.sin(race.duckS * 0.8) * 0.25) : at(RACE_START_S - 0.2, -0.75);
-    duck.current.position.set(dp.x, dp.y - 0.04 + Math.sin(t * 3) * 0.015, dp.z);
-    duck.current.rotation.y = dp.facing;
-    setAnimalSpot('duck', 5, dp.x, dp.z);
+    const vsKusut = !!raceControl.rival;
+    duck.current.visible = !vsKusut;
+    kusut.current.visible = vsKusut;
+    if (vsKusut) {
+      const kp = riding ? at(Math.min(race.duckS, RACE_END_S + 2.5), -0.7) : dp;
+      kusut.current.position.set(kp.x, kp.y + 0.02 + Math.sin(t * 2.6) * 0.025, kp.z);
+      kusut.current.rotation.y = kp.facing;
+    } else {
+      duck.current.position.set(dp.x, dp.y - 0.04 + Math.sin(t * 3) * 0.015, dp.z);
+      duck.current.rotation.y = dp.facing;
+      setAnimalSpot('duck', 5, dp.x, dp.z);
+    }
 
     // bubbles float and wobble; popped ones are hidden until the next race
     bubbleRefs.current.forEach((b, i) => {
@@ -257,6 +291,14 @@ export function LeafRace() {
       </group>
       <group ref={duck}>
         <Duck scale={0.9} />
+      </group>
+      <group ref={kusut} visible={false}>
+        <group scale={0.8}>
+          <BigLeaf />
+        </group>
+        <group position={[0, 0.08, 0]}>
+          <Kusut scale={0.65} />
+        </group>
       </group>
       {BUBBLES.map((b, i) => {
         const p = at(b.s, b.lat);

@@ -8,11 +8,13 @@ export type Screen = 'menu' | 'story' | 'worlds' | 'playing' | 'complete';
 export type Overlay = null | 'settings' | 'about' | 'shop' | 'stickers';
 
 export interface DialogueLine {
-  speaker: 'anett' | 'lumi' | 'pip' | 'olli' | 'koko' | 'kiki' | 'duck' | 'dragon';
+  speaker: 'anett' | 'lumi' | 'pip' | 'olli' | 'koko' | 'kiki' | 'duck' | 'dragon' | 'kusut';
   text: string;
 }
 
-export type ForestStage = 'meetFairy' | 'collectStars' | 'findWand' | 'returnWand' | 'done' | 'night';
+export type ForestStage = 'meetFairy' | 'collectStars' | 'findWand' | 'returnWand' | 'done' | 'night' | 'kusut';
+/** Si Kusut chapter (after World 1): the pranks, the chase, then the match in the meadow. */
+export type KusutStage = 'arrive' | 'brambles' | 'chase' | 'arena' | 'match' | 'done';
 /** World 2 (Candy Village) mission stages. */
 export type CandyStage = 'meetChef' | 'collectIngredients' | 'returnIngredients' | 'sortCandy' | 'done';
 /** World 3 (Crystal Cave) mission stages. */
@@ -61,6 +63,11 @@ interface LevelState {
   /** magic garden: carrying the watering can, and how many pours of water are in it */
   hasCan: boolean;
   water: number;
+  /** Si Kusut chapter: step, brambles cleared, bells won back in the chase, and the match score */
+  kusutStage: KusutStage;
+  brambles: string[];
+  bells: number;
+  match: { round: number; anet: number; kusut: number; losses: number; results: (boolean | null)[] };
   /** duckling escort side quest */
   duckQuest: 'none' | 'active' | 'done';
   ducklings: string[];
@@ -76,6 +83,8 @@ interface GameState {
   worldId: string | null;
   /** night version of the Enchanted Forest (unlocked after finishing it) */
   night: boolean;
+  /** Si Kusut chapter of the Enchanted Forest (unlocked after finishing it) */
+  kusut: boolean;
   runId: number;
   /** false while a world is mounting / compiling shaders (shows the loading screen) */
   worldReady: boolean;
@@ -93,7 +102,7 @@ interface GameState {
   setScreen: (s: Screen) => void;
   setOverlay: (o: Overlay) => void;
   setPaused: (p: boolean) => void;
-  startWorld: (id: string, opts?: { night?: boolean }) => void;
+  startWorld: (id: string, opts?: { night?: boolean; kusut?: boolean }) => void;
   collect: (kind: 'stars' | 'coins' | 'treasures', id: string) => void;
   setStage: (s: Stage) => void;
   setHasWand: (v: boolean) => void;
@@ -122,11 +131,11 @@ interface GameState {
   resetProgress: () => void;
 }
 
-const freshLevel = (worldId: string | null = null, night = false): LevelState => ({
+const freshLevel = (worldId: string | null = null, night = false, kusut = false): LevelState => ({
   stars: [],
   coins: [],
   treasures: [],
-  stage: worldId === 'candy-village' ? 'meetChef' : worldId === 'crystal-cave' ? 'meetDragon' : night ? 'night' : 'meetFairy',
+  stage: worldId === 'candy-village' ? 'meetChef' : worldId === 'crystal-cave' ? 'meetDragon' : night ? 'night' : kusut ? 'kusut' : 'meetFairy',
   hasWand: false,
   flowers: [0, 0, 1],
   puzzleSolved: false,
@@ -145,6 +154,10 @@ const freshLevel = (worldId: string | null = null, night = false): LevelState =>
   ducklings: [],
   hasCan: false,
   water: 0,
+  kusutStage: 'arrive',
+  brambles: [],
+  bells: 0,
+  match: { round: 0, anet: 0, kusut: 0, losses: 0, results: [null, null, null] },
   startedAt: performance.now(),
   lastProgressAt: performance.now(),
 });
@@ -159,6 +172,7 @@ export const useGame = create<GameState>((set, get) => ({
   save: loadSave(),
   worldId: null,
   night: false,
+  kusut: false,
   runId: 0,
   worldReady: false,
   setWorldReady: () => {
@@ -182,14 +196,16 @@ export const useGame = create<GameState>((set, get) => ({
 
   startWorld: (id, opts) => {
     const night = !!opts?.night && id === 'enchanted-forest';
+    const kusut = !night && !!opts?.kusut && id === 'enchanted-forest';
     set((s) => ({
       worldId: id,
       night,
+      kusut,
       screen: 'playing',
       paused: false,
       runId: s.runId + 1,
       worldReady: false,
-      level: freshLevel(id, night),
+      level: { ...freshLevel(id, night, kusut), hasWand: kusut },
       dialogue: null,
       prompt: null,
       emote: null,
