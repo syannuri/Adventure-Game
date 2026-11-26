@@ -1,6 +1,11 @@
 # Anet: The Magical Adventure
 
 A 3D adventure game for children aged 5–10, built with **React + TypeScript + Three.js (React Three Fiber)**.
+It runs in the browser on computers, tablets and phones.
+
+<p align="center">
+  <img src="docs/screenshots/menu.jpg" alt="The home screen: Anet on the meadow with the five world islands floating in 3D" width="100%">
+</p>
 
 Anet is a seven-year-old girl who finds a magical map in her grandmother's treasure box. The map leads to five
 secret lands. Each land has a mission, friendly creatures, puzzles and a Magic Star. Collect all five stars to open
@@ -12,6 +17,22 @@ the legendary Crystal Castle.
 > Worlds 4–5 are shown on the map as "Coming soon". See [Status](#status) for what's done, what's a placeholder and what's next.
 
 ---
+
+## Screenshots
+
+| | |
+| --- | --- |
+| ![The Magic Map](docs/screenshots/worldmap.jpg) **The Magic Map**: five worlds; three are playable now. | ![Lumi's glade](docs/screenshots/glade.jpg) **Enchanted Forest**: Anet waves in Lumi's glade. |
+| ![Talking to Lumi](docs/screenshots/dialogue.jpg) **Meeting Lumi**: speech bubbles with portraits and simple, friendly language. | ![Magic garden](docs/screenshots/garden.jpg) **Magic garden**: plant, water and grow a sunflower, a berry bush and a rainbow flower. |
+| ![Tree house](docs/screenshots/treehouse.jpg) **Tree house**: built step by step with twigs and acorns, with a ladder, lights and a swing. | ![Leaf race](docs/screenshots/race.jpg) **Leaf race**: ride a big leaf down the stream and pop the bubbles. |
+| ![Rainbow](docs/screenshots/rainbow.jpg) **After the rain**: find the seven colours to make the rainbow bright. | ![Picnic](docs/screenshots/picnic.jpg) **Picnic**: give every friend their favourite food. |
+| ![Grumble](docs/screenshots/grumble.jpg) **Grumble's Great Forest Match**: tug of war against the cheeky monster. | ![Night forest](docs/screenshots/night.jpg) **Night forest**: fireflies and lanterns for Lumi's Light Party. |
+| ![Candy Village](docs/screenshots/candy.jpg) **World 2: Candy Village**: Koko's cupcake bakery and the chocolate river. | ![Crystal Cave](docs/screenshots/cave.jpg) **World 3: Crystal Cave**: the Heart Crystal shines again. |
+
+<p align="center">
+  <img src="docs/screenshots/phone.jpg" alt="Playing on a phone with the touch controls" width="260"><br>
+  <em>On a phone: virtual joystick, jump, action and emote buttons, and a compact HUD.</em>
+</p>
 
 ## Play online
 
@@ -45,7 +66,7 @@ Requirements: Node 18+ (developed on Node 22). Runs in any modern browser with W
 | Next dialogue line | Space, E, Enter or click | Tap the speech bubble |
 | Pause | Esc or P, or the pause button | Pause button |
 
-## World 1 – Enchanted Forest (the vertical slice)
+## World 1 – Enchanted Forest
 
 **Mission:** help Lumi the fairy find her lost magic wand.
 
@@ -60,6 +81,10 @@ Requirements: Node 18+ (developed on Node 22). Runs in any modern browser with W
 6. Finale: the forest sparkles, Anet celebrates and the **Level Complete** screen awards the Magic Star.
 
 Optional extras: 22 golden acorns, 3 hidden treasure chests (Olli the owl gives hints), and achievements.
+
+### More to do in the Enchanted Forest
+
+The forest is full of side activities. All of them are optional, and most give golden acorns and a badge.
 
 **Side quest – hide-and-seek with Pip's little brothers:**
 - Talk to Pip and he asks for help: three little bunnies (pink, green and yellow scarves) are hiding behind a bush, in
@@ -148,14 +173,16 @@ splash: five different puddles give the *Puddle Jumper* badge.
 quack quack!". Walking up to the right animal answers each one: the duck, the butterfly, the squirrel. Solving all
 three gives +5 acorns and the *Clever Explorer* badge. The HUD shows the riddle number while one is open.
 
-**Night forest (after finishing World 1):** the Enchanted Forest card on the world map gets a *🌙 Night forest*
+### After finishing World 1
+
+**Night forest:** the Enchanted Forest card on the world map gets a *🌙 Night forest*
 button.
 - The forest at night: moonlight, a starry sky, glowing lantern trees and green fireflies everywhere.
 - Lumi's Light Party: catch 10 fireflies in a jar and light the 5 lantern posts beside the paths. Then go back to
   Lumi and set the fireflies free in a glowing finale (*Light Bringer* badge).
 - All the side quests can be played at night too.
 
-**Grumble, the messy monster (after finishing World 1):** the Enchanted Forest card also gets a *👾 Grumble*
+**Grumble, the messy monster:** the Enchanted Forest card also gets a *👾 Grumble*
 button. Grumble (*Si Kusut*) is a round, fuzzy purple monster: cheeky, never scary.
 1. **Trouble:** Grumble put thorny bushes on three paths and took Lumi's bells. Anet has Lumi's wand: its light
    shrinks each thorny bush away.
@@ -249,8 +276,9 @@ Keeper, Light Master, Gem Collector, Pillar Climber).
   hero trees with lanterns, a waterfall cascading into a pond, lily pads, ducks, butterflies, a bird flock,
   fireflies, a mushroom house, a glowing mushroom ring, magical path stones that brighten as stars are found,
   grass, flowers and a flower meadow.
-- **NPCs:** Lumi the fairy (iridescent wings, sad → happy expression), Pip the rabbit and Olli the owl, plus
-  ambient bunnies. All have idle and talking animations and face Anet when she's near.
+- **NPCs:** Lumi the fairy (iridescent wings, sad → happy expression), Pip the rabbit, Olli the owl, Kiki the
+  squirrel, the duck family, Koko the gingerbread chef, Drako the baby dragon and Grumble the fuzzy monster, plus
+  ambient bunnies, butterflies, bees and bats. They have idle and talking animations and face Anet when she's near.
 - **Dialogue:** speech bubbles with SVG character portraits, typewriter text and voice "chirps".
 - **Living main menu:** a painted golden-hour sky appears instantly. A moment later a **3D layer** fades in over it:
   - the five worlds float as little animated 3D islands: the forest with swaying trees and a waterfall, the
@@ -274,8 +302,9 @@ Keeper, Light Master, Gem Collector, Pillar Climber).
     the left, each an icon plus a short count. Tap a chip to read its full text for a few seconds. This keeps the
     mission panel small.
 - **Audio:** an original soundtrack and sound effects, synthesized at runtime with the Web Audio API: menu,
-  forest and victory music, sparkle and collect sounds, footsteps, jump and land sounds, dialogue chirps,
-  waterfall ambience that gets louder near the falls, wind, and random birdsong.
+  forest, candy, cave and victory music, sparkle and collect sounds, footsteps (grass, dirt, wood), jump and land
+  sounds, dialogue chirps, splashes, a camera shutter for stickers, and ambience: a waterfall that gets louder
+  near the falls, wind, rain, and random birdsong.
 - **Graphics:** PBR materials, image-based lighting from procedural light-formers, soft directional shadows that
   follow the player, atmospheric fog, bloom, vignette, neutral tone mapping, a gradient sky with sun glow and
   clouds, water shaders and particle systems. A **"Fast" graphics mode** is the default on touch devices: no
@@ -288,38 +317,48 @@ Keeper, Light Master, Gem Collector, Pillar Climber).
 
 ```
 src/
-  App.tsx                     screen routing, canvas, overlays
+  App.tsx                     screen routing, menus and overlays (the 3D engine loads on demand)
+  GameView.tsx                WebGL canvas, worlds, post-processing and the in-game UI
   main.tsx, styles.css
-  systems/                    game-wide state & engine-agnostic systems
+  systems/                    game-wide state and engine-agnostic systems
     store.ts                  Zustand game state (screens, level progress, dialogue, cinematics, achievements)
     save.ts                   localStorage persistence (fails safely)
     input.ts                  unified keyboard + touch input
     physics.ts                height-field ground, platforms, circle colliders, camera ray checks
-    playerState.ts            per-frame player & camera data shared across systems
-  data/                       worlds, achievements, dialogue text
+    playerState.ts            per-frame player and camera data (and "rides": leaf, ladder, swing)
+    raceHud.ts, matchHud.ts   overlay state for the leaf race and Grumble's match
+    animalSpots.ts            where the animals are (sticker book, riddles)
+  data/                       worlds, dialogue (per world), achievements, stickers, cosmetics, HUD per world
   i18n/                       languages: id.ts (Bahasa Indonesia), en.ts (English), useT() hook
   utils/math.ts
   components/
     characters/
-      Anet/
-        AnetModel.tsx        procedural rigged character (joint hierarchy; fallback model)
+      Anett/
+        AnettModel.tsx        procedural rigged character (joint hierarchy; fallback model)
         AnettHD.tsx           sculpted GLB model skinned to the same joints (public/models/anet.glb)
-        AnetAnimations.ts    pose library (13 animations)
-        AnetAnimator.ts      state machine + blend tree + damping + blinking
-        AnetController.tsx   movement, jumping, collisions, emotes
-      npc/                    Fairy (Lumi), Rabbit (Pip), Owl (Olli), Squirrel (Kiki), Dragon (Drako)
+        AnettAnimations.ts    pose library (locomotion, jump stages, climbing, emotes)
+        AnettAnimator.ts      state machine + blend tree + damping + blinking
+        AnettController.tsx   movement, jumping, collisions, emotes, rides
+      npc/                    Fairy (Lumi), Rabbit (Pip), Owl (Olli), Squirrel (Kiki), Duck, Gingerbread (Koko),
+                              Dragon (Drako), Kusut (Grumble)
     worlds/
-      EnchantedForest/        layout.ts (map data), Terrain, Sky, Trees, Vegetation, Water, Props, Critters
+      EnchantedForest/        layout.ts (map data, stream), Terrain, Sky, Trees, Vegetation, Water, Props, Critters
       CandyVillage/           layout.ts, CandyTerrain (ground + chocolate river), CandyProps, candyTextures
       CrystalCave/            layout.ts, CaveScene (floor, dome, crystals, glowing lake, pillars, bats)
       shared/Lights.tsx       sun + rim light used by every world
       MenuScene/              3D layer of the home screen (Menu3D) and the character review scene
     gameplay/
       interaction/            interactable registry + proximity/approach system
-      collectibles/           Wishing Stars, acorns, treasure chests, wand
-      missions/               ForestQuest (the mission state machine), objectives & hints
+      collectibles/           Wishing Stars, acorns, chests, candy and crystal pickups, the wand
+      missions/               one mission per world (Forest, Night, Kusut, Candy, Cave) + objectives and hints
+      puzzles/                colour flowers, singing flowers, candy sorting, light beam
+      sidequests/             bunnies, ducklings, lily pads, spring mushroom, riddles, garden, leaf race,
+                              tree house, picnic, rain and rainbow
+      shop/                   Kiki's shop
+      stickers/               the sticker camera
     camera/FollowCamera.tsx
-    ui/                       menus, HUD + minimap, dialogue, story intro, touch controls, level complete
+    ui/                       menus, menu backdrop, HUD + minimap, dialogue, story intro, touch controls,
+                              shop, sticker book, race and match overlays, level complete
     audio/audioEngine.ts      procedural music + SFX + ambience
     effects/                  bloom/post FX, particle bursts, wind shader, generated textures
 ```
@@ -334,52 +373,61 @@ src/
   1. Add a folder under `worlds/` and a mission under `gameplay/missions/`.
   2. Add its HUD entry (counters, minimap, objective, hints) in `data/worldHud.ts`.
   3. Set `built: true` in `data/worlds.ts` and route to it in `GameView.tsx`.
-- **Swapping in real art.** `AnetModel` exposes the same joint names a Mixamo/Blender rig would use (hips, spine,
+- **Swapping in real art.** `AnettModel` exposes the same joint names a Mixamo/Blender rig would use (hips, spine,
   neck, shoulders, elbows, legs, knees). A GLB model can replace it. Map its bones in `applyPose`, or use GLTF
   clips with an `AnimationMixer` and keep the controller and state machine as they are.
 - **Debug helpers.** `window.__anett` exposes the store, player and input for automated tests. Add `?capture` to
-  the URL to keep the WebGL drawing buffer for screenshots, and `#closeup` for a close-up "photo mode" of Anet on
-  the menu. **Character review mode:** `?view=face`, `?view=front`, `?view=side` or `?view=back` hides the menus
-  and shows Anet standing still from that angle, for comparing with the reference image. Add `&pose=surprise` (or `celebrate`, `wave`, `dance`, `talk`) to review facial expressions.
+  the URL to keep the WebGL drawing buffer for screenshots, and `?flat` to keep the painted (2D) home screen
+  without its 3D layer.
+  - **Character review mode:** `?view=face`, `?view=front`, `?view=side` or `?view=back` hides the menus and shows
+    Anet standing still from that angle, for comparing with the reference image.
+  - Add `&pose=surprise` (or `celebrate`, `wave`, `dance`, `talk`, `jump`, `climb`, …) to review a pose or facial
+    expression.
+- **Rides.** Activities that carry Anet (the leaf race, the ladder, the swing, tug of war) set `player.ride` with a
+  position, facing and optional pose; the controller then skips walking physics and plays that pose.
 
 ## Testing
 
-This build was verified by driving the production build in headless Chromium with Playwright:
+Every feature was verified by driving the production build in headless Chromium with Playwright:
 
-- A **full scripted playthrough**: Play → story → intro cinematic → walk, run and jump → talk to Lumi → open a
-  chest → talk to Pip and Olli → collect all 5 Wishing Stars (including the mushroom jumps) → wand reveal
-  cinematic → pick up the wand → return it → finale → Level Complete → save written → world map. No console or
-  page errors.
-- Screenshots at desktop (1280×720), small landscape (720×405) and phone (iPhone 13, with touch controls).
+- **Scripted playthroughs** of all three worlds (World 1 from the story intro to the Level Complete screen), the
+  night forest, and Grumble's chapter, including a lost game and the rematch.
+- **Every side activity:**
+  - hide-and-seek, singing flowers, the shop, lily pads, ducklings, the spring mushroom and riddles
+  - the garden, the leaf race, the tree house (ladder and swing), the picnic, and the rain and rainbow
+- Each script checks the saved progress, badges and acorns, and that there are no console or page errors.
+- **Screenshots** at desktop (1280×720), landscape phone (844×390) and portrait phone (390×844, touch controls)
+  were checked for layout problems, such as the HUD overlapping the joystick.
+- Character poses (jump stages, climbing, emotes) were reviewed from the side with `?view=side&pose=…`.
 - `npm run build` (TypeScript strict mode + Vite) passes.
 
 Not yet verified: real mobile devices and frame rate on real GPUs. The test container only has software WebGL,
-which is far too slow to measure performance.
+which is far too slow (around 1 frame per second) to judge smoothness or performance.
 
 ## Status
 
 | Area | Status |
 | --- | --- |
-| World 1 – Enchanted Forest | ✅ Playable from start to finish |
+| World 1 – Enchanted Forest | ✅ Playable from start to finish, with many side activities |
+| Night forest and Grumble's chapter | ✅ Playable after finishing World 1 |
 | World 2 – Candy Village | ✅ Playable from start to finish (Koko the chef, 5 ingredients, candy sorting puzzle) |
 | World 3 – Crystal Cave | ✅ Playable from start to finish (Drako the baby dragon, 5 crystals, light-beam puzzle) |
-| Anet character + 13 animations | ✅ Sculpted HD model (GLB, auto-skinned), procedural model as fallback |
-| NPCs (fairy, rabbit, owl) | ✅ Procedural models |
-| Dialogue, quest, collectibles, achievements, saving | ✅ |
-| Menus, HUD, minimap, settings, pause, level complete | ✅ |
+| Anet character + animations | ✅ Sculpted HD model (GLB, auto-skinned), procedural model as fallback |
+| NPCs | ✅ Procedural models (fairy, rabbit, owl, squirrel, ducks, gingerbread chef, baby dragon, Grumble) |
+| Dialogue, quests, collectibles, achievements, saving | ✅ |
+| Menus (with the 3D home screen), HUD, minimap, settings, pause, level complete | ✅ |
+| Kiki's shop (cosmetics) and the animal sticker book | ✅ |
 | Keyboard + touch controls | ✅ (touch verified only in device emulation) |
 | Music and SFX | ✅ Original, synthesized at runtime (placeholder for recorded audio) |
-| Puzzles | ✅ Colour flower puzzle (World 1), candy sorting puzzle (World 2), light-beam mirror puzzle (World 3) |
-| Baby dragon NPC | ✅ Drako (procedural model) |
+| Puzzles | ✅ Colour flowers, singing flowers (memory), candy sorting, light-beam mirrors |
 | Cloud creature NPC | ⏳ Planned for World 5 |
 | Worlds 4–5 (Ocean Kingdom, Sky Castle) | ⏳ Not built – shown as "Coming soon" |
 | Crystal Castle finale | ⏳ Not built |
-| Cosmetics / unlockable characters | ⏳ Not built (progress tracking is in place) |
 | Native Android / iOS builds | ⏳ Not set up – the web build works in mobile browsers; wrap with Capacitor later |
 
 ## Roadmap
 
-2. Real blend-shape facial animation for the HD model (it now has blinking/squinting eyelids and an opening mouth).
-5. World 4 – Ocean Kingdom (swimming movement, rescue the baby sea turtle).
-6. World 5 – Sky Castle (floating islands, rainbow bridges, Crystal Castle finale).
-7. Recorded music and voice lines; Capacitor packaging for Android and iOS.
+1. World 4 – Ocean Kingdom (swimming movement, rescue the baby sea turtle).
+2. World 5 – Sky Castle (floating islands, rainbow bridges, Crystal Castle finale).
+3. Real blend-shape facial animation for the HD model (it now has blinking/squinting eyelids and an opening mouth).
+4. Recorded music and voice lines; Capacitor packaging for Android and iOS.
