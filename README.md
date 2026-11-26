@@ -66,7 +66,7 @@ Optional extras: 22 golden acorns, 3 hidden treasure chests (Olli the owl gives 
   the fallen log and behind the giant lantern tree.
 - The closer Anet gets, the louder and faster they giggle, and their ears peek out. Pip gives a hint for the next one.
 - Each found bunny hops out and follows Anet in a line. Bring all three back to Pip for the *Bunny Buddy* badge.
-- The HUD shows "Pip's little brothers n / 3" under the mission.
+- A small 🐰 chip beside the counters shows "Pip's little brothers n / 3".
 
 **Lumi's singing flowers (memory game):**
 - North of Lumi's glade, five giant flowers stand in a ring around a magic bud. Each sings its own note (C D E G A).
@@ -268,8 +268,11 @@ Keeper, Light Master, Gem Collector, Pillar Climber).
   with the first unfinished world, and the Magic Stars collected so far.
 - **UI:** animated main menu with 3D scene, storybook opening cinematic ("Anet discovers the map"), world
   select map, character introduction, settings (music volume, sound volume, graphics quality), pause menu, HUD
-  (star, acorn and treasure counters, mission objective, rotating minimap with objective marker), achievement
-  toasts, idle hints, loading screen and the level complete screen.
+  (star, acorn and treasure counters, a one-line mission objective, rotating minimap with objective marker),
+  achievement toasts, idle hints, loading screen and the level complete screen.
+  - Side activities in progress (garden, tree house, picnic, rain, ducklings, riddles…) appear as small chips on
+    the left, each an icon plus a short count. Tap a chip to read its full text for a few seconds. This keeps the
+    mission panel small.
 - **Audio:** an original soundtrack and sound effects, synthesized at runtime with the Web Audio API: menu,
   forest and victory music, sparkle and collect sounds, footsteps, jump and land sounds, dialogue chirps,
   waterfall ambience that gets louder near the falls, wind, and random birdsong.

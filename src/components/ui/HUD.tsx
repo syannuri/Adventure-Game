@@ -94,7 +94,7 @@ export function HUD() {
   const setPaused = useGame((s) => s.setPaused);
   const [objText, setObjText] = useState('');
   const [hint, setHint] = useState<string | null>(null);
-  const [side, setSide] = useState<string | null>(null);
+  const [side, setSide] = useState<string[]>([]);
   const worldId = useGame((s) => s.worldId);
   const pouch = useGame((s) => s.save.acorns ?? 0);
   const hud = worldHud(worldId);
@@ -103,7 +103,8 @@ export function HUD() {
     const iv = setInterval(() => {
       const g = useGame.getState();
       setObjText(hud.objective().text);
-      setSide(hud.side?.() ?? null);
+      const next = hud.side?.() ?? [];
+      setSide((prev) => (prev.join('|') === next.join('|') ? prev : next));
       const idle = performance.now() - g.level.lastProgressAt;
       setHint(!g.dialogue && !g.cinematic && idle > 45000 && g.level.stage !== 'done' ? hud.hint() || null : null);
     }, 300);
@@ -135,7 +136,6 @@ export function HUD() {
           <div className="objective passthrough">
             <small>{t.hud.mission}</small>
             <span className="objective-text">{objText}</span>
-            {side && <span className="objective-side">{side}</span>}
           </div>
           <div className="hud-right">
             <button
@@ -164,6 +164,7 @@ export function HUD() {
         </div>
       )}
       {hint && <div className="hint passthrough">💡 {hint}</div>}
+      {!showIntroBanner && side.length > 0 && <SideChips items={side} />}
       <RaceHud />
       <MatchHud />
       <div className="toasts passthrough">
@@ -178,5 +179,46 @@ export function HUD() {
         ))}
       </div>
     </>
+  );
+}
+
+/** "🌱 Garden: 3 thirsty plants" -> icon, a short count for the chip, and the full text */
+function splitStatus(sx: string) {
+  const i = sx.indexOf(' ');
+  const icon = i > 0 ? sx.slice(0, i) : sx;
+  const text = i > 0 ? sx.slice(i + 1) : '';
+  const frac = text.match(/(\d+)\s*\/\s*(\d+)/);
+  const num = text.match(/\d+/);
+  return { icon, text, short: frac ? `${frac[1]}/${frac[2]}` : num ? num[0] : '' };
+}
+
+/**
+ * Side activities as small chips on the left (icon + count), so the mission panel stays one short
+ * line. Tapping a chip shows its full text for a few seconds.
+ */
+function SideChips({ items }: { items: string[] }) {
+  const [open, setOpen] = useState<string | null>(null);
+  const timer = useRef(0);
+  const list = items.map(splitStatus);
+  const shown = open ? list.find((x) => x.icon === open) : null;
+  return (
+    <div className="side-chips">
+      {list.map((x) => (
+        <button
+          key={x.icon}
+          className={'side-chip' + (open === x.icon ? ' on' : '')}
+          aria-label={x.text}
+          onClick={() => {
+            setOpen(open === x.icon ? null : x.icon);
+            window.clearTimeout(timer.current);
+            timer.current = window.setTimeout(() => setOpen(null), 3500);
+          }}
+        >
+          <span className="ic">{x.icon}</span>
+          {x.short && <b>{x.short}</b>}
+          {shown && open === x.icon && <span className="side-tip">{x.text}</span>}
+        </button>
+      ))}
+    </div>
   );
 }

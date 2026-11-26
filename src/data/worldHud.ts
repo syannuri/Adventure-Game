@@ -42,8 +42,8 @@ export interface WorldHud {
   };
   objective: () => Objective;
   hint: () => string;
-  /** optional side-quest line shown under the mission */
-  side?: () => string | null;
+  /** side activities in progress, each "<emoji> <text>" (shown as small chips beside the counters) */
+  side?: () => string[];
 }
 
 const level = () => useGame.getState().level;
@@ -81,7 +81,7 @@ export const WORLD_HUD: Record<string, WorldHud> = {
     side: () => {
       const l = level();
       const parts = [musicStatus(), riddleStatus(), duckStatus(), gardenStatus(), treehouseStatus(), picnicStatus(), rainStatus(), l.bunnyQuest === 'active' ? '🐰 ' + tr().hud.bunnies(l.bunnies.length, 3) : null].filter(Boolean);
-      return parts.length ? parts.join('  ·  ') : null;
+      return parts as string[];
     },
   },
   'candy-village': {
