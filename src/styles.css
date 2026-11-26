@@ -940,3 +940,23 @@ canvas { display: block; touch-action: none; }
 .mb-3d canvas { touch-action: none; }
 .menu3d .home-islands { display: none; }
 .island-tag { white-space: nowrap; font-weight: 800; font-size: 14px; padding: 3px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.92); color: #3b1a78; box-shadow: 0 4px 12px rgba(59, 26, 120, 0.2); animation: popIn 0.3s cubic-bezier(0.2, 1.5, 0.4, 1) both; font-family: 'Baloo 2', system-ui, sans-serif; }
+
+/* side activities: small chips on the left under the help button (tap one to read it) */
+.side-chips { position: absolute; left: max(12px, env(safe-area-inset-left)); top: 246px; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start; gap: 6px; max-height: calc(100% - 420px); min-height: 40px; pointer-events: none; }
+.ui-layer .side-chip { pointer-events: auto; }
+.side-chip { position: relative; display: inline-flex; align-items: center; gap: 4px; height: 34px; padding: 0 10px 0 6px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.78); box-shadow: 0 3px 10px rgba(43, 35, 80, 0.18); font-family: inherit; font-weight: 800; font-size: 14px; color: #4a35b8; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.side-chip .ic { font-size: 18px; line-height: 1; }
+.side-chip b { font-weight: 800; }
+.side-chip.on { background: #fff; }
+.side-tip { position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%); white-space: nowrap; background: rgba(255, 255, 255, 0.96); border-radius: 14px; padding: 5px 12px; box-shadow: var(--shadow); font-size: 14px; color: #3b2a6a; pointer-events: none; z-index: 2; }
+@media (max-width: 640px) {
+  .side-chips { top: 204px; max-height: calc(100% - 430px); }
+  .side-chip { height: 30px; font-size: 13px; padding: 0 8px 0 5px; }
+  .side-chip .ic { font-size: 16px; }
+}
+/* short landscape phones: counters sit in a row, so the chips line up beside the help button */
+@media (orientation: landscape) and (max-height: 500px) {
+  .side-chips { top: calc(max(12px, env(safe-area-inset-top)) + 42px); left: calc(max(12px, env(safe-area-inset-left)) + 48px); flex-direction: row; max-height: none; max-width: 42vw; }
+  .side-chip { height: 30px; font-size: 13px; padding: 0 8px 0 5px; }
+  .side-tip { left: 0; top: calc(100% + 6px); transform: none; }
+}
