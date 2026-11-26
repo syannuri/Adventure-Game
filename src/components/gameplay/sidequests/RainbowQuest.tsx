@@ -341,7 +341,7 @@ function Rainbow({ lit }: { lit: string[] }) {
   useFrame((_, rawDt) => {
     const dt = Math.min(rawDt, 0.05);
     // far away in the sky to the north, moving along with Anet like the real sky
-    ref.current.position.set(player.position.x, player.position.y - 82, player.position.z - 220);
+    ref.current.position.set(player.position.x, player.position.y - 100, player.position.z - 220);
     mat.uniforms.uFade.value = Math.min(1, mat.uniforms.uFade.value + dt * 0.3);
 
     RAINBOW.forEach((c, i) => {
