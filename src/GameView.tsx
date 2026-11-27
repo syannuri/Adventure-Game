@@ -74,6 +74,7 @@ export default function GameView({ review = false }: { review?: boolean }) {
         dpr={quality === 'high' ? [1, 1.75] : [0.75, 1.25]}
         gl={{ antialias: quality === 'low', powerPreference: 'high-performance', preserveDrawingBuffer: CAPTURE }}
         camera={{ fov: 55, near: 0.1, far: 900, position: [0, 3, 8] }}
+        className="game-canvas"
         style={{ position: 'fixed', inset: 0 }}
         onCreated={({ gl, scene }) => {
           gl.toneMapping = THREE.NeutralToneMapping;

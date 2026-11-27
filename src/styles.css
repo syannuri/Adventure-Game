@@ -20,6 +20,9 @@
 html, body, #root { margin: 0; height: 100%; width: 100%; overflow: hidden; background: #1b2a4a; }
 body { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
 canvas { display: block; touch-action: none; }
+/* iOS home-screen app: fill the real full height (see systems/fullHeight.ts) */
+html.ios-full, html.ios-full body, html.ios-full #root { height: var(--app-h); }
+html.ios-full .ui-layer, html.ios-full .menu-backdrop, html.ios-full .game-canvas, html.ios-full #splash, html.ios-full .snap-flash { bottom: auto !important; height: var(--app-h) !important; }
 
 /* The UI layer lets clicks/drags fall through to the 3D canvas, except on interactive elements. */
 .ui-layer { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
@@ -959,4 +962,29 @@ canvas { display: block; touch-action: none; }
   .side-chips { top: calc(max(12px, env(safe-area-inset-top)) + 42px); left: calc(max(12px, env(safe-area-inset-left)) + 48px); flex-direction: row; max-height: none; max-width: 42vw; }
   .side-chip { height: 30px; font-size: 13px; padding: 0 8px 0 5px; }
   .side-tip { left: 0; top: calc(100% + 6px); transform: none; }
+}
+
+/* ------------------------------------------------------------ iPhone / iPad fit */
+/* phones held upright: the world map shows two worlds per row instead of one tall column */
+@media (orientation: portrait) and (max-width: 699px) {
+  .world-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 10px 0; }
+  .world-card { min-height: 0; padding: 34px 12px 12px; border-radius: 20px; }
+  .world-card p { display: none; }
+  .world-card:last-child { grid-column: 1 / -1; justify-self: center; width: calc(50% - 5px); }
+  .world-card .num { font-size: 12px; top: 8px; left: 10px; padding: 1px 9px; }
+  .world-card .art { margin-bottom: 4px; }
+  .world-card .art svg { width: 62px; height: 62px; }
+  .world-card h3 { font-size: 19px; }
+  .world-card .lock { font-size: 12px; margin-top: 5px; padding: 3px 8px; }
+  .worlds h1 { font-size: 34px; }
+  .worlds .star-badge { font-size: 13px; }
+}
+/* tablets held upright (iPad): bigger menu buttons and card so they suit the large screen */
+@media (orientation: portrait) and (min-width: 700px) and (min-height: 900px) {
+  .home-lower { zoom: 1.3; }
+  .home-top { zoom: 1.2; }
+}
+/* tablets held sideways: a little more room and a bigger Play area */
+@media (orientation: landscape) and (min-height: 700px) and (max-aspect-ratio: 3/2) {
+  .home-top { zoom: 1.15; }
 }

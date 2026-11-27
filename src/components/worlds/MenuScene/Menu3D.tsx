@@ -28,6 +28,22 @@ const LOOK = new THREE.Vector3(0, 2.4, 0);
 const DEPTH = [13, 15, 13.5, 17, 19];
 const pointer = { x: 0, y: 0, at: 0 };
 /** on tall phone screens the islands sit in the free space beside Anet: [centre x %, centre y %, width vw] */
+/** iPad and other 4:3-ish screens held sideways: the gap between the menu column and Anet, and the sky above */
+const TABLET_LAND_3D = [
+  [56, 52, 9],
+  [50, 13, 7],
+  [57, 76, 7],
+  [62, 33, 6],
+  [67, 10, 6],
+] as const;
+/** phones held sideways (short screens): the top strip and the gap right of the Play button */
+const PHONE_LAND_3D = [
+  [57, 66, 7.5],
+  [49, 21, 6],
+  [37, 28, 5],
+  [31, 10, 4.5],
+  [42, 9, 5],
+] as const;
 const PORTRAIT_3D = [
   [14, 38, 22],
   [83, 22, 22],
@@ -626,11 +642,14 @@ function Scene({ onReady }: { onReady: () => void }) {
     cam.updateProjectionMatrix();
     cam.updateMatrixWorld();
     const portrait = size.width < size.height;
-    const table = portrait ? PORTRAIT_3D.map(([x, y, w]) => [x - w / 2, y, w] as const) : ISLAND_SPOTS.land;
+    // pick the layout for this screen shape; the special tables give island centres directly
+    const aspect = size.width / size.height;
+    const centred = portrait ? PORTRAIT_3D : size.height <= 500 ? PHONE_LAND_3D : aspect < 1.6 ? TABLET_LAND_3D : null;
+    const table = centred ? centred.map(([x, y, w]) => [x - w / 2, y, w] as const) : ISLAND_SPOTS.land;
     const list = table.map(([l, tp, wv], i) => {
-      const wPx = (wv / 100) * size.width * (portrait ? 1 : 1.35);
+      const wPx = (wv / 100) * size.width * (centred ? 1 : 1.35);
       const cx = (l / 100) * size.width + ((wv / 100) * size.width) / 2;
-      const cy = portrait ? (tp / 100) * size.height : (tp / 100) * size.height + ((wv / 100) * size.width) * 0.55;
+      const cy = centred ? (tp / 100) * size.height : (tp / 100) * size.height + ((wv / 100) * size.width) * 0.55;
       const ndc = new THREE.Vector3((cx / size.width) * 2 - 1, -(cy / size.height) * 2 + 1, 0.5);
       const dir = ndc.unproject(cam).sub(cam.position).normalize();
       const pos = cam.position.clone().addScaledVector(dir, DEPTH[i]);

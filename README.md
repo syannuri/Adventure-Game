@@ -309,6 +309,14 @@ Keeper, Light Master, Gem Collector, Pillar Climber).
   follow the player, atmospheric fog, bloom, vignette, neutral tone mapping, a gradient sky with sun glow and
   clouds, water shaders and particle systems. A **"Fast" graphics mode** is the default on touch devices: no
   post-processing, lower resolution, fewer grass and flower instances, and no tree shadows.
+- **Fits iPhone and iPad, upright or sideways.**
+  - The home screen places the 3D islands differently for phones held upright, phones held sideways, 4:3
+    tablets held sideways and wide screens.
+  - The world map shows two worlds per row on phones held upright.
+  - Menu buttons are bigger on iPads held upright.
+  - When the game is added to the Home Screen, it fills the whole screen. iOS reports the height minus the
+    status bar there, which used to leave an empty band at the bottom; `systems/fullHeight.ts` measures the real
+    height. This is not applied in iPad Split View.
 - **Child-friendly:** no violence, no scary enemies, no punishment and no "game over": a game that is lost can
   always be tried again (and gets a little easier). No monetization. The language is positive and hints appear
   when a child seems stuck.
